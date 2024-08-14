@@ -153,7 +153,7 @@ export default function page() {
                 <CardHeader>
                   <CardTitle>Recent Investments</CardTitle>
                   <CardDescription>
-                    You made 265 investment this month.
+                    You made 265 investments this month.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

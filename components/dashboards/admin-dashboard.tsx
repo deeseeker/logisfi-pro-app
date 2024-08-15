@@ -44,9 +44,6 @@ function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className='text-2xl font-bold'>50</div>
-                {/* <p className='text-xs text-muted-customblue'>
-              +20.1% from last month
-            </p> */}
               </CardContent>
             </Card>
             <Card>
@@ -71,9 +68,6 @@ function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className='text-2xl font-bold'>5</div>
-                {/* <p className='text-xs text-muted-customblue'>
-              +180.1% from last month
-            </p> */}
               </CardContent>
             </Card>
             <Card>
@@ -99,9 +93,6 @@ function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className='text-2xl font-bold'>&#8358;12,234</div>
-                {/* <p className='text-xs text-muted-customblue'>
-              +19% from last month
-            </p> */}
               </CardContent>
             </Card>
             <Card>

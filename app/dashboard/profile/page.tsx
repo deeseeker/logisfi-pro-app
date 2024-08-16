@@ -1,9 +1,5 @@
-import React from 'react'
+import AdminProfile from '@/components/profiles/admin-profile'
 
-type Props = {}
-
-function page({}: Props) {
-  return <div>page</div>
+export default function Profile() {
+  return <AdminProfile />
 }
-
-export default page

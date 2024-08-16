@@ -1,35 +1,41 @@
-import { BarGraph } from '@/components/charts/bar-graph'
+'use client'
 import AdminDashboard from '@/components/dashboards/admin-dashboard'
 import BankDashboard from '@/components/dashboards/bank-dashboard'
-import PageContainer from '@/components/layout/page-container'
-import { RecentInvestments } from '@/components/recent-investments'
-import RecentActivities from '@/components/tables/admin-tables/dashboard'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useEffect, useState } from 'react'
 
-export default function page() {
+export default function Dashboard() {
+  const [role, setRole] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Access localStorage only after the component has mounted
+    const userRole = localStorage.getItem('token')
+    setRole(userRole)
+  }, [])
+
+  const renderContent = () => {
+    switch (role) {
+      case 'admin':
+        return <AdminDashboard />
+      case 'bank':
+        return <BankDashboard />
+
+      default:
+        break
+    }
+  }
   return (
-    <PageContainer scrollable={true}>
-      <div className='space-y-2'>
-        <div className='flex items-center justify-between space-y-2'>
-          <h2 className='text-2xl font-bold tracking-tight text-customblue'>
-            Hi, Welcome back 👋
-          </h2>
-          {/* <div className='hidden items-center space-x-2 md:flex'>
-            <CalendarDateRangePicker />
-            <Button>Download</Button>
-          </div> */}
+    <div className='space-y-2'>
+      <div className='flex items-center justify-between space-y-2'>
+        <h2 className='text-2xl font-bold tracking-tight text-customblue'>
+          Hi, Welcome back 👋
+        </h2>
+        <div className='hidden items-center space-x-2 md:flex'>
+          {/* <CalendarDateRangePicker /> */}
+          <Button className='bg-[#001475]'>Download Report</Button>
         </div>
-        <AdminDashboard />
-        {/* <BankDashboard /> */}
       </div>
-    </PageContainer>
+      {role === 'admin' ? <AdminDashboard /> : <p>Loading...</p>}
+    </div>
   )
 }

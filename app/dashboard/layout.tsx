@@ -1,4 +1,5 @@
 import Header from '@/components/layout/header'
+import PageContainer from '@/components/layout/page-container'
 import Sidebar from '@/components/layout/sidebar'
 import type { Metadata } from 'next'
 
@@ -17,7 +18,7 @@ export default function DashboardLayout({
       <Sidebar />
       <main className='w-full flex-1 overflow-hidden bg-[#f5f9ff]'>
         <Header />
-        {children}
+        <PageContainer scrollable={true}>{children}</PageContainer>
       </main>
     </div>
   )

@@ -8,6 +8,12 @@ export const navItems: NavItem[] = [
     label: 'Dashboard'
   },
   {
+    title: 'Profile',
+    href: '/dashboard/profile',
+    icon: 'profile',
+    label: 'profile'
+  },
+  {
     title: 'Account',
     href: '/dashboard/account',
     icon: 'account',

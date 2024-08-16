@@ -1,7 +1,7 @@
 import { DataTable } from '@/components/ui/data-table'
 import { TransactionType, columns } from './columns'
 
-async function getData(): Promise<TransactionType[]> {
+function getData(): any {
   // Fetch data from your API here.
   return [
     {
@@ -32,8 +32,8 @@ async function getData(): Promise<TransactionType[]> {
   ]
 }
 
-export default async function RecentActivities() {
-  const data = await getData()
+export default function RecentActivities() {
+  const data = getData()
 
   return (
     <div className='py-10'>

@@ -14,7 +14,7 @@ export default function AuthenticationPage() {
         alt='login bg'
         width={400}
         height={400}
-        className='object-cover h-full w-full border border-green-800'
+        className='object-cover h-full w-full'
         priority
       />
 

@@ -1,7 +1,5 @@
 import {
   ArrowRight,
-  BookmarkCheckIcon,
-  BookmarkIcon,
   CircleUserIcon,
   CoinsIcon,
   CreditCardIcon,
@@ -10,6 +8,7 @@ import {
   LayoutDashboardIcon,
   LogOutIcon,
   TruckIcon,
+  UserPenIcon,
   UserRound,
   UserRoundCheck,
   UserRoundCog,
@@ -19,9 +18,9 @@ import {
 
 export const Icons = {
   dashboard: LayoutDashboardIcon,
+  profile: UserPenIcon,
   transactions: CreditCardIcon,
   account: UserRoundCogIcon,
-  profile: CircleUserIcon,
   shippers: TruckIcon,
   vendors: UserRoundCheck,
   drivers: UserRoundIcon,

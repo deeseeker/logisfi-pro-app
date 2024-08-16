@@ -22,13 +22,27 @@ const formSchema = z.object({
 export type UserFormValue = z.infer<typeof formSchema>
 export default function UserAuthForm() {
   const [loading, setLoading] = useState(false)
+  const [role, setRole] = useState('')
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema)
   })
+
+  const onSubmit = (data: UserFormValue) => {
+    console.log(data)
+    setLoading(true)
+    setRole(data.username)
+
+    // Simulate successful login
+    window.location.href = '/dashboard'
+  }
+  localStorage.setItem('role', role)
   return (
     <>
       <Form {...form}>
-        <form className='w-full space-y-4'>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className='w-full space-y-4'
+        >
           <FormField
             control={form.control}
             name='username'

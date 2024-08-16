@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 
 export default function Dashboard() {
-  // const [role, setRole] = useState<string | null>(null)
+  const [role, setRole] = useState<string | null>(null)
 
-  const role = localStorage.getItem('role')
-  // useEffect(() => {
-  //   // Access localStorage only after the component has mounted
-  //   setRole(userRole)
-  // }, [])
+  useEffect(() => {
+    // Access localStorage only after the component has mounted
+    const userRole = localStorage.getItem('role')
+    setRole(userRole)
+  }, [])
 
   const renderContent = () => {
     switch (role) {

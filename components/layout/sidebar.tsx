@@ -1,13 +1,13 @@
 'use client'
 import React from 'react'
 import { DashboardNav } from '@/components/dashboard-nav'
-import { navItems } from '@/constants/data'
 import { cn } from '@/lib/utils'
 import { ChevronLeft } from 'lucide-react'
 import { useSidebar } from '@/hooks/useSidebar'
 import Logisfipro from '@/public/logisfi-icon.svg'
 import Link from 'next/link'
 import Image from 'next/image'
+import NavItems from '@/constants/data'
 
 type SidebarProps = {
   className?: string
@@ -15,6 +15,7 @@ type SidebarProps = {
 
 export default function Sidebar({ className }: SidebarProps) {
   const { isMinimized, toggle } = useSidebar()
+  const navItems = NavItems()
 
   const handleToggle = () => {
     toggle()
@@ -23,7 +24,7 @@ export default function Sidebar({ className }: SidebarProps) {
   return (
     <aside
       className={cn(
-        `relative  hidden h-screen flex-none border-r bg-card transition-[width] duration-500 md:block`,
+        `relative  hidden h-5/6 flex-none border-r bg-card transition-[width] duration-500 md:block`,
         !isMinimized ? 'w-64' : 'max-w-20',
         className
       )}

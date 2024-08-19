@@ -1,14 +1,14 @@
 'use client'
+import PageContainer from '@/components/layout/page-container'
 import AdminProfile from '@/components/profiles/admin-profile'
-import BankProfile from '@/components/profiles/bank-profile'
+import BTransactionHistory from '@/components/tables/bank-tables/history'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
 import { useEffect, useState } from 'react'
-
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Profile', link: '/dashboard/profile' }
+  { title: 'Transaction History', link: '/dashboard/history' }
 ]
 export default function Profile() {
   const [role, setRole] = useState<string | null>(null)
@@ -23,7 +23,7 @@ export default function Profile() {
       case 'admin':
         return <AdminProfile />
       case 'bank':
-        return <BankProfile />
+        return <BTransactionHistory />
 
       default:
         break
@@ -32,8 +32,12 @@ export default function Profile() {
   return (
     <div className='space-y-2'>
       <Breadcrumbs items={breadcrumbItems} />
-      <Heading title='Profile' description='Manage your profile' />
+      <Heading
+        title='Transaction History'
+        description='View all your transaction history'
+      />
       <Separator />
+
       {role ? renderContent() : <p>Loading...</p>}
     </div>
   )

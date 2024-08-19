@@ -37,7 +37,7 @@ export default function RecentActivities() {
 
   return (
     <div className='py-10'>
-      <DataTable columns={columns} data={data} />
+      <DataTable searchKey='' columns={columns} data={data} />
     </div>
   )
 }

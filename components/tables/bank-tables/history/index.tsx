@@ -62,11 +62,11 @@ function getData(): any {
   ]
 }
 
-export default function ActiveTransactions() {
+export default function BTransactionHistory() {
   const data = getData()
 
   return (
-    <div className='py-10'>
+    <div>
       <DataTable searchKey='transactions' columns={columns} data={data} />
     </div>
   )

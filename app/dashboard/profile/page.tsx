@@ -1,6 +1,7 @@
 'use client'
 import AdminProfile from '@/components/profiles/admin-profile'
 import BankProfile from '@/components/profiles/bank-profile'
+import InvestorProfile from '@/components/profiles/investor-profile'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
@@ -24,17 +25,20 @@ export default function Profile() {
         return <AdminProfile />
       case 'bank':
         return <BankProfile />
-
+      case 'investor':
+        return <InvestorProfile />
       default:
         break
     }
   }
   return (
-    <div className='space-y-2'>
-      <Breadcrumbs items={breadcrumbItems} />
-      <Heading title='Profile' description='Manage your profile' />
-      <Separator />
-      {role ? renderContent() : <p>Loading...</p>}
+    <div>
+      <div className='space-y-2'>
+        <Breadcrumbs items={breadcrumbItems} />
+        <Heading title='Profile' description='Manage your profile' />
+        {/* <Separator /> */}
+        {role ? renderContent() : <p>Loading...</p>}
+      </div>
     </div>
   )
 }

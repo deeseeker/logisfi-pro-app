@@ -50,7 +50,7 @@ export const columns: ColumnDef<ActiveTransactionType>[] = [
       return (
         <Link
           href={`/dashboard/history/${id}`}
-          className='text-muted-foreground'
+          className='text-muted-foreground '
         >
           View details
         </Link>

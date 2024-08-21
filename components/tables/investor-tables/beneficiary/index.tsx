@@ -90,7 +90,7 @@ export default function BeneficiaryTable() {
 
   return (
     <div>
-      <DataTable searchKey='transactions' columns={columns} data={data} />
+      <DataTable searchKey='beneficiary' columns={columns} data={data} />
     </div>
   )
 }

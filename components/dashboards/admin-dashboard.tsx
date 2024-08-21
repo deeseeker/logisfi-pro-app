@@ -9,6 +9,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import Image from 'next/image'
 
 function AdminDashboard() {
   return (
@@ -22,9 +23,9 @@ function AdminDashboard() {
         </TabsList>
         <TabsContent value='overview' className='space-y-4'>
           <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4 text-customblue'>
-            <Card>
+            <Card className='bg-[linear-gradient(99.61deg,_#205BBB_2.12%,_#0E3C88_100%)] text-white'>
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                <CardTitle className='text-sm font-medium'>
+                <CardTitle className='text-sm font-medium text-white'>
                   Total Investors
                 </CardTitle>
                 <svg
@@ -46,7 +47,14 @@ function AdminDashboard() {
                 <div className='text-2xl font-bold'>50</div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className='relative bg-[linear-gradient(102.21deg,_#D6EEFD_0%,_#8FD3FE_99.28%)]'>
+              <Image
+                src='/back-arrow.png'
+                alt='back arrow'
+                width={460}
+                height={252}
+                className='opacity-25 absolute h-[89px] w-[151px] -bottom-[9px] -right-1 mix-blend-screen'
+              />
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2 text-customblue'>
                 <CardTitle className='text-sm font-medium'>
                   Active Investors
@@ -70,7 +78,7 @@ function AdminDashboard() {
                 <div className='text-2xl font-bold'>5</div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className='bg-[linear-gradient(98.55deg,_#DBF0D5_36.12%,_#A4FD8B_100%)]'>
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                 <CardTitle className='text-sm font-medium'>
                   Available Funds
@@ -95,7 +103,14 @@ function AdminDashboard() {
                 <div className='text-2xl font-bold'>&#8358;12,234</div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className='relative bg-[linear-gradient(100.09deg,_#FADDDE_29.03%,_#FFC0C2_93.76%)]'>
+              <Image
+                src='/back-arrow.png'
+                alt='back arrow'
+                width={460}
+                height={252}
+                className='opacity-25 absolute h-[89px] w-[151px] -bottom-[9px] -right-1 mix-blend-screen'
+              />
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                 <CardTitle className='text-sm font-medium'>
                   Invested Funds

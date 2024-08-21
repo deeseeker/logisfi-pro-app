@@ -16,7 +16,7 @@ import { Plus } from 'lucide-react'
 
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Transaction History', link: '/dashboard/history' }
+  { title: 'Beneficiary', link: '/dashboard/beneficiary' }
 ]
 export default function Beneficiary() {
   return (
@@ -38,7 +38,7 @@ export default function Beneficiary() {
             </SelectContent>
           </Select>
 
-          <Button className='text-xs md:text-sm bg-[#001475]'>
+          <Button className='text-xs md:text-sm bg-customblue'>
             <Plus className='mr-2 h-4 w-4' /> Add New
           </Button>
         </div>

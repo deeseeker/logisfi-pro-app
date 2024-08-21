@@ -1,6 +1,16 @@
 'use client'
 
 import { EditBeneficiary } from '@/components/forms/edit-beneficiary'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import {
   Popover,
   PopoverContent,
@@ -41,41 +51,50 @@ export const columns: ColumnDef<InvTransactionType>[] = [
     cell: ({ row }) => {
       return (
         <div className='flex gap-2'>
-          <Popover>
-            <PopoverTrigger asChild>
-              <button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className='text-gray-500'>
                 <Trash2 className='mr-2 h-4 w-4 text-red-500' />
               </button>
-            </PopoverTrigger>
-            <PopoverContent
-              align='start'
-              side='left'
-              sideOffset={30}
-              className='w-80'
-            >
-              <div className='grid gap-4'>
-                <div className='space-y-2'>
-                  <h4 className='font-medium leading-none'>
-                    Delete Beneficiary
-                  </h4>
-                  <p className='text-sm text-muted-foreground'>
-                    Are you sure you want to delete this beneficiary from your
-                    List.
-                  </p>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
-          <Popover>
+            </DialogTrigger>
+            <DialogContent className='w-[350px]'>
+              <DialogHeader className='flex flex-col justify-center items-center'>
+                <DialogTitle>Delete Beneficiary</DialogTitle>
+                <DialogDescription className='text-center'>
+                  Are you sure you want to delete this beneficiary from your
+                  list?
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button size='sm' variant='destructive' type='submit'>
+                  Delete
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className='text-gray-500'>
+                <Pencil className='h-4 w-4' />
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Beneficiary</DialogTitle>
+              </DialogHeader>
+              <EditBeneficiary />
+            </DialogContent>
+          </Dialog>
+          {/* <Popover>
             <PopoverTrigger asChild>
-              <button>
+              <button className='text-gray-500'>
                 <Pencil className='h-4 w-4' />
               </button>
             </PopoverTrigger>
             <PopoverContent sideOffset={100} className='w-auto'>
               <EditBeneficiary />
             </PopoverContent>
-          </Popover>
+          </Popover> */}
         </div>
       )
     }

@@ -35,7 +35,6 @@ export const EditBeneficiary = () => {
 
   return (
     <div>
-      <h2 className='mb-4'>Edit Beneficiary</h2>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(processForm)}
@@ -112,10 +111,12 @@ export const EditBeneficiary = () => {
               </>
             }
           </div>
-          <Button disabled={loading} className='ml-auto' type='submit'>
-            {' '}
-            Save
-          </Button>
+          <div className='text-end'>
+            <Button disabled={loading} className='bg-customblue' type='submit'>
+              {' '}
+              Save
+            </Button>
+          </div>
         </form>
       </Form>
     </div>

@@ -38,11 +38,7 @@ import Link from 'next/link'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@/components/ui/use-toast'
 import RouteForm from '@/components/forms/route-form'
-
-export const formSchema = z.object({
-  origin: z.string(),
-  destination: z.string()
-})
+import { formSchema } from '@/types/admin'
 
 export type RouteFormValue = z.infer<typeof formSchema>
 export default function Routes() {

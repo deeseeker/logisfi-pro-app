@@ -12,16 +12,17 @@ const breadcrumbItems = [
   { title: 'Profile', link: '/dashboard/profile' }
 ]
 export default function Profile() {
-  const [role, setRole] = useState<string | null>(null)
+  const [role, setRole] = useState<string>()
 
   useEffect(() => {
     // Access localStorage only after the component has mounted
-    const userRole = localStorage.getItem('role')
-    setRole(userRole)
-  }, [])
+    const userRole = JSON.parse(localStorage.getItem('roles') as string)
+
+    setRole(userRole[0])
+  }, [role])
   const renderContent = () => {
     switch (role) {
-      case 'admin':
+      case 'Admin':
         return <AdminProfile />
       case 'bank':
         return <BankProfile />

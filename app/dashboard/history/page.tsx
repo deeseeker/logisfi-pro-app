@@ -7,10 +7,7 @@ import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
 import { useEffect, useState } from 'react'
-const breadcrumbItems = [
-  { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Transaction History', link: '/dashboard/history' }
-]
+
 export default function History() {
   const [role, setRole] = useState<string | null>(null)
 
@@ -21,7 +18,7 @@ export default function History() {
   }, [])
   const renderContent = () => {
     switch (role) {
-      case 'admin':
+      case 'Admin':
         return <AdminProfile />
       case 'bank':
         return <BTransactionHistory />
@@ -33,7 +30,6 @@ export default function History() {
   }
   return (
     <div className='space-y-2'>
-      <Breadcrumbs items={breadcrumbItems} />
       <Heading
         title='Transaction History'
         description='View all your transaction history'

@@ -4,7 +4,7 @@ import { NavItem } from '@/types'
 function NavItems() {
   const role = useRole()
   const adminItems: NavItem[] =
-    role === 'admin'
+    role === 'Admin'
       ? [
           {
             title: 'Account',
@@ -43,10 +43,10 @@ function NavItems() {
             label: 'vendors'
           },
           {
-            title: 'Drivers',
-            href: '/dashboard/drivers',
-            icon: 'drivers',
-            label: 'drivers'
+            title: 'Routes',
+            href: '/dashboard/routes',
+            icon: 'routes',
+            label: 'routes'
           }
         ]
       : []

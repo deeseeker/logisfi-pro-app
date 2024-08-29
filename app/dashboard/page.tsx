@@ -2,22 +2,14 @@
 import AdminDashboard from '@/components/dashboards/admin-dashboard'
 import BankDashboard from '@/components/dashboards/bank-dashboard'
 import InvestorDashboard from '@/components/dashboards/investor-dashboard'
-import PageContainer from '@/components/layout/page-container'
-import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
+import useRole from '@/hooks/useRole'
 
 export default function Dashboard() {
-  const [role, setRole] = useState<string | null>(null)
-
-  useEffect(() => {
-    // Access localStorage only after the component has mounted
-    const userRole = localStorage.getItem('role')
-    setRole(userRole)
-  }, [])
+  const role = useRole()
 
   const renderContent = () => {
     switch (role) {
-      case 'admin':
+      case 'Admin':
         return <AdminDashboard />
       case 'bank':
         return <BankDashboard />

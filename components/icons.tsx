@@ -1,21 +1,18 @@
 import {
   ArrowRight,
-  CircleUserIcon,
   CoinsIcon,
-  CreditCard,
   CreditCardIcon,
   DatabaseBackupIcon,
   HandCoinsIcon,
   HeartHandshakeIcon,
   LayoutDashboardIcon,
+  LoaderCircle,
   LogOutIcon,
+  RouteIcon,
   TruckIcon,
   UserPenIcon,
-  UserRound,
   UserRoundCheck,
-  UserRoundCog,
-  UserRoundCogIcon,
-  UserRoundIcon
+  UserRoundCogIcon
 } from 'lucide-react'
 
 export const Icons = {
@@ -26,10 +23,12 @@ export const Icons = {
   account: UserRoundCogIcon,
   shippers: TruckIcon,
   vendors: UserRoundCheck,
-  drivers: UserRoundIcon,
+  routes: RouteIcon,
   history: DatabaseBackupIcon,
   investments: HandCoinsIcon,
   withdrawals: CoinsIcon,
   logout: LogOutIcon,
-  arrowRight: ArrowRight
+  arrowRight: ArrowRight,
+
+  spinner: LoaderCircle
 }

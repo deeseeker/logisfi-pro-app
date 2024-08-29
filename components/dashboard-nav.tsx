@@ -32,8 +32,6 @@ export function DashboardNav({
     return null
   }
 
-  console.log('isActive', isMobileNav, isMinimized)
-
   return (
     <nav className='grid items-start gap-2'>
       <TooltipProvider>
@@ -52,6 +50,7 @@ export function DashboardNav({
                     )}
                     onClick={() => {
                       if (setOpen) setOpen(false)
+                      if (item.title === 'logout') localStorage.clear()
                     }}
                   >
                     <Icon className={`ml-3 size-4 flex-none text-customblue`} />

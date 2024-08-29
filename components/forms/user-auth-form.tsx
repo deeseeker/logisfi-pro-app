@@ -13,27 +13,34 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { useState } from 'react'
+import { signIn } from '@/app/api/services'
+import { useRouter } from 'next/navigation'
 
 const formSchema = z.object({
-  username: z.string(),
+  email: z.string(),
   password: z.string()
 })
 
 export type UserFormValue = z.infer<typeof formSchema>
 export default function UserAuthForm() {
   const [loading, setLoading] = useState(false)
+  const route = useRouter()
 
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema)
   })
 
-  const onSubmit = (data: UserFormValue) => {
-    console.log(data)
+  const onSubmit = async (data: UserFormValue) => {
     setLoading(true)
-    localStorage.clear()
-    localStorage.setItem('role', data.username)
-    // Simulate successful login
-    window.location.href = '/dashboard'
+    const response = await signIn(data)
+    if (response?.responseData.accessToken) {
+      console.log(response?.responseData.accessToken)
+      localStorage.setItem('roles', JSON.stringify(response.responseData.roles))
+      localStorage.setItem('token', response.responseData.accessToken)
+      localStorage.setItem('refreshToken', response.responseData.refreshToken)
+      route.push('/dashboard')
+    }
+    setLoading(false)
   }
   return (
     <>
@@ -44,14 +51,14 @@ export default function UserAuthForm() {
         >
           <FormField
             control={form.control}
-            name='username'
+            name='email'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
-                    type='username'
-                    placeholder='Enter your username...'
+                    type='email'
+                    placeholder='Enter your email...'
                     disabled={loading}
                     {...field}
                   />

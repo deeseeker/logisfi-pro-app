@@ -2,7 +2,7 @@ import { DataTable } from '@/components/ui/data-table'
 import { TransactionType, columns } from './columns'
 
 function getData(): any {
-  // Fetch data from your API here.
+  // Fetch data from your axiosInstance here.
   return [
     {
       id: '728ed52f',

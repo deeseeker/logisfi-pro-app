@@ -36,15 +36,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Icons } from '@/components/icons'
 import { useToast } from '@/components/ui/use-toast'
 import RouteForm from '@/components/forms/route-form'
-import { formSchema } from '@/types/admin'
 
-const breadcrumbItems = [
-  { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Routes', link: '/dashboard/routes' }
-]
+export const formSchema = z.object({
+  origin: z.string(),
+  destination: z.string()
+})
 
 export type RouteFormValue = z.infer<typeof formSchema>
 export default function Routes() {
@@ -77,9 +75,8 @@ export default function Routes() {
   }
   return (
     <div className='space-y-2'>
-      <Breadcrumbs items={breadcrumbItems} />
       <div className='flex justify-between'>
-        <Heading title='Routes' description='Manage all your routes' />
+        <Heading title='Vendors' description='Manage all your vendors' />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant='outline' className='ml-auto'>
@@ -91,12 +88,12 @@ export default function Routes() {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
-                    Single Route
+                    Single Vendor
                   </Button>
                 </DialogTrigger>
                 <DialogContent className='sm:max-w-[425px]'>
                   <DialogHeader>
-                    <DialogTitle>Add New Route</DialogTitle>
+                    <DialogTitle>Add New Vendor</DialogTitle>
                     <DialogDescription>
                       Include a route to the list here. Click submit when you
                       are done.
@@ -114,7 +111,7 @@ export default function Routes() {
                 href='/'
                 className='md:text-sm flex items-center justify-center gap-2 text-center overflow-hidden rounded-md py-2 text-sm font-normal hover:bg-accent hover:text-accent-foreground'
               >
-                Multiple Route
+                Multiple Vendors
               </Link>
             </div>
           </DropdownMenuContent>

@@ -1,7 +1,8 @@
 'use client'
 
 import { deleteRoute, updateRoute } from '@/app/api/services'
-import { formSchema, RouteFormValue } from '@/app/dashboard/routes/page'
+import { RouteFormValue } from '@/app/dashboard/routes/page'
+
 import RouteForm from '@/components/forms/route-form'
 import {
   AlertDialog,
@@ -31,7 +32,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
-import { IRoutes } from '@/types/admin'
+import { formSchema, IRoutes } from '@/types/admin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'

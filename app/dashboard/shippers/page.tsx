@@ -88,12 +88,12 @@ export default function Routes() {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
-                    Single Route
+                    Single Shipper
                   </Button>
                 </DialogTrigger>
                 <DialogContent className='sm:max-w-[425px]'>
                   <DialogHeader>
-                    <DialogTitle>Add New Route</DialogTitle>
+                    <DialogTitle>Add New Shipper</DialogTitle>
                     <DialogDescription>
                       Include a route to the list here. Click submit when you
                       are done.

@@ -1,3 +1,5 @@
+import * as z from 'zod'
+
 export interface IRoutes {
   id: string
   createdAt: string
@@ -15,3 +17,8 @@ export interface IResponse<T> {
   responseData: T[]
   metaData: string
 }
+
+export const formSchema = z.object({
+  origin: z.string(),
+  destination: z.string()
+})

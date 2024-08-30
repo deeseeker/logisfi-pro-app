@@ -2,6 +2,7 @@ import { DataTable } from '@/components/ui/data-table'
 import { columns } from './column'
 import { getAllRoutes, getAllVendors } from '@/app/api/services'
 import { useQuery } from '@tanstack/react-query'
+import { DataTableSkeletonLoader } from '@/components/skeleton'
 
 export default function VendorsTable() {
   const { data, isPending } = useQuery({
@@ -14,7 +15,7 @@ export default function VendorsTable() {
   return (
     <div className='py-10'>
       {isPending ? (
-        'Loading...'
+        <DataTableSkeletonLoader />
       ) : (
         <DataTable searchKey='vendor' columns={columns} data={dataSource} />
       )}

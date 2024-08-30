@@ -4,6 +4,7 @@ import { IResponse, IRoutes } from '@/types/admin'
 import { useEffect, useState } from 'react'
 import { getAllRoutes } from '@/app/api/services'
 import { useQuery } from '@tanstack/react-query'
+import { DataTableSkeletonLoader } from '@/components/skeleton'
 
 export default function RoutesTable() {
   const { data, isPending } = useQuery({
@@ -16,7 +17,7 @@ export default function RoutesTable() {
   return (
     <div className='py-10'>
       {isPending ? (
-        'Loading...'
+        <DataTableSkeletonLoader />
       ) : (
         <DataTable searchKey='origin' columns={columns} data={dataSource} />
       )}

@@ -1,34 +1,20 @@
 'use client'
-
-import RoutesTable from '@/components/tables/admin-tables/routes'
-import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form'
+
 import { Heading } from '@/components/ui/heading'
-import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/ui/separator'
 import { ChevronDownIcon } from 'lucide-react'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
-import { addNewRoute } from '@/app/api/services'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,28 +23,31 @@ import {
 import Link from 'next/link'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@/components/ui/use-toast'
-import RouteForm from '@/components/forms/route-form'
-import { formSchema } from '@/types/admin'
+import { formSchema, vendorSchema } from '@/types/admin'
+import VendorForm from '@/components/forms/vendor-form'
+import VendorsTable from '@/components/tables/admin-tables/vendors'
+import { addNewRoute, addNewVendor } from '@/app/api/services'
+import { Separator } from '@/components/ui/separator'
 
-export type RouteFormValue = z.infer<typeof formSchema>
-export default function Routes() {
+export type VendorFormValue = z.infer<typeof vendorSchema>
+export default function Vendors() {
   const { toast } = useToast()
-  const form = useForm<RouteFormValue>({
-    resolver: zodResolver(formSchema)
+  const form = useForm<VendorFormValue>({
+    resolver: zodResolver(vendorSchema)
   })
   const queryClient = useQueryClient()
   const [key, setKey] = useState(0)
   const mutation = useMutation({
-    mutationFn: (data: RouteFormValue) => {
-      return addNewRoute(data)
+    mutationFn: (data: VendorFormValue) => {
+      return addNewVendor(data)
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ['routes']
+        queryKey: ['vendors']
       })
       toast({
         title: 'Success!',
-        description: 'The route lists has been updated successfully.'
+        description: 'The vendor lists has been updated successfully.'
       })
 
       form.reset() // Reset the form
@@ -66,7 +55,7 @@ export default function Routes() {
     }
   })
 
-  const onSubmit = async (data: RouteFormValue) => {
+  const onSubmit = async (data: VendorFormValue) => {
     mutation.mutate(data)
   }
   return (
@@ -91,11 +80,11 @@ export default function Routes() {
                   <DialogHeader>
                     <DialogTitle>Add New Vendor</DialogTitle>
                     <DialogDescription>
-                      Include a route to the list here. Click submit when you
+                      Include a vendor to the list here. Click submit when you
                       are done.
                     </DialogDescription>
                   </DialogHeader>
-                  <RouteForm
+                  <VendorForm
                     key={key}
                     onSubmit={onSubmit}
                     mutation={mutation}
@@ -114,8 +103,7 @@ export default function Routes() {
         </DropdownMenu>
       </div>
       <Separator />
-
-      <RoutesTable />
+      <VendorsTable />
     </div>
   )
 }

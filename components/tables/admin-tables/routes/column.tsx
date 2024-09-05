@@ -1,7 +1,7 @@
 'use client'
 
 import { deleteRoute, updateRoute } from '@/app/api/services'
-import { RouteFormValue } from '@/app/dashboard/routes/page'
+import { RouteFormValue, UpdateFormValue } from '@/app/dashboard/routes/page'
 
 import RouteForm from '@/components/forms/route-form'
 import {
@@ -37,12 +37,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
 import { EllipsisVertical } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 const ActionCell = ({ row }: { row: any }) => {
   const { toast } = useToast()
   const [open, setOpen] = useState(false)
+
   const [isUpdate, setIsUpdate] = useState(false)
   const queryClient = useQueryClient()
   const mutation = useMutation({
@@ -78,7 +80,9 @@ const ActionCell = ({ row }: { row: any }) => {
     }
   })
 
-  const onSubmit = async (data: RouteFormValue) => {
+  const onSubmit = async (data: UpdateFormValue) => {
+    data.id = row.original.id
+    console.log(data)
     update.mutate(data)
     if (update.isSuccess) {
       toast({
@@ -100,9 +104,7 @@ const ActionCell = ({ row }: { row: any }) => {
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem>View route</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsUpdate(true)}>
-            Update route
-          </DropdownMenuItem>
+          <DropdownMenuItem>Update route</DropdownMenuItem>
 
           <DropdownMenuItem
             className='text-red-600'

@@ -23,13 +23,14 @@ import {
 import Link from 'next/link'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@/components/ui/use-toast'
-import { formSchema, vendorSchema } from '@/types/admin'
+import { formSchema, vendorSchema, vendorUpdateSchema } from '@/types/admin'
 import VendorForm from '@/components/forms/vendor-form'
 import VendorsTable from '@/components/tables/admin-tables/vendors'
 import { addNewRoute, addNewVendor } from '@/app/api/services'
 import { Separator } from '@/components/ui/separator'
 
 export type VendorFormValue = z.infer<typeof vendorSchema>
+export type VendorUpdateValue = z.infer<typeof vendorUpdateSchema>
 export default function Vendors() {
   const { toast } = useToast()
   const form = useForm<VendorFormValue>({
@@ -65,7 +66,7 @@ export default function Vendors() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant='outline' className='ml-auto'>
-              Add New <ChevronDownIcon className='ml-2 h-4 w-4' />
+              Add Vendor <ChevronDownIcon className='ml-2 h-4 w-4' />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -73,12 +74,12 @@ export default function Vendors() {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
-                    Single Vendor
+                    Add Single Vendor
                   </Button>
                 </DialogTrigger>
-                <DialogContent className='sm:max-w-[425px]'>
+                <DialogContent className='sm:max-w-[600px]'>
                   <DialogHeader>
-                    <DialogTitle>Add New Vendor</DialogTitle>
+                    <DialogTitle>Add Single Vendor</DialogTitle>
                     <DialogDescription>
                       Include a vendor to the list here. Click submit when you
                       are done.
@@ -96,7 +97,7 @@ export default function Vendors() {
                 href='/'
                 className='md:text-sm flex items-center justify-center gap-2 text-center overflow-hidden rounded-md py-2 text-sm font-normal hover:bg-accent hover:text-accent-foreground'
               >
-                Multiple Vendors
+                Add Multiple Vendors
               </Link>
             </div>
           </DropdownMenuContent>

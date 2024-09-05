@@ -24,8 +24,7 @@ import {
 import Link from 'next/link'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@/components/ui/use-toast'
-import RouteForm from '@/components/forms/route-form'
-import { formSchema, vendorSchema } from '@/types/admin'
+import { vendorSchema } from '@/types/admin'
 import ShippersTable from '@/components/tables/admin-tables/shippers'
 import { VendorFormValue } from '../vendors/page'
 import ShipperForm from '@/components/forms/shipper-form'
@@ -65,7 +64,7 @@ export default function Shippers() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant='outline' className='ml-auto'>
-              Add New <ChevronDownIcon className='ml-2 h-4 w-4' />
+              Add Shipper <ChevronDownIcon className='ml-2 h-4 w-4' />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -73,12 +72,12 @@ export default function Shippers() {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
-                    Single Shipper
+                    Add Single Shipper
                   </Button>
                 </DialogTrigger>
-                <DialogContent className='sm:max-w-[425px]'>
+                <DialogContent className='sm:max-w-[600px]'>
                   <DialogHeader>
-                    <DialogTitle>Add New Shipper</DialogTitle>
+                    <DialogTitle>Add Single Shipper</DialogTitle>
                     <DialogDescription>
                       Include a shipper to the list here. Click submit when you
                       are done.
@@ -93,10 +92,10 @@ export default function Shippers() {
                 </DialogContent>
               </Dialog>
               <Link
-                href='/'
+                href='#'
                 className='md:text-sm flex items-center justify-center gap-2 text-center overflow-hidden rounded-md py-2 text-sm font-normal hover:bg-accent hover:text-accent-foreground'
               >
-                Multiple Shipper
+                Add Multiple Shippers
               </Link>
             </div>
           </DropdownMenuContent>

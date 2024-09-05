@@ -1,8 +1,7 @@
 'use client'
 
-import { deleteVendor, updateVendor } from '@/app/api/services'
-import { VendorFormValue } from '@/app/dashboard/vendors/page'
-import VendorForm from '@/components/forms/vendor-form'
+import { deleteVPrice, updatePrice } from '@/app/api/services'
+import VendorPriceForm from '@/components/forms/vendor-price'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,7 +28,8 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
-import { IVendors, vendorSchema } from '@/types/admin'
+import { schemaToDate } from '@/lib/utils'
+import { IPrice, priceSchema, priceUpdateSchema } from '@/types/admin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
@@ -37,52 +37,59 @@ import { EllipsisVertical } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import * as z from 'zod'
 
+export type PriceFormValue = z.infer<typeof priceSchema>
+export type UpdatePriceValue = z.infer<typeof priceUpdateSchema>
 const ActionCell = ({ row }: { row: any }) => {
   const { toast } = useToast()
   const [open, setOpen] = useState(false)
-  const [isUpdate, setIsUpdate] = useState(false)
-  const router = useRouter()
   const id = row.original.id
+  const router = useRouter()
+  const [isUpdate, setIsUpdate] = useState(false)
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: (vendorId: string) => {
-      return deleteVendor(vendorId)
+    mutationFn: (vendorPriceId: string) => {
+      return deleteVPrice(vendorPriceId)
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ['vendors']
+        queryKey: ['vendor-price-list']
       })
       toast({
         title: 'Success!',
-        description: 'The vendor lists has been removed successfully.'
+        description: 'The price has been removed successfully.'
       })
     }
   })
-  const form = useForm<VendorFormValue>({
-    resolver: zodResolver(vendorSchema)
+  const form = useForm<PriceFormValue>({
+    resolver: zodResolver(priceSchema)
   })
 
   const [key, setKey] = useState(0)
   const update = useMutation({
-    mutationFn: (data: VendorFormValue) => {
-      return updateVendor(data)
+    mutationFn: (data: UpdatePriceValue) => {
+      return updatePrice(data)
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ['vendors']
+        queryKey: ['price-list']
       })
-      toast({
-        title: 'Success!',
-        description: 'The vendor lists has been updated successfully.'
-      })
+
       form.reset() // Reset the form
       setKey((prevKey) => prevKey + 1) // Force a rerender by updating the key
     }
   })
 
-  const onSubmit = async (data: VendorFormValue) => {
+  const onSubmit = async (data: UpdatePriceValue) => {
+    data.shipperPriceId = row.original.id
     update.mutate(data)
+    if (update.isSuccess) {
+      toast({
+        title: 'Success!',
+        description: 'The price list has been updated successfully.'
+      })
+    }
   }
 
   return (
@@ -96,22 +103,15 @@ const ActionCell = ({ row }: { row: any }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => {
-              router.push(`vendors/${id}`)
-            }}
-          >
-            View vendor
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
-            Update vendor
+            Update price
           </DropdownMenuItem>
 
           <DropdownMenuItem
             className='text-red-600'
             onClick={() => setOpen(true)}
           >
-            Delete vendor
+            Delete price
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -119,17 +119,12 @@ const ActionCell = ({ row }: { row: any }) => {
       <Dialog open={isUpdate} onOpenChange={setIsUpdate}>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>Update Route</DialogTitle>
+            <DialogTitle>Update price</DialogTitle>
             <DialogDescription>
               Include a route to the list here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
-          <VendorForm
-            key={key}
-            onSubmit={onSubmit}
-            mutation={update}
-            form={form}
-          />
+          <VendorPriceForm vendorId={id} />
         </DialogContent>
       </Dialog>
 
@@ -141,7 +136,7 @@ const ActionCell = ({ row }: { row: any }) => {
             </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete your
-              the route and remove the details from our servers.
+              the price and remove the details from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -150,7 +145,7 @@ const ActionCell = ({ row }: { row: any }) => {
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                mutation.mutate(row.original.id)
+                mutation.mutate(id)
                 setOpen(false)
               }}
             >
@@ -163,26 +158,40 @@ const ActionCell = ({ row }: { row: any }) => {
   )
 }
 
-export const columns: ColumnDef<IVendors>[] = [
+export const columns: ColumnDef<IPrice>[] = [
   {
-    accessorKey: 'name',
-    header: 'Name'
+    accessorKey: 'route',
+    header: 'Origin',
+    cell: ({ row }) => {
+      const origin = row.original.route.origin
+      return <span>{origin}</span>
+    }
   },
   {
-    accessorKey: 'state',
-    header: 'State'
+    accessorKey: 'destination',
+    header: 'Destination',
+    cell: ({ row }) => {
+      const destination = row.original.route.destination
+      return <span>{destination}</span>
+    }
   },
   {
-    accessorKey: 'phone',
-    header: 'Phone'
+    accessorKey: 'price',
+    header: 'Price'
   },
   {
     accessorKey: 'createdAt',
-    header: 'Date Created'
+    header: 'Date Created',
+    cell: ({ row }) => {
+      return <span>{schemaToDate(row.original.createdAt)}</span>
+    }
   },
   {
     accessorKey: 'modifiedAt',
-    header: 'Date Modified'
+    header: 'Date Modified',
+    cell: ({ row }) => {
+      return <span>{schemaToDate(row.original.modifiedAt)}</span>
+    }
   },
   {
     id: 'actions',

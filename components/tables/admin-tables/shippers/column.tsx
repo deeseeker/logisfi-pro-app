@@ -7,9 +7,13 @@ import {
   updateShipper
 } from '@/app/api/services'
 import { RouteFormValue } from '@/app/dashboard/routes/page'
-import { VendorFormValue } from '@/app/dashboard/vendors/page'
+import {
+  VendorFormValue,
+  VendorUpdateValue
+} from '@/app/dashboard/vendors/page'
 
 import RouteForm from '@/components/forms/route-form'
+import ShipperForm from '@/components/forms/shipper-form'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,17 +40,21 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
+import { schemaToDate } from '@/lib/utils'
 import { formSchema, IVendors, vendorSchema } from '@/types/admin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
 import { EllipsisVertical } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 const ActionCell = ({ row }: { row: any }) => {
   const { toast } = useToast()
   const [open, setOpen] = useState(false)
+  const id = row.original.id
+  const router = useRouter()
   const [isUpdate, setIsUpdate] = useState(false)
   const queryClient = useQueryClient()
   const mutation = useMutation({
@@ -69,7 +77,7 @@ const ActionCell = ({ row }: { row: any }) => {
 
   const [key, setKey] = useState(0)
   const update = useMutation({
-    mutationFn: (data: VendorFormValue) => {
+    mutationFn: (data: VendorUpdateValue) => {
       return updateShipper(data)
     },
     onSuccess: async () => {
@@ -82,7 +90,8 @@ const ActionCell = ({ row }: { row: any }) => {
     }
   })
 
-  const onSubmit = async (data: VendorFormValue) => {
+  const onSubmit = async (data: VendorUpdateValue) => {
+    data.id = id
     update.mutate(data)
     if (update.isSuccess) {
       toast({
@@ -103,7 +112,13 @@ const ActionCell = ({ row }: { row: any }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem>View shipper</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              router.push(`shippers/${id}`)
+            }}
+          >
+            View shipper
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
             Update shipper
           </DropdownMenuItem>
@@ -118,14 +133,14 @@ const ActionCell = ({ row }: { row: any }) => {
       </DropdownMenu>
 
       <Dialog open={isUpdate} onOpenChange={setIsUpdate}>
-        <DialogContent className='sm:max-w-[425px]'>
+        <DialogContent className='sm:max-w-[600px]'>
           <DialogHeader>
             <DialogTitle>Update Shipper</DialogTitle>
             <DialogDescription>
-              Include a route to the list here. Click submit when you are done.
+              Update shipper on the list here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
-          <RouteForm
+          <ShipperForm
             key={key}
             onSubmit={onSubmit}
             mutation={update}
@@ -142,7 +157,7 @@ const ActionCell = ({ row }: { row: any }) => {
             </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete your
-              the shipper and remove the details from our servers.
+              shipper and remove the details from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -151,7 +166,7 @@ const ActionCell = ({ row }: { row: any }) => {
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                mutation.mutate(row.original.id)
+                mutation.mutate(id)
                 setOpen(false)
               }}
             >
@@ -179,11 +194,17 @@ export const columns: ColumnDef<IVendors>[] = [
   },
   {
     accessorKey: 'createdAt',
-    header: 'Date Created'
+    header: 'Date Created',
+    cell: ({ row }) => {
+      return <span>{schemaToDate(row.original.createdAt)}</span>
+    }
   },
   {
     accessorKey: 'modifiedAt',
-    header: 'Date Modified'
+    header: 'Date Modified',
+    cell: ({ row }) => {
+      return <span>{schemaToDate(row.original.modifiedAt)}</span>
+    }
   },
   {
     id: 'actions',

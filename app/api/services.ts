@@ -1,9 +1,8 @@
 import { UserFormValue } from '@/components/forms/user-auth-form'
 import axiosInstance from '@/lib/axiosInstance'
-import { IResponse } from '@/types/admin'
-import { AxiosResponse } from 'axios'
 import { RouteFormValue } from '../dashboard/routes/page'
-import { VendorFormValue } from '../dashboard/vendors/page'
+import { VendorFormValue, VendorUpdateValue } from '../dashboard/vendors/page'
+import { UpdatePriceValue } from '@/components/tables/admin-tables/price-list/column'
 
 export interface LoginResponse {
   isSuccess: boolean
@@ -64,7 +63,29 @@ export const deleteShipper = async (shipperId: string) => {
     const response = await axiosInstance.delete(`shippers/${shipperId}`, {
       data: { shipperId: shipperId }
     })
-    await getAllShippers()
+
+    return response.data
+  } catch (error) {
+    console.error('Error fetching user data', error)
+  }
+}
+export const deletePrice = async (shipperPriceId: string) => {
+  try {
+    const response = await axiosInstance.delete('shippers/delete-price', {
+      data: { shipperPriceId: shipperPriceId }
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error fetching user data', error)
+  }
+}
+export const deleteVPrice = async (vendorPriceId: string) => {
+  try {
+    const response = await axiosInstance.delete('vendors/delete-price', {
+      data: { vendorPriceId: vendorPriceId }
+    })
+
     return response.data
   } catch (error) {
     console.error('Error fetching user data', error)
@@ -75,7 +96,6 @@ export const deleteVendor = async (vendorId: string) => {
     const response = await axiosInstance.delete(`vendors/${vendorId}`, {
       data: { vendorId: vendorId }
     })
-    await getAllVendors()
     return response.data
   } catch (error) {
     console.error('Error fetching user data', error)
@@ -100,6 +120,19 @@ export const getAllShippers = async () => {
     return response.data
   } catch (error) {}
 }
+export const getAllPrice = async () => {
+  try {
+    const response = await axiosInstance.get('shippers/price-list')
+    return response.data
+  } catch (error) {}
+}
+
+export const getAllVPrice = async () => {
+  try {
+    const response = await axiosInstance.get('vendors/price-list')
+    return response.data
+  } catch (error) {}
+}
 
 export const addNewRoute = async (data: RouteFormValue) => {
   try {
@@ -110,6 +143,18 @@ export const addNewRoute = async (data: RouteFormValue) => {
 export const addNewShipper = async (data: VendorFormValue) => {
   try {
     const response = await axiosInstance.post('shippers', data)
+    return response.data
+  } catch (error) {}
+}
+export const createPrice = async (data: UpdatePriceValue) => {
+  try {
+    const response = await axiosInstance.post('shippers/create-prices', data)
+    return response.data
+  } catch (error) {}
+}
+export const createVendorPrice = async (data: any) => {
+  try {
+    const response = await axiosInstance.post('vendors/create-prices', data)
     return response.data
   } catch (error) {}
 }
@@ -126,9 +171,15 @@ export const updateRoute = async (data: RouteFormValue) => {
     return response.data
   } catch (error) {}
 }
-export const updateShipper = async (data: VendorFormValue) => {
+export const updateShipper = async (data: VendorUpdateValue) => {
   try {
     const response = await axiosInstance.put('shippers', data)
+    return response.data
+  } catch (error) {}
+}
+export const updatePrice = async (data: UpdatePriceValue) => {
+  try {
+    const response = await axiosInstance.put('shippers/update-price', data)
     return response.data
   } catch (error) {}
 }

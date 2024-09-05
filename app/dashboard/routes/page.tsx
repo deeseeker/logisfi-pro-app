@@ -39,7 +39,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Icons } from '@/components/icons'
 import { useToast } from '@/components/ui/use-toast'
 import RouteForm from '@/components/forms/route-form'
-import { formSchema } from '@/types/admin'
+import { formSchema, updateRouteSchema } from '@/types/admin'
 
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },
@@ -47,6 +47,7 @@ const breadcrumbItems = [
 ]
 
 export type RouteFormValue = z.infer<typeof formSchema>
+export type UpdateFormValue = z.infer<typeof updateRouteSchema>
 export default function Routes() {
   const { toast } = useToast()
   const form = useForm<RouteFormValue>({

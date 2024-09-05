@@ -120,6 +120,12 @@ export const getAllShippers = async () => {
     return response.data
   } catch (error) {}
 }
+export const getProfile = async () => {
+  try {
+    const response = await axiosInstance.get('users/profile')
+    return response.data.responseData
+  } catch (error) {}
+}
 export const getAllPrice = async () => {
   try {
     const response = await axiosInstance.get('shippers/price-list')

@@ -36,15 +36,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Icons } from '@/components/icons'
 import { useToast } from '@/components/ui/use-toast'
 import RouteForm from '@/components/forms/route-form'
 import { formSchema, updateRouteSchema } from '@/types/admin'
-
-const breadcrumbItems = [
-  { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Routes', link: '/dashboard/routes' }
-]
 
 export type RouteFormValue = z.infer<typeof formSchema>
 export type UpdateFormValue = z.infer<typeof updateRouteSchema>
@@ -78,7 +72,6 @@ export default function Routes() {
   }
   return (
     <div className='space-y-2'>
-      <Breadcrumbs items={breadcrumbItems} />
       <div className='flex justify-between'>
         <Heading title='Routes' description='Manage all your routes' />
         <DropdownMenu>

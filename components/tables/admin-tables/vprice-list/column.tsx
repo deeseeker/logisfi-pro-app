@@ -1,6 +1,7 @@
 'use client'
 
 import { deleteVPrice, updatePrice } from '@/app/api/services'
+import UVPriceForm from '@/components/forms/uvprice-form'
 import VendorPriceForm from '@/components/forms/vendor-price'
 import {
   AlertDialog,
@@ -124,7 +125,7 @@ const ActionCell = ({ row }: { row: any }) => {
               Include a route to the list here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
-          <VendorPriceForm vendorId={id} />
+          <UVPriceForm vendorId={id} />
         </DialogContent>
       </Dialog>
 

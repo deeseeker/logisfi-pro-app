@@ -183,6 +183,15 @@ export const updatePrice = async (data: UpdatePriceValue) => {
     return response.data
   } catch (error) {}
 }
+export const updateVPrice = async (data: {
+  vendorPriceId: string
+  newPrice: string
+}) => {
+  try {
+    const response = await axiosInstance.put('vendors/update-price', data)
+    return response.data
+  } catch (error) {}
+}
 export const updateVendor = async (data: VendorFormValue) => {
   try {
     const response = await axiosInstance.put('vendors', data)

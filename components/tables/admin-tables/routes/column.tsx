@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
+import { schemaToDate } from '@/lib/utils'
 import { formSchema, IRoutes } from '@/types/admin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -61,18 +62,22 @@ const ActionCell = ({ row }: { row: any }) => {
       })
     }
   })
-  const form = useForm<RouteFormValue>({
+  const form = useForm<UpdateFormValue>({
     resolver: zodResolver(formSchema)
   })
 
   const [key, setKey] = useState(0)
   const update = useMutation({
-    mutationFn: (data: RouteFormValue) => {
+    mutationFn: (data: UpdateFormValue) => {
       return updateRoute(data)
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: ['routes']
+      })
+      toast({
+        title: 'Success!',
+        description: 'The route lists has been updated successfully.'
       })
 
       form.reset() // Reset the form
@@ -84,12 +89,6 @@ const ActionCell = ({ row }: { row: any }) => {
     data.id = row.original.id
     console.log(data)
     update.mutate(data)
-    if (update.isSuccess) {
-      toast({
-        title: 'Success!',
-        description: 'The route lists has been updated successfully.'
-      })
-    }
   }
 
   return (
@@ -104,7 +103,9 @@ const ActionCell = ({ row }: { row: any }) => {
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem>View route</DropdownMenuItem>
-          <DropdownMenuItem>Update route</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsUpdate(true)}>
+            Update route
+          </DropdownMenuItem>
 
           <DropdownMenuItem
             className='text-red-600'
@@ -173,11 +174,17 @@ export const columns: ColumnDef<IRoutes>[] = [
   },
   {
     accessorKey: 'createdAt',
-    header: 'Date Created'
+    header: 'Date Created',
+    cell: ({ row }) => {
+      return <span>{schemaToDate(row.original.createdAt)}</span>
+    }
   },
   {
     accessorKey: 'modifiedAt',
-    header: 'Date Modified'
+    header: 'Date Modified',
+    cell: ({ row }) => {
+      return <span>{schemaToDate(row.original.modifiedAt)}</span>
+    }
   },
   {
     id: 'actions',

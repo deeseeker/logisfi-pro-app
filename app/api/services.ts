@@ -17,9 +17,63 @@ export interface LoginResponse {
   metaData: any
 }
 
+/*==========GET==========*/
+export const getAllRoutes = async () => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.routes)
+    return response.data
+  } catch (error) {}
+}
+export const getAllVendors = async () => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.vendors)
+    return response.data
+  } catch (error) {}
+}
+export const getAllShippers = async () => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.shippers)
+    return response.data
+  } catch (error) {}
+}
+export const getProfile = async () => {
+  try {
+    const response = await axiosInstance.get(`${API_ENDPOINTS.profile}`)
+    return response.data.responseData
+  } catch (error) {}
+}
+export const getAllPrice = async () => {
+  try {
+    const response = await axiosInstance.get(
+      `${API_ENDPOINTS.shippers}/price-list`
+    )
+    return response.data
+  } catch (error) {}
+}
+
+export const getAllVPrice = async () => {
+  try {
+    const response = await axiosInstance.get(
+      `${API_ENDPOINTS.vendors}/price-list`
+    )
+    return response.data
+  } catch (error) {}
+}
+
+export const getAllPrices = async (type: 'shippers' | 'vendors') => {
+  try {
+    const endpoint = `${API_ENDPOINTS[type]}/price-list`
+    const response = await axiosInstance.get(endpoint)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching price list', error)
+  }
+}
+
+/*==========POST==========*/
 export const signIn = async (credentials: UserFormValue) => {
   try {
-    const response = await axiosInstance.post('users/login', credentials)
+    const response = await axiosInstance.post(API_ENDPOINTS.login, credentials)
     return response.data
   } catch (error) {
     console.error('Error fetching user data', error)
@@ -32,7 +86,7 @@ export const refreshAccessToken = async () => {
   if (!refreshToken) throw new Error('No refresh token found')
 
   try {
-    const response = await axiosInstance.post('users/refreshToken', {
+    const response = await axiosInstance.post(API_ENDPOINTS.refreshToken, {
       refreshToken: refreshToken,
       expiredToken: expiredToken
     })
@@ -47,12 +101,16 @@ export const refreshAccessToken = async () => {
     throw error
   }
 }
+
+/*==========DELETE==========*/
 export const deleteRoute = async (routeId: string) => {
   try {
-    const response = await axiosInstance.delete(`routes/${routeId}`, {
-      data: { routeId: routeId }
-    })
-    await getAllRoutes()
+    const response = await axiosInstance.delete(
+      `${API_ENDPOINTS.routes}/${routeId}`,
+      {
+        data: { routeId: routeId }
+      }
+    )
     return response.data
   } catch (error) {
     console.error('Error fetching user data', error)
@@ -60,9 +118,12 @@ export const deleteRoute = async (routeId: string) => {
 }
 export const deleteShipper = async (shipperId: string) => {
   try {
-    const response = await axiosInstance.delete(`shippers/${shipperId}`, {
-      data: { shipperId: shipperId }
-    })
+    const response = await axiosInstance.delete(
+      `${API_ENDPOINTS.shippers}/${shipperId}`,
+      {
+        data: { shipperId: shipperId }
+      }
+    )
 
     return response.data
   } catch (error) {
@@ -71,9 +132,12 @@ export const deleteShipper = async (shipperId: string) => {
 }
 export const deletePrice = async (shipperPriceId: string) => {
   try {
-    const response = await axiosInstance.delete('shippers/delete-price', {
-      data: { shipperPriceId: shipperPriceId }
-    })
+    const response = await axiosInstance.delete(
+      `${API_ENDPOINTS.shippers}/delete-price`,
+      {
+        data: { shipperPriceId: shipperPriceId }
+      }
+    )
 
     return response.data
   } catch (error) {
@@ -82,9 +146,12 @@ export const deletePrice = async (shipperPriceId: string) => {
 }
 export const deleteVPrice = async (vendorPriceId: string) => {
   try {
-    const response = await axiosInstance.delete('vendors/delete-price', {
-      data: { vendorPriceId: vendorPriceId }
-    })
+    const response = await axiosInstance.delete(
+      `${API_ENDPOINTS.vendors}/delete-price`,
+      {
+        data: { vendorPriceId: vendorPriceId }
+      }
+    )
 
     return response.data
   } catch (error) {
@@ -93,51 +160,16 @@ export const deleteVPrice = async (vendorPriceId: string) => {
 }
 export const deleteVendor = async (vendorId: string) => {
   try {
-    const response = await axiosInstance.delete(`vendors/${vendorId}`, {
-      data: { vendorId: vendorId }
-    })
+    const response = await axiosInstance.delete(
+      `${API_ENDPOINTS.vendors}/${vendorId}`,
+      {
+        data: { vendorId: vendorId }
+      }
+    )
     return response.data
   } catch (error) {
     console.error('Error fetching user data', error)
   }
-}
-
-export const getAllRoutes = async () => {
-  try {
-    const response = await axiosInstance.get('routes')
-    return response.data
-  } catch (error) {}
-}
-export const getAllVendors = async () => {
-  try {
-    const response = await axiosInstance.get('vendors')
-    return response.data
-  } catch (error) {}
-}
-export const getAllShippers = async () => {
-  try {
-    const response = await axiosInstance.get('shippers')
-    return response.data
-  } catch (error) {}
-}
-export const getProfile = async () => {
-  try {
-    const response = await axiosInstance.get('users/profile')
-    return response.data.responseData
-  } catch (error) {}
-}
-export const getAllPrice = async () => {
-  try {
-    const response = await axiosInstance.get('shippers/price-list')
-    return response.data
-  } catch (error) {}
-}
-
-export const getAllVPrice = async () => {
-  try {
-    const response = await axiosInstance.get('vendors/price-list')
-    return response.data
-  } catch (error) {}
 }
 
 export const addNewRoute = async (data: RouteFormValue) => {

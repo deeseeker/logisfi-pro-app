@@ -15,6 +15,7 @@ import { Button } from '../ui/button'
 import { useState } from 'react'
 import { signIn } from '@/app/api/services'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const formSchema = z.object({
   email: z.string(),
@@ -85,6 +86,11 @@ export default function UserAuthForm() {
               </FormItem>
             )}
           />
+          <div className='text-end '>
+            <Link href='reset/forgot-password' className='text-primary'>
+              Forgot Password?
+            </Link>
+          </div>
           <Button
             disabled={loading}
             className='ml-auto w-full bg-customblue'

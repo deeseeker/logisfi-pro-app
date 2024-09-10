@@ -102,6 +102,37 @@ export const refreshAccessToken = async () => {
   }
 }
 
+export const addNewRoute = async (data: RouteFormValue) => {
+  try {
+    const response = await axiosInstance.post('routes', data)
+    return response.data
+  } catch (error) {}
+}
+export const addNewShipper = async (data: VendorFormValue) => {
+  try {
+    const response = await axiosInstance.post('shippers', data)
+    return response.data
+  } catch (error) {}
+}
+export const createPrice = async (data: UpdatePriceValue) => {
+  try {
+    const response = await axiosInstance.post('shippers/create-prices', data)
+    return response.data
+  } catch (error) {}
+}
+export const createVendorPrice = async (data: any) => {
+  try {
+    const response = await axiosInstance.post('vendors/create-prices', data)
+    return response.data
+  } catch (error) {}
+}
+export const addNewVendor = async (data: VendorFormValue) => {
+  try {
+    const response = await axiosInstance.post('vendors', data)
+    return response.data
+  } catch (error) {}
+}
+
 /*==========DELETE==========*/
 export const deleteRoute = async (routeId: string) => {
   try {
@@ -170,37 +201,6 @@ export const deleteVendor = async (vendorId: string) => {
   } catch (error) {
     console.error('Error fetching user data', error)
   }
-}
-
-export const addNewRoute = async (data: RouteFormValue) => {
-  try {
-    const response = await axiosInstance.post('routes', data)
-    return response.data
-  } catch (error) {}
-}
-export const addNewShipper = async (data: VendorFormValue) => {
-  try {
-    const response = await axiosInstance.post('shippers', data)
-    return response.data
-  } catch (error) {}
-}
-export const createPrice = async (data: UpdatePriceValue) => {
-  try {
-    const response = await axiosInstance.post('shippers/create-prices', data)
-    return response.data
-  } catch (error) {}
-}
-export const createVendorPrice = async (data: any) => {
-  try {
-    const response = await axiosInstance.post('vendors/create-prices', data)
-    return response.data
-  } catch (error) {}
-}
-export const addNewVendor = async (data: VendorFormValue) => {
-  try {
-    const response = await axiosInstance.post('vendors', data)
-    return response.data
-  } catch (error) {}
 }
 
 export const updateRoute = async (data: RouteFormValue) => {

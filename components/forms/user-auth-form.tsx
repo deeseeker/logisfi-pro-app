@@ -48,7 +48,7 @@ export default function UserAuthForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='w-full space-y-4'
+          className='w-full space-y-2'
         >
           <FormField
             control={form.control}
@@ -86,8 +86,8 @@ export default function UserAuthForm() {
               </FormItem>
             )}
           />
-          <div className='text-end '>
-            <Link href='reset/forgot-password' className='text-primary'>
+          <div className='text-end text-sm'>
+            <Link href='reset/forgot-password' className='text-customblue'>
               Forgot Password?
             </Link>
           </div>

@@ -8,26 +8,32 @@ export const metadata: Metadata = {
 }
 export default function AuthenticationPage() {
   return (
-    <div className='h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0'>
+    <div className='min-h-screen flex items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0'>
       <Image
         src='/login-bg.jpeg'
         alt='login bg'
         width={400}
         height={400}
-        className='object-cover h-full w-full'
+        className='object-cover h-full w-full hidden lg:block'
         priority
       />
 
-      <div className='flex h-full items-center p-4'>
-        <div className='mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]'>
-          <div className='flex flex-col space-y-2 text-center'>
-            <h1 className='text-2xl font-semibold tracking-tight text-[#205BBB]'>
-              Welcome!
-            </h1>
-            <p className='text-sm text-black'>Login to your account.</p>
+      <div className='mx-auto w-full px-12 sm:px-0 sm:w-[350px]'>
+        <div className='flex flex-col text-center'>
+          <div className='flex justify-center mb-2'>
+            <Image
+              src='/logisfi-icon.svg'
+              width={121}
+              height={30}
+              alt='logisfi pro icon'
+            />
           </div>
-          <UserAuthForm />
+          <h1 className='text-2xl font-semibold tracking-tight text-[#205BBB]'>
+            Welcome!
+          </h1>
+          <p className='text-sm text-black'>Login to your account.</p>
         </div>
+        <UserAuthForm />
       </div>
     </div>
   )

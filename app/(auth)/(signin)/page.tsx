@@ -28,9 +28,6 @@ export default function AuthenticationPage() {
               alt='logisfi pro icon'
             />
           </div>
-          <h1 className='text-2xl font-semibold tracking-tight text-[#205BBB]'>
-            Welcome!
-          </h1>
           <p className='text-sm text-black'>Login to your account.</p>
         </div>
         <UserAuthForm />

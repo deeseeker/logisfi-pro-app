@@ -31,15 +31,17 @@ export default function UserAuthForm() {
     resolver: zodResolver(formSchema)
   })
 
-  const onSubmit = async (data: UserFormValue) => {
+  const onSubmit = async (data: UserFormValue, e: any) => {
+    e.preventDefault()
     setLoading(true)
     const response = await signIn(data)
     if (response?.responseData.accessToken) {
-      console.log(response?.responseData.accessToken)
       localStorage.setItem('roles', JSON.stringify(response.responseData.roles))
       localStorage.setItem('token', response.responseData.accessToken)
       localStorage.setItem('refreshToken', response.responseData.refreshToken)
       route.push('/dashboard')
+    } else {
+      console.log('no response')
     }
     setLoading(false)
   }
@@ -87,7 +89,7 @@ export default function UserAuthForm() {
             )}
           />
           <div className='text-end text-sm'>
-            <Link href='reset/forgot-password' className='text-customblue'>
+            <Link href='reset/forgot-password' className='text-primary'>
               Forgot Password?
             </Link>
           </div>

@@ -6,7 +6,7 @@ function useRole() {
     const roles = localStorage.getItem('roles')
 
     if (roles !== null) {
-      const role = JSON.parse(roles)[0]
+      const role = JSON.parse(roles)[1]
       setRole(role)
     }
   }, [])

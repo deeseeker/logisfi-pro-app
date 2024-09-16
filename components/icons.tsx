@@ -1,8 +1,10 @@
 import {
   ArrowRight,
+  BookCheck,
   CoinsIcon,
   CreditCardIcon,
   DatabaseBackupIcon,
+  GitPullRequestCreate,
   HandCoinsIcon,
   HeartHandshakeIcon,
   LayoutDashboardIcon,
@@ -12,7 +14,8 @@ import {
   TruckIcon,
   UserPenIcon,
   UserRoundCheck,
-  UserRoundCogIcon
+  UserRoundCogIcon,
+  WalletMinimal
 } from 'lucide-react'
 
 export const Icons = {
@@ -29,6 +32,8 @@ export const Icons = {
   withdrawals: CoinsIcon,
   logout: LogOutIcon,
   arrowRight: ArrowRight,
-
+  order: GitPullRequestCreate,
+  example: BookCheck,
+  finance: WalletMinimal,
   spinner: LoaderCircle
 }

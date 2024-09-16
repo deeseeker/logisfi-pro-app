@@ -13,22 +13,45 @@ function NavItems() {
             label: 'account'
           },
           {
-            title: 'Transactions',
-            href: '/dashboard/transactions',
-            icon: 'transactions',
-            label: 'transactions'
+            title: 'Finance',
+            icon: 'finance',
+            href: '#',
+            label: 'finance',
+            isChidren: true,
+            children: [
+              {
+                title: 'Transactions',
+                href: '/dashboard/transactions',
+                icon: 'transactions',
+                label: 'transactions'
+              },
+              {
+                title: 'Investments',
+                href: '/dashboard/investments',
+                icon: 'investments',
+                label: 'investments'
+              },
+              {
+                title: 'Withdrawals',
+                href: '/dashboard/withdrawals',
+                icon: 'withdrawals',
+                label: 'withdrawals'
+              }
+            ]
           },
           {
-            title: 'Investments',
-            href: '/dashboard/investments',
-            icon: 'investments',
-            label: 'investments'
-          },
-          {
-            title: 'Withdrawals',
-            href: '/dashboard/withdrawals',
-            icon: 'withdrawals',
-            label: 'withdrawals'
+            title: 'Shipment',
+            icon: 'example',
+            href: '#',
+            label: 'example',
+            isChidren: true,
+            children: [
+              {
+                title: 'Order',
+                icon: 'order',
+                href: '/dashboard/order'
+              }
+            ]
           },
           {
             title: 'Shippers',

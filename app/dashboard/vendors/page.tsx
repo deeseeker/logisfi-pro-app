@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog'
 
 import { Heading } from '@/components/ui/heading'
-import { ChevronDownIcon } from 'lucide-react'
+import { ChevronDownIcon, FilePlus, Layers3 } from 'lucide-react'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -66,7 +66,7 @@ export default function Vendors() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant='outline' className='ml-auto'>
-              Add Vendor <ChevronDownIcon className='ml-2 h-4 w-4' />
+              Add Vendor(s) <ChevronDownIcon className='ml-2 h-4 w-4' />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -74,7 +74,7 @@ export default function Vendors() {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
-                    Add Single Vendor
+                    <FilePlus className='mr-2 h-4 w-4' /> Vendor
                   </Button>
                 </DialogTrigger>
                 <DialogContent className='sm:max-w-[600px]'>
@@ -93,12 +93,9 @@ export default function Vendors() {
                   />
                 </DialogContent>
               </Dialog>
-              <Link
-                href='/'
-                className='md:text-sm flex items-center justify-center gap-2 text-center overflow-hidden rounded-md py-2 text-sm font-normal hover:bg-accent hover:text-accent-foreground'
-              >
-                Add Multiple Vendors
-              </Link>
+              <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
+                <Layers3 className='mr-2 h-4 w-4' /> Vendors
+              </Button>
             </div>
           </DropdownMenuContent>
         </DropdownMenu>

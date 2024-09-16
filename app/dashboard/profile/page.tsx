@@ -12,7 +12,7 @@ export default function Profile() {
     // Access localStorage only after the component has mounted
     const userRole = JSON.parse(localStorage.getItem('roles') as string)
 
-    setRole(userRole[0])
+    setRole(userRole[1])
   }, [role])
   const renderContent = () => {
     switch (role) {

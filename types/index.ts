@@ -8,4 +8,6 @@ export interface NavItem {
   icon?: keyof typeof Icons
   label?: string
   description?: string
+  isChidren?: boolean
+  children?: NavItem[]
 }

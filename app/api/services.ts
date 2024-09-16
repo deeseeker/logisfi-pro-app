@@ -1,8 +1,11 @@
 import { UserFormValue } from '@/components/forms/user-auth-form'
 import axiosInstance from '@/lib/axiosInstance'
-import { RouteFormValue } from '../dashboard/routes/page'
+import { RouteFormValue, UpdateFormValue } from '../dashboard/routes/page'
 import { VendorFormValue, VendorUpdateValue } from '../dashboard/vendors/page'
 import { UpdatePriceValue } from '@/components/tables/admin-tables/price-list/column'
+import { API_ENDPOINTS } from '@/lib/endpoints'
+import { ProfileFormValues } from '@/lib/form-schema'
+import { UpdateProfileForm } from '@/components/forms/edit-profile'
 
 export interface LoginResponse {
   isSuccess: boolean
@@ -21,6 +24,12 @@ export interface LoginResponse {
 export const getAllRoutes = async () => {
   try {
     const response = await axiosInstance.get(API_ENDPOINTS.routes)
+    return response.data
+  } catch (error) {}
+}
+export const getAllOrders = async () => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.orders)
     return response.data
   } catch (error) {}
 }
@@ -80,6 +89,12 @@ export const signIn = async (credentials: UserFormValue) => {
   }
 }
 
+export const updateProfile = async (data: UpdateProfileForm) => {
+  try {
+    const response = await axiosInstance.post('users/update-profile', data)
+    return response.data
+  } catch (error) {}
+}
 export const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem('refreshToken')
   const expiredToken = localStorage.getItem('token')
@@ -209,6 +224,7 @@ export const updateRoute = async (data: RouteFormValue) => {
     return response.data
   } catch (error) {}
 }
+
 export const updateShipper = async (data: VendorUpdateValue) => {
   try {
     const response = await axiosInstance.put('shippers', data)

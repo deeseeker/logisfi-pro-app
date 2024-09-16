@@ -1,5 +1,6 @@
-const API_ENDPOINTS = {
+export const API_ENDPOINTS = {
   routes: 'routes',
+  orders: 'orders',
   vendors: 'vendors',
   shippers: 'shippers',
   login: 'users/login',

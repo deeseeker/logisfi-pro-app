@@ -1,19 +1,9 @@
 'use client'
 
-import {
-  deleteRoute,
-  deleteShipper,
-  updateRoute,
-  updateShipper
-} from '@/app/api/services'
-import { RouteFormValue } from '@/app/dashboard/routes/page'
-import {
-  VendorFormValue,
-  VendorUpdateValue
-} from '@/app/dashboard/vendors/page'
+import { deleteRoute, updateRoute } from '@/app/api/services'
+import { UpdateFormValue } from '@/app/dashboard/routes/page'
 
 import RouteForm from '@/components/forms/route-form'
-import ShipperForm from '@/components/forms/shipper-form'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,7 +31,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
 import { schemaToDate } from '@/lib/utils'
-import { formSchema, IVendors, vendorSchema } from '@/types/admin'
+import { formSchema, IRoutes } from '@/types/admin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
@@ -53,36 +43,39 @@ import { useForm } from 'react-hook-form'
 const ActionCell = ({ row }: { row: any }) => {
   const { toast } = useToast()
   const [open, setOpen] = useState(false)
-  const id = row.original.id
-  const router = useRouter()
+
   const [isUpdate, setIsUpdate] = useState(false)
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: (shipperId: string) => {
-      return deleteShipper(shipperId)
+    mutationFn: (routeId: string) => {
+      return deleteRoute(routeId)
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ['shippers']
+        queryKey: ['orders']
       })
       toast({
         title: 'Success!',
-        description: 'The shipper lists has been removed successfully.'
+        description: 'The route lists has been removed successfully.'
       })
     }
   })
-  const form = useForm<VendorFormValue>({
-    resolver: zodResolver(vendorSchema)
+  const form = useForm<UpdateFormValue>({
+    resolver: zodResolver(formSchema)
   })
 
   const [key, setKey] = useState(0)
   const update = useMutation({
-    mutationFn: (data: VendorUpdateValue) => {
-      return updateShipper(data)
+    mutationFn: (data: UpdateFormValue) => {
+      return updateRoute(data)
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ['shippers']
+        queryKey: ['routes']
+      })
+      toast({
+        title: 'Success!',
+        description: 'The route lists has been updated successfully.'
       })
 
       form.reset() // Reset the form
@@ -90,15 +83,10 @@ const ActionCell = ({ row }: { row: any }) => {
     }
   })
 
-  const onSubmit = async (data: VendorUpdateValue) => {
-    data.id = id
+  const onSubmit = async (data: UpdateFormValue) => {
+    data.id = row.original.id
+    console.log(data)
     update.mutate(data)
-    if (update.isSuccess) {
-      toast({
-        title: 'Success!',
-        description: 'The shipper lists has been updated successfully.'
-      })
-    }
   }
 
   return (
@@ -112,17 +100,12 @@ const ActionCell = ({ row }: { row: any }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => {
-              router.push(`shippers/${id}`)
-            }}
-          >
+          <DropdownMenuItem>
             <Eye className='mr-2 h-4 w-4' /> View
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
             <SquarePen className='mr-2 h-4 w-4' /> Update
           </DropdownMenuItem>
-
           <DropdownMenuItem
             className='text-red-600'
             onClick={() => setOpen(true)}
@@ -134,14 +117,14 @@ const ActionCell = ({ row }: { row: any }) => {
       </DropdownMenu>
 
       <Dialog open={isUpdate} onOpenChange={setIsUpdate}>
-        <DialogContent className='sm:max-w-[600px]'>
+        <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>Update Shipper</DialogTitle>
+            <DialogTitle>Update Route</DialogTitle>
             <DialogDescription>
-              Update shipper on the list here. Click submit when you are done.
+              Include a route to the list here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
-          <ShipperForm
+          <RouteForm
             key={key}
             onSubmit={onSubmit}
             mutation={update}
@@ -158,7 +141,7 @@ const ActionCell = ({ row }: { row: any }) => {
             </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete your
-              shipper and remove the details from our servers.
+              the route and remove the details from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -167,7 +150,7 @@ const ActionCell = ({ row }: { row: any }) => {
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                mutation.mutate(id)
+                mutation.mutate(row.original.id)
                 setOpen(false)
               }}
             >
@@ -180,18 +163,14 @@ const ActionCell = ({ row }: { row: any }) => {
   )
 }
 
-export const columns: ColumnDef<IVendors>[] = [
+export const columns: ColumnDef<IRoutes>[] = [
   {
-    accessorKey: 'name',
-    header: 'Name'
+    accessorKey: 'origin',
+    header: 'Origin'
   },
   {
-    accessorKey: 'state',
-    header: 'State'
-  },
-  {
-    accessorKey: 'phone',
-    header: 'Phone'
+    accessorKey: 'destination',
+    header: 'Destination'
   },
   {
     accessorKey: 'createdAt',

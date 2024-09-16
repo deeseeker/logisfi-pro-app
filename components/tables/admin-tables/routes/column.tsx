@@ -37,7 +37,7 @@ import { formSchema, IRoutes } from '@/types/admin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
-import { EllipsisVertical } from 'lucide-react'
+import { EllipsisVertical, Eye, SquarePen, Trash } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -102,16 +102,18 @@ const ActionCell = ({ row }: { row: any }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem>View route</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsUpdate(true)}>
-            Update route
+          <DropdownMenuItem>
+            <Eye className='mr-2 h-4 w-4' /> View
           </DropdownMenuItem>
-
+          <DropdownMenuItem onClick={() => setIsUpdate(true)}>
+            <SquarePen className='mr-2 h-4 w-4' /> Update
+          </DropdownMenuItem>
           <DropdownMenuItem
             className='text-red-600'
             onClick={() => setOpen(true)}
           >
-            Delete route
+            <Trash className='mr-2 h-4 w-4' />
+            Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

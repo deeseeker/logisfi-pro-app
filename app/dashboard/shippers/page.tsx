@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
-import { ChevronDownIcon } from 'lucide-react'
+import { ChevronDownIcon, FilePlus, Layers, Layers3 } from 'lucide-react'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -63,8 +63,8 @@ export default function Shippers() {
         <Heading title='Shippers' description='Manage all your shippers' />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant='outline' className='ml-auto'>
-              Add Shipper <ChevronDownIcon className='ml-2 h-4 w-4' />
+            <Button variant='outline' className=''>
+              Add Shipper(s) <ChevronDownIcon className='ml-2 h-4 w-4' />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -72,7 +72,7 @@ export default function Shippers() {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
-                    Add Single Shipper
+                    <FilePlus className='mr-2 h-4 w-4' /> Shipper
                   </Button>
                 </DialogTrigger>
                 <DialogContent className='sm:max-w-[600px]'>
@@ -91,12 +91,9 @@ export default function Shippers() {
                   />
                 </DialogContent>
               </Dialog>
-              <Link
-                href='#'
-                className='md:text-sm flex items-center justify-center gap-2 text-center overflow-hidden rounded-md py-2 text-sm font-normal hover:bg-accent hover:text-accent-foreground'
-              >
-                Add Multiple Shippers
-              </Link>
+              <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
+                <Layers3 className='mr-2 h-4 w-4' /> Shippers
+              </Button>
             </div>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -34,6 +34,7 @@ export default function UserAuthForm() {
   const onSubmit = async (data: UserFormValue) => {
     setLoading(true)
     const response = await signIn(data)
+    console.log(response)
     if (response?.responseData.accessToken) {
       localStorage.setItem('roles', JSON.stringify(response.responseData.roles))
       localStorage.setItem('token', response.responseData.accessToken)

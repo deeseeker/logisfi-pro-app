@@ -92,11 +92,7 @@ export default function UserAuthForm() {
               Forgot Password?
             </Link>
           </div>
-          <Button
-            disabled={loading}
-            className='ml-auto w-full bg-customblue'
-            type='submit'
-          >
+          <Button className='ml-auto w-full bg-customblue' type='submit'>
             {loading ? 'loading...' : 'Login'}
           </Button>
         </form>

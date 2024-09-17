@@ -31,8 +31,7 @@ export default function UserAuthForm() {
     resolver: zodResolver(formSchema)
   })
 
-  const onSubmit = async (data: UserFormValue, e: any) => {
-    e.preventDefault()
+  const onSubmit = async (data: UserFormValue) => {
     setLoading(true)
     const response = await signIn(data)
     if (response?.responseData.accessToken) {

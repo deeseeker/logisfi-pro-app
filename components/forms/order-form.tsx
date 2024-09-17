@@ -31,7 +31,7 @@ const FormSchema = z.object({
   shipperId: z.string({
     required_error: 'Please select a route.'
   }),
-  noOfTrucks: z.string()
+  numberOfTrucks: z.string()
 })
 const OrderForm = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -70,81 +70,89 @@ const OrderForm = () => {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data)
-    const formData = {
-      shipperId: 'shipperId',
-      shipperPrices: [data]
-    }
-    console.log(formData)
-    mutation.mutate(formData)
+    // const formData = {
+    //   shipperId: 'shipperId',
+    //   shipperPrices: [data]
+    // }
+    // console.log(formData)
+    // mutation.mutate(formData)
   }
   return (
     <Form {...form} key={key}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-4 py-4'>
-        <FormField
-          control={form.control}
-          name='routeId'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-4 items-center gap-4'>
-              <FormLabel>Route</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className='col-span-3'>
-                    <SelectValue placeholder='Select a route to create an order' />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {dataSource?.map((data: any) => (
-                    <SelectItem key={data.id} value={data.id}>
-                      {isPending ? (
-                        'loading...'
-                      ) : (
-                        <span>
-                          {data.origin} - {data.destination}
-                        </span>
-                      )}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        <div className='grid grid-cols-2 gap-4'>
+          <FormField
+            control={form.control}
+            name='routeId'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Route</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className='col-span-3'>
+                      <SelectValue placeholder='Select a route' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {dataSource?.map((data: any) => (
+                      <SelectItem key={data.id} value={data.id}>
+                        {isPending ? (
+                          'loading...'
+                        ) : (
+                          <span>
+                            {data.origin} - {data.destination}
+                          </span>
+                        )}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='shipperId'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-4 items-center gap-4'>
-              <FormLabel>Route</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className='col-span-3'>
-                    <SelectValue placeholder='Select a shipper to create an order' />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {shippers?.map((data: any) => (
-                    <SelectItem key={data.id} value={data.id}>
-                      {results.isPending ? (
-                        'loading...'
-                      ) : (
-                        <span>{data.name}</span>
-                      )}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='shipperId'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Shipper</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className='col-span-3'>
+                      <SelectValue placeholder='Select a shipper' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {shippers?.map((data: any) => (
+                      <SelectItem key={data.id} value={data.id}>
+                        {results.isPending ? (
+                          'loading...'
+                        ) : (
+                          <span>{data.name}</span>
+                        )}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
-          name='noOfTrucks'
+          name='numberOfTrucks'
           render={({ field }) => (
-            <FormItem className='grid grid-cols-4 items-center gap-4'>
+            <FormItem>
               <FormLabel>Number of Trucks</FormLabel>
               <FormControl>
                 <Input

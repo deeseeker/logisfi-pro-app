@@ -28,7 +28,7 @@ function Order() {
               <Plus className='mr-2 h-4 w-4' /> Create New Order
             </Button>
           </DialogTrigger>
-          <DialogContent className='sm:max-w-[425px]'>
+          <DialogContent className='sm:max-w-[500px]'>
             <DialogHeader>
               <DialogTitle>Create order</DialogTitle>
               <DialogDescription>

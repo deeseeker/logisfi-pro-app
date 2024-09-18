@@ -5,6 +5,7 @@ import Order from '@/app/dashboard/(shipment)/order/page'
 import { UpdateFormValue } from '@/app/dashboard/routes/page'
 
 import RouteForm from '@/components/forms/route-form'
+import UpdateOrderForm from '@/components/forms/uorder-form'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,7 +37,13 @@ import { formSchema, IOrders, OrderStatusEnums } from '@/types/admin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
-import { EllipsisVertical, Eye, SquarePen, Trash } from 'lucide-react'
+import {
+  EllipsisVertical,
+  Eye,
+  Signature,
+  SquarePen,
+  Trash
+} from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -107,7 +114,7 @@ const ActionCell = ({ row }: { row: any }) => {
             <SquarePen className='mr-2 h-4 w-4' /> Update
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
-            <SquarePen className='mr-2 h-4 w-4' /> Fulfill
+            <Signature className='mr-2 h-4 w-4' /> Fulfill
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -120,12 +127,7 @@ const ActionCell = ({ row }: { row: any }) => {
               Edit your order information here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
-          <RouteForm
-            key={key}
-            onSubmit={onSubmit}
-            mutation={update}
-            form={form}
-          />
+          <UpdateOrderForm data={row.original} />
         </DialogContent>
       </Dialog>
 

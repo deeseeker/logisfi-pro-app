@@ -141,6 +141,12 @@ export const createOrder = async (data: any) => {
     return response.data
   } catch (error) {}
 }
+export const updateOrder = async (data: any) => {
+  try {
+    const response = await axiosInstance.put('orders', data)
+    return response.data
+  } catch (error) {}
+}
 export const createVendorPrice = async (data: any) => {
   try {
     const response = await axiosInstance.post('vendors/create-prices', data)

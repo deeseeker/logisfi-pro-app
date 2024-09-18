@@ -50,6 +50,11 @@ function NavItems() {
                 title: 'Order',
                 icon: 'order',
                 href: '/dashboard/order'
+              },
+              {
+                title: 'Load',
+                icon: 'load',
+                href: '/dashboard/load'
               }
             ]
           },

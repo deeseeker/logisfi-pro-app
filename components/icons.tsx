@@ -2,6 +2,7 @@ import {
   ArrowRight,
   BookCheck,
   CoinsIcon,
+  Container,
   CreditCardIcon,
   DatabaseBackupIcon,
   GitPullRequestCreate,
@@ -35,5 +36,6 @@ export const Icons = {
   order: GitPullRequestCreate,
   example: BookCheck,
   finance: WalletMinimal,
-  spinner: LoaderCircle
+  spinner: LoaderCircle,
+  load: Container
 }

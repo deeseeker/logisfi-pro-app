@@ -32,13 +32,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
 import { schemaToDate } from '@/lib/utils'
-import {
-  formSchema,
-  IOrders,
-  IRoutes,
-  OrderStatusEnums,
-  Status
-} from '@/types/admin'
+import { formSchema, IOrders, OrderStatusEnums } from '@/types/admin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
@@ -112,12 +106,8 @@ const ActionCell = ({ row }: { row: any }) => {
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
             <SquarePen className='mr-2 h-4 w-4' /> Update
           </DropdownMenuItem>
-          <DropdownMenuItem
-            className='text-red-600'
-            onClick={() => setOpen(true)}
-          >
-            <Trash className='mr-2 h-4 w-4' />
-            Delete
+          <DropdownMenuItem onClick={() => setIsUpdate(true)}>
+            <SquarePen className='mr-2 h-4 w-4' /> Fulfill
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -125,9 +115,9 @@ const ActionCell = ({ row }: { row: any }) => {
       <Dialog open={isUpdate} onOpenChange={setIsUpdate}>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>Update Route</DialogTitle>
+            <DialogTitle>Update Order</DialogTitle>
             <DialogDescription>
-              Include a route to the list here. Click submit when you are done.
+              Edit your order information here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
           <RouteForm

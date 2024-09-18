@@ -10,6 +10,46 @@ export interface IRoutes {
   destination: string
 }
 
+export enum OrderStatusEnums {
+  Pending = 1,
+  PartlyFulfilled,
+  CompletelyFulfilled,
+  Cancelled
+}
+
+export type Status =
+  | 'Pending'
+  | 'PartlyFulfilled'
+  | 'CompletelyFulfilled'
+  | 'Cancelled'
+  | '1'
+  | '2'
+  | '3'
+  | '4'
+export interface IOrders {
+  id: string
+  createdAt: string
+  createdBy: string
+  modifiedAt: string
+  modifiedBy: string
+  numberOfTrucks: number
+  orderStatus: string
+  user: IUser
+  shipper: IVendors
+  route: IRoutes
+}
+
+export interface IUser {
+  id: string
+  firstName: string
+  lastName: string
+  email: string
+  gender: string
+  position: string
+  phoneNumber: string
+  userType: string
+  organizationId: string
+}
 export interface IVendors {
   id: string
   createdAt: string

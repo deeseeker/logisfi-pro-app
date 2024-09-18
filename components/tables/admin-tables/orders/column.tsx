@@ -1,6 +1,7 @@
 'use client'
 
 import { deleteRoute, updateRoute } from '@/app/api/services'
+import Order from '@/app/dashboard/(shipment)/order/page'
 import { UpdateFormValue } from '@/app/dashboard/routes/page'
 
 import RouteForm from '@/components/forms/route-form'
@@ -31,12 +32,17 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
 import { schemaToDate } from '@/lib/utils'
-import { formSchema, IRoutes } from '@/types/admin'
+import {
+  formSchema,
+  IOrders,
+  IRoutes,
+  OrderStatusEnums,
+  Status
+} from '@/types/admin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
 import { EllipsisVertical, Eye, SquarePen, Trash } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -163,29 +169,50 @@ const ActionCell = ({ row }: { row: any }) => {
   )
 }
 
-export const columns: ColumnDef<IRoutes>[] = [
+export const columns: ColumnDef<IOrders>[] = [
   {
     accessorKey: 'origin',
-    header: 'Origin'
+    header: 'Origin',
+    cell: ({ row }) => {
+      return <span>{row.original.route.origin}</span>
+    }
   },
   {
     accessorKey: 'destination',
-    header: 'Destination'
+    header: 'Destination',
+    cell: ({ row }) => {
+      return <span>{row.original.route.destination}</span>
+    }
+  },
+  {
+    accessorKey: 'numberOfTrucks',
+    header: 'Truck Quantity',
+    cell: ({ row }) => {
+      return <span>{row.original.numberOfTrucks}</span>
+    }
+  },
+  {
+    accessorKey: 'name',
+    header: 'Shipper',
+    cell: ({ row }) => {
+      return <span>{row.original.shipper.name}</span>
+    }
   },
   {
     accessorKey: 'createdAt',
-    header: 'Date Created',
+    header: 'Order Date',
     cell: ({ row }) => {
       return <span>{schemaToDate(row.original.createdAt)}</span>
     }
   },
   {
-    accessorKey: 'modifiedAt',
-    header: 'Date Modified',
+    accessorKey: 'orderStatus',
+    header: 'Order Status',
     cell: ({ row }) => {
-      return <span>{schemaToDate(row.original.modifiedAt)}</span>
+      return <span>{OrderStatusEnums[Number(row.original.orderStatus)]}</span>
     }
   },
+
   {
     id: 'actions',
     cell: ActionCell

@@ -22,7 +22,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useToast } from '../ui/use-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createPrice, getAllRoutes, getAllShippers } from '@/app/api/services'
+import {
+  createOrder,
+  createPrice,
+  getAllRoutes,
+  getAllShippers
+} from '@/app/api/services'
 
 const FormSchema = z.object({
   routeId: z.string({
@@ -52,15 +57,15 @@ const OrderForm = () => {
   const [key, setKey] = useState(0)
   const mutation = useMutation({
     mutationFn: (data: any) => {
-      return createPrice(data)
+      return createOrder(data)
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ['price-list']
+        queryKey: ['orders']
       })
       toast({
         title: 'Success!',
-        description: 'The price lists has been updated successfully.'
+        description: 'Order has been created successfully.'
       })
 
       form.reset() // Reset the form
@@ -70,12 +75,8 @@ const OrderForm = () => {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data)
-    // const formData = {
-    //   shipperId: 'shipperId',
-    //   shipperPrices: [data]
-    // }
-    // console.log(formData)
-    // mutation.mutate(formData)
+
+    mutation.mutate(data)
   }
   return (
     <Form {...form} key={key}>

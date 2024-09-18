@@ -135,6 +135,12 @@ export const createPrice = async (data: UpdatePriceValue) => {
     return response.data
   } catch (error) {}
 }
+export const createOrder = async (data: any) => {
+  try {
+    const response = await axiosInstance.post('orders', data)
+    return response.data
+  } catch (error) {}
+}
 export const createVendorPrice = async (data: any) => {
   try {
     const response = await axiosInstance.post('vendors/create-prices', data)

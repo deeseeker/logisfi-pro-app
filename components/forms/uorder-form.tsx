@@ -76,7 +76,7 @@ const UpdateOrderForm = ({ data }: { data: any }) => {
       orderStatus: dataSource.orderStatus
     }
     console.log(formData)
-    mutation.mutate(data)
+    mutation.mutate(formData)
   }
   return (
     <Form {...form} key={key}>

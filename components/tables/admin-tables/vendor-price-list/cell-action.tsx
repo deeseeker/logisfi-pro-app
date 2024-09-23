@@ -1,8 +1,4 @@
-'use client'
-
 import { deleteVPrice, updatePrice } from '@/app/api/services'
-import UVPriceForm from '@/components/forms/uvprice-form'
-import VendorPriceForm from '@/components/forms/vendor-price'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,9 +11,9 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import {
+  DialogDescription,
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
@@ -29,24 +25,19 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
-import { schemaToDate } from '@/lib/utils'
-import { IPrice, priceSchema, priceUpdateSchema } from '@/types/admin'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { ColumnDef } from '@tanstack/react-table'
-import { EllipsisVertical } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { EllipsisVertical, SquarePen, Trash } from 'lucide-react'
 import { useState } from 'react'
+import { PriceFormValue, UpdatePriceValue } from './column'
+import { priceSchema } from '@/types/admin'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import * as z from 'zod'
+import { UpdateVendorPrice } from '@/components/forms/update-vendor-price'
 
-export type PriceFormValue = z.infer<typeof priceSchema>
-export type UpdatePriceValue = z.infer<typeof priceUpdateSchema>
-const ActionCell = ({ row }: { row: any }) => {
+export const ActionCell = ({ row }: { row: any }) => {
   const { toast } = useToast()
   const [open, setOpen] = useState(false)
   const id = row.original.id
-  const router = useRouter()
   const [isUpdate, setIsUpdate] = useState(false)
   const queryClient = useQueryClient()
   const mutation = useMutation({
@@ -105,14 +96,15 @@ const ActionCell = ({ row }: { row: any }) => {
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
-            Update price
+            <SquarePen className='mr-2 h-4 w-4' /> Update
           </DropdownMenuItem>
 
           <DropdownMenuItem
             className='text-red-600'
             onClick={() => setOpen(true)}
           >
-            Delete price
+            <Trash className='mr-2 h-4 w-4' />
+            Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -125,7 +117,7 @@ const ActionCell = ({ row }: { row: any }) => {
               Include a route to the list here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
-          <UVPriceForm vendorId={id} />
+          <UpdateVendorPrice vendorId={id} />
         </DialogContent>
       </Dialog>
 
@@ -158,44 +150,3 @@ const ActionCell = ({ row }: { row: any }) => {
     </>
   )
 }
-
-export const columns: ColumnDef<IPrice>[] = [
-  {
-    accessorKey: 'route',
-    header: 'Origin',
-    cell: ({ row }) => {
-      const origin = row.original.route.origin
-      return <span>{origin}</span>
-    }
-  },
-  {
-    accessorKey: 'destination',
-    header: 'Destination',
-    cell: ({ row }) => {
-      const destination = row.original.route.destination
-      return <span>{destination}</span>
-    }
-  },
-  {
-    accessorKey: 'price',
-    header: 'Price'
-  },
-  {
-    accessorKey: 'createdAt',
-    header: 'Date Created',
-    cell: ({ row }) => {
-      return <span>{schemaToDate(row.original.createdAt)}</span>
-    }
-  },
-  {
-    accessorKey: 'modifiedAt',
-    header: 'Date Modified',
-    cell: ({ row }) => {
-      return <span>{schemaToDate(row.original.modifiedAt)}</span>
-    }
-  },
-  {
-    id: 'actions',
-    cell: ActionCell
-  }
-]

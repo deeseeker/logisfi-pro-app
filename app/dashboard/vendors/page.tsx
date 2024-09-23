@@ -1,16 +1,7 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
-
 import { Heading } from '@/components/ui/heading'
-import { ChevronDownIcon, FilePlus, Layers3 } from 'lucide-react'
+import { ChevronDownIcon } from 'lucide-react'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -20,14 +11,14 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import Link from 'next/link'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@/components/ui/use-toast'
-import { formSchema, vendorSchema, vendorUpdateSchema } from '@/types/admin'
+import { vendorSchema, vendorUpdateSchema } from '@/types/admin'
 import VendorForm from '@/components/forms/vendor-form'
 import VendorsTable from '@/components/tables/admin-tables/vendors'
-import { addNewRoute, addNewVendor } from '@/app/api/services'
+import { addNewVendor } from '@/app/api/services'
 import { Separator } from '@/components/ui/separator'
+import CustomDialog from '@/components/dialog/custom-dialog'
 
 export type VendorFormValue = z.infer<typeof vendorSchema>
 export type VendorUpdateValue = z.infer<typeof vendorUpdateSchema>
@@ -71,30 +62,18 @@ export default function Vendors() {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <div className='grid gap-2'>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
-                    <FilePlus className='mr-2 h-4 w-4' /> Vendor
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className='sm:max-w-[600px]'>
-                  <DialogHeader>
-                    <DialogTitle>Add Single Vendor</DialogTitle>
-                    <DialogDescription>
-                      Include a vendor to the list here. Click submit when you
-                      are done.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <VendorForm
-                    key={key}
-                    onSubmit={onSubmit}
-                    mutation={mutation}
-                    form={form}
-                  />
-                </DialogContent>
-              </Dialog>
+              <CustomDialog
+                triggerText='Single Vendor'
+                title='Add Single Vendor'
+                description='Include a vendor to the list here. Click submit when you are done.'
+                FormComponent={VendorForm}
+                formKey={key}
+                onSubmit={onSubmit}
+                mutation={mutation}
+                form={form}
+              />
               <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
-                <Layers3 className='mr-2 h-4 w-4' /> Vendors
+                Multiple Vendors
               </Button>
             </div>
           </DropdownMenuContent>

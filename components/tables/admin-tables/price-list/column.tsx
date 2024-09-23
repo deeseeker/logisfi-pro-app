@@ -1,9 +1,6 @@
 'use client'
-
-import { deletePrice, updatePrice, updateShipper } from '@/app/api/services'
-
-import RouteForm from '@/components/forms/route-form'
-import UPriceForm from '@/components/forms/uprice-form'
+import { deletePrice } from '@/app/api/services'
+import { UpdateShipperPrice } from '@/components/forms/update-shipper-price'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -97,7 +94,7 @@ const ActionCell = ({ row }: { row: any }) => {
               Update price list here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
-          <UPriceForm shipperId={id} />
+          <UpdateShipperPrice shipperId={id} />
         </DialogContent>
       </Dialog>
 

@@ -2,7 +2,7 @@
 import PriceForm from '@/components/forms/price-form'
 import VendorPriceForm from '@/components/forms/vendor-price'
 import PriceList from '@/components/tables/admin-tables/price-list'
-import VendorPriceList from '@/components/tables/admin-tables/vprice-list'
+import VendorPriceList from '@/components/tables/admin-tables/vendor-price-list'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

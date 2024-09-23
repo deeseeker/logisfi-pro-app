@@ -29,11 +29,12 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
+import { schemaToDate } from '@/lib/utils'
 import { IVendors, vendorSchema } from '@/types/admin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
-import { EllipsisVertical } from 'lucide-react'
+import { EllipsisVertical, Eye, SquarePen, Trash } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -101,17 +102,18 @@ const ActionCell = ({ row }: { row: any }) => {
               router.push(`vendors/${id}`)
             }}
           >
-            View vendor
+            <Eye className='mr-2 h-4 w-4' /> View
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
-            Update vendor
+            <SquarePen className='mr-2 h-4 w-4' /> Update
           </DropdownMenuItem>
 
           <DropdownMenuItem
             className='text-red-600'
             onClick={() => setOpen(true)}
           >
-            Delete vendor
+            <Trash className='mr-2 h-4 w-4' />
+            Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -178,11 +180,17 @@ export const columns: ColumnDef<IVendors>[] = [
   },
   {
     accessorKey: 'createdAt',
-    header: 'Date Created'
+    header: 'Date Created',
+    cell: ({ row }) => {
+      return <span>{schemaToDate(row.original.createdAt)}</span>
+    }
   },
   {
     accessorKey: 'modifiedAt',
-    header: 'Date Modified'
+    header: 'Date Modified',
+    cell: ({ row }) => {
+      return <span>{schemaToDate(row.original.modifiedAt)}</span>
+    }
   },
   {
     id: 'actions',

@@ -1,5 +1,5 @@
 'use client'
-import OrdersTable from '@/components/tables/admin-tables/orders'
+import LoadTable from '@/components/tables/admin-tables/load'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
 
@@ -12,7 +12,7 @@ function Load() {
         <Heading title='Load' description='Manage your Loads' />
       </div>
       <Separator />
-      <OrdersTable />
+      <LoadTable />
     </div>
   )
 }

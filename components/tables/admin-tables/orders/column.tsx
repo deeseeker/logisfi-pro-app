@@ -1,21 +1,9 @@
 'use client'
 
-import { deleteRoute, updateRoute } from '@/app/api/services'
-import Order from '@/app/dashboard/(shipment)/order/page'
+import { fulfillOrder, updateRoute } from '@/app/api/services'
 import { UpdateFormValue } from '@/app/dashboard/routes/page'
-
-import RouteForm from '@/components/forms/route-form'
-import UpdateOrderForm from '@/components/forms/uorder-form'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from '@/components/ui/alert-dialog'
+import FulfillOrderForm from '@/components/forms/fulfill-order-form'
+import UpdateOrderForm, { formatEnumKey } from '@/components/forms/uorder-form'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -37,13 +25,7 @@ import { formSchema, IOrders, OrderStatusEnums } from '@/types/admin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
-import {
-  EllipsisVertical,
-  Eye,
-  Signature,
-  SquarePen,
-  Trash
-} from 'lucide-react'
+import { EllipsisVertical, Eye, Signature, SquarePen } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -54,8 +36,8 @@ const ActionCell = ({ row }: { row: any }) => {
   const [isUpdate, setIsUpdate] = useState(false)
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: (routeId: string) => {
-      return deleteRoute(routeId)
+    mutationFn: (data: any) => {
+      return fulfillOrder(data)
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
@@ -63,7 +45,7 @@ const ActionCell = ({ row }: { row: any }) => {
       })
       toast({
         title: 'Success!',
-        description: 'The route lists has been removed successfully.'
+        description: 'The order has been fulfilled successfully.'
       })
     }
   })
@@ -113,7 +95,7 @@ const ActionCell = ({ row }: { row: any }) => {
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
             <SquarePen className='mr-2 h-4 w-4' /> Update
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsUpdate(true)}>
+          <DropdownMenuItem onClick={() => setOpen(true)}>
             <Signature className='mr-2 h-4 w-4' /> Fulfill
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -130,33 +112,18 @@ const ActionCell = ({ row }: { row: any }) => {
           <UpdateOrderForm data={row.original} />
         </DialogContent>
       </Dialog>
-
-      <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className='text-red-500'>
-              Are you absolutely sure?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              the route and remove the details from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setOpen(false)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                mutation.mutate(row.original.id)
-                setOpen(false)
-              }}
-            >
-              Continue
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className='sm:max-w-[600px]'>
+          <DialogHeader>
+            <DialogTitle>Fulfill Order</DialogTitle>
+            <DialogDescription>
+              Fulfill your order information here. Click submit when you are
+              done.
+            </DialogDescription>
+          </DialogHeader>
+          <FulfillOrderForm data={row.original} />
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
@@ -201,7 +168,11 @@ export const columns: ColumnDef<IOrders>[] = [
     accessorKey: 'orderStatus',
     header: 'Order Status',
     cell: ({ row }) => {
-      return <span>{OrderStatusEnums[Number(row.original.orderStatus)]}</span>
+      return (
+        <span>
+          {formatEnumKey(OrderStatusEnums[Number(row.original.orderStatus)])}
+        </span>
+      )
     }
   },
 

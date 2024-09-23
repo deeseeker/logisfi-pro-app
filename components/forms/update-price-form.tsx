@@ -11,45 +11,43 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Icons } from '@/components/icons'
 import { useForm } from 'react-hook-form'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '../ui/select'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useToast } from '../ui/use-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getAllRoutes, updatePrice } from '@/app/api/services'
-import { UpdatePriceValue } from '../tables/admin-tables/price-list/column'
-import { uPriceSchema } from '@/types/admin'
+import { getAllRoutes } from '@/app/api/services'
+import { UpdatePriceSchema } from '@/types/admin'
 
 interface PriceFormProps {
-  shipperId: string
+  idKey: string
+  mutationFn: (data: any) => Promise<any>
+  queryKey: string
 }
 
-const UPriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
-  const form = useForm<z.infer<typeof uPriceSchema>>({
-    resolver: zodResolver(uPriceSchema)
+const UpdatePriceForm: React.FC<PriceFormProps> = ({
+  idKey,
+  mutationFn,
+  queryKey
+}) => {
+  const form = useForm<z.infer<typeof UpdatePriceSchema>>({
+    resolver: zodResolver(UpdatePriceSchema)
   })
+
   const { data, isPending } = useQuery({
     queryKey: ['routes'],
     queryFn: getAllRoutes
   })
+
   const queryClient = useQueryClient()
-  const dataSource = data?.responseData
   const { toast } = useToast()
 
   const [key, setKey] = useState(0)
+
   const mutation = useMutation({
-    mutationFn: (data: UpdatePriceValue) => {
-      return updatePrice(data)
-    },
+    mutationFn: mutationFn,
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ['price-list']
+        queryKey: [queryKey]
       })
 
       form.reset() // Reset the form
@@ -58,7 +56,7 @@ const UPriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
   })
 
   const onSubmit = async (data: any) => {
-    data.shipperPriceId = shipperId
+    data.priceId = idKey
     mutation.mutate(data)
     if (mutation.isSuccess) {
       toast({
@@ -67,6 +65,7 @@ const UPriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
       })
     }
   }
+
   return (
     <Form {...form} key={key}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-4 py-4'>
@@ -102,4 +101,4 @@ const UPriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
   )
 }
 
-export default UPriceForm
+export default UpdatePriceForm

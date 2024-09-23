@@ -7,21 +7,11 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form'
 import { Heading } from '@/components/ui/heading'
-import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { ChevronDownIcon } from 'lucide-react'
 import * as z from 'zod'
@@ -39,6 +29,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@/components/ui/use-toast'
 import RouteForm from '@/components/forms/route-form'
 import { formSchema, updateRouteSchema } from '@/types/admin'
+import CustomDialog from '@/components/dialog/custom-dialog'
 
 export type RouteFormValue = z.infer<typeof formSchema>
 export type UpdateFormValue = z.infer<typeof updateRouteSchema>
@@ -82,28 +73,16 @@ export default function Routes() {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <div className='grid gap-2'>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
-                    Single Route
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className='sm:max-w-[425px]'>
-                  <DialogHeader>
-                    <DialogTitle>Add New Route</DialogTitle>
-                    <DialogDescription>
-                      Include a route to the list here. Click submit when you
-                      are done.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <RouteForm
-                    key={key}
-                    onSubmit={onSubmit}
-                    mutation={mutation}
-                    form={form}
-                  />
-                </DialogContent>
-              </Dialog>
+              <CustomDialog
+                triggerText='Single Route'
+                title='Add Single Route'
+                description='Include route to the list here. Click submit when you are done.'
+                FormComponent={RouteForm}
+                formKey={key}
+                onSubmit={onSubmit}
+                mutation={mutation}
+                form={form}
+              />
               <Link
                 href='/'
                 className='md:text-sm flex items-center justify-center gap-2 text-center overflow-hidden rounded-md py-2 text-sm font-normal hover:bg-accent hover:text-accent-foreground'

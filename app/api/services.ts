@@ -33,6 +33,12 @@ export const getAllOrders = async () => {
     return response.data
   } catch (error) {}
 }
+export const getAllShipments = async () => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.shipment)
+    return response.data
+  } catch (error) {}
+}
 export const getAllVendors = async () => {
   try {
     const response = await axiosInstance.get(API_ENDPOINTS.vendors)
@@ -156,6 +162,12 @@ export const createVendorPrice = async (data: any) => {
 export const addNewVendor = async (data: VendorFormValue) => {
   try {
     const response = await axiosInstance.post('vendors', data)
+    return response.data
+  } catch (error) {}
+}
+export const fulfillOrder = async (data: any) => {
+  try {
+    const response = await axiosInstance.post('orders/fulfill', data)
     return response.data
   } catch (error) {}
 }

@@ -39,6 +39,23 @@ export interface IOrders {
   route: IRoutes
 }
 
+export interface ILoad {
+  shipmentNumber: string
+  vendor: IVendors
+  shipper: Shipper
+  shipperPrice: string
+  vendorPrice: string
+  shipmentDate: string
+  shipmentStatus: string
+  driverName: string
+  driverPhone: string
+  truckNumber: string
+  id: string
+  createdAt: string
+  createdBy: string
+  modifiedAt: string
+  modifiedBy: string
+}
 export interface IUser {
   id: string
   firstName: string
@@ -49,6 +66,21 @@ export interface IUser {
   phoneNumber: string
   userType: string
   organizationId: string
+}
+
+export interface Shipper {
+  name: string
+  address: string
+  city: string
+  state: string
+  country: string
+  phone: string
+  email: string
+  id: string
+  createdAt: string
+  createdBy: string
+  modifiedAt: string
+  modifiedBy: string
 }
 export interface IVendors {
   id: string
@@ -126,6 +158,6 @@ export const priceUpdateSchema = z.object({
   newPrice: z.string()
 })
 
-export const uPriceSchema = z.object({
+export const UpdatePriceSchema = z.object({
   newPrice: z.string()
 })

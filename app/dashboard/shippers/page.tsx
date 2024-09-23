@@ -10,24 +10,24 @@ import {
 } from '@/components/ui/dialog'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
-import { ChevronDownIcon, FilePlus, Layers, Layers3 } from 'lucide-react'
+import { ChevronDownIcon } from 'lucide-react'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
-import { addNewRoute, addNewShipper } from '@/app/api/services'
+import { addNewShipper } from '@/app/api/services'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import Link from 'next/link'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@/components/ui/use-toast'
 import { vendorSchema } from '@/types/admin'
 import ShippersTable from '@/components/tables/admin-tables/shippers'
 import { VendorFormValue } from '../vendors/page'
 import ShipperForm from '@/components/forms/shipper-form'
+import CustomDialog from '@/components/dialog/custom-dialog'
 
 export default function Shippers() {
   const { toast } = useToast()
@@ -69,30 +69,18 @@ export default function Shippers() {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <div className='grid gap-2'>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
-                    <FilePlus className='mr-2 h-4 w-4' /> Shipper
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className='sm:max-w-[600px]'>
-                  <DialogHeader>
-                    <DialogTitle>Add Single Shipper</DialogTitle>
-                    <DialogDescription>
-                      Include a shipper to the list here. Click submit when you
-                      are done.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <ShipperForm
-                    key={key}
-                    onSubmit={onSubmit}
-                    mutation={mutation}
-                    form={form}
-                  />
-                </DialogContent>
-              </Dialog>
+              <CustomDialog
+                triggerText='Single Shipper'
+                title='Add Single Shipper'
+                description='Include a shipper to the list here. Click submit when you are done.'
+                FormComponent={ShipperForm}
+                formKey={key}
+                onSubmit={onSubmit}
+                mutation={mutation}
+                form={form}
+              />
               <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
-                <Layers3 className='mr-2 h-4 w-4' /> Shippers
+                Multiple Shippers
               </Button>
             </div>
           </DropdownMenuContent>

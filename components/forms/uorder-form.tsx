@@ -31,6 +31,9 @@ import {
 } from '@/app/api/services'
 import { OrderStatusEnums } from '@/types/admin'
 
+export const formatEnumKey = (key: string) => {
+  return key.replace(/([a-z])([A-Z])/g, '$1 $2') // Add space before uppercase letters
+}
 const FormSchema = z.object({
   orderStatus: z.string({
     required_error: 'Please select a route.'
@@ -64,9 +67,7 @@ const UpdateOrderForm = ({ data }: { data: any }) => {
   const enumEntries = Object.entries(OrderStatusEnums).filter(
     ([key, value]) => typeof value === 'number'
   )
-  const formatEnumKey = (key: string) => {
-    return key.replace(/([a-z])([A-Z])/g, '$1 $2') // Add space before uppercase letters
-  }
+
   function onSubmit(dataSource: z.infer<typeof FormSchema>) {
     const formData = {
       orderId: data?.id,

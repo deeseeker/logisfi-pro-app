@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -11,7 +12,7 @@ import {
 interface IDialog {
   triggerText: string;
   title: string;
-  description: string;
+  description: ReactNode;
   FormComponent: any;
   formKey: number;
   onSubmit: (data: any) => void;

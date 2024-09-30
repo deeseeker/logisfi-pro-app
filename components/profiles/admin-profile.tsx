@@ -1,17 +1,17 @@
-import React from 'react'
+import React from "react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
-} from '../ui/card'
-import { Button } from '../ui/button'
-import { SquarePenIcon } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { getProfile } from '@/app/api/services'
-import { useQuery } from '@tanstack/react-query'
+  CardTitle,
+} from "../ui/card";
+import { Button } from "../ui/button";
+import { SquarePenIcon } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { getProfile } from "@/app/api/services";
+import { useQuery } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -19,33 +19,49 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
-} from '../ui/dialog'
-import ProfileForm from '../forms/edit-profile'
+  DialogTrigger,
+} from "../ui/dialog";
+import VectorSvg from "@/public/vector.svg";
+import ProfileForm from "../forms/edit-profile";
+import Image from "next/image";
 
 function AdminProfile() {
-  const { data } = useQuery({ queryKey: ['profile'], queryFn: getProfile })
+  const { data } = useQuery({ queryKey: ["profile"], queryFn: getProfile });
   return (
-    <div className='space-y-8'>
-      <Card className='flex items-center'>
+    <div className="space-y-8">
+      <Card className="relative flex items-center bg-gradient-to-r from-[#205BBB] to-[#06337C]">
+        <Image
+          alt="vector"
+          src="/vector.svg"
+          width={227}
+          height={259}
+          className="absolute mix-blend-screen -top-10 left-[859px]"
+        />
+        <Image
+          alt="radius-vector"
+          src="/radius-vector.svg"
+          width={190}
+          height={190}
+          className="absolute right-32 opacity-75 mix-blend-overlay rotate-45 top-[67px]"
+        />
         <CardHeader>
-          <Avatar className='h-20 w-20'>
-            <AvatarImage src='' alt='profile picture' />
+          <Avatar className="h-20 w-20">
+            <AvatarImage src="" alt="profile picture" />
             <AvatarFallback></AvatarFallback>
           </Avatar>
         </CardHeader>
         <div>
-          <CardTitle>
+          <CardTitle className="text-white">
             {data?.firstName} {data?.lastName}
           </CardTitle>
         </div>
-      </Card>{' '}
+      </Card>{" "}
       <Card>
         <CardHeader>
           <CardTitle>Profile Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='grid grid-cols-2 gap-y-12 justify-between'>
+          <div className="grid grid-cols-2 gap-y-12 justify-between">
             <div>
               <h3>First Name</h3>
               <CardDescription>{data?.firstName}</CardDescription>
@@ -73,14 +89,14 @@ function AdminProfile() {
           </div>
         </CardContent>
 
-        <CardFooter className='flex justify-end'>
+        <CardFooter className="flex justify-end">
           <Dialog>
             <DialogTrigger asChild>
-              <Button className='bg-customblue'>
-                <SquarePenIcon className='mr-2 h-4 w-4' /> Edit
+              <Button className="bg-customblue">
+                <SquarePenIcon className="mr-2 h-4 w-4" /> Edit
               </Button>
             </DialogTrigger>
-            <DialogContent className='sm:max-w-[600px]'>
+            <DialogContent className="sm:max-w-[600px]">
               <DialogHeader>
                 <DialogTitle>Edit profile</DialogTitle>
                 <DialogDescription>
@@ -93,7 +109,7 @@ function AdminProfile() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
 
-export default AdminProfile
+export default AdminProfile;

@@ -1,4 +1,4 @@
-import { deleteVPrice, updatePrice } from '@/app/api/services'
+import { successModal } from '@/components/custom-toast/success-toast'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,9 +11,9 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import {
-  DialogDescription,
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
@@ -26,63 +26,58 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { EllipsisVertical, SquarePen, Trash } from 'lucide-react'
-import { useState } from 'react'
-import { PriceFormValue, UpdatePriceValue } from './column'
-import { priceSchema } from '@/types/admin'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { UpdateVendorPrice } from '@/components/forms/update-vendor-price'
+import {
+  CheckIcon,
+  EllipsisVertical,
+  SquarePen,
+  Trash,
+  TriangleAlert
+} from 'lucide-react'
+import { ReactNode, useState } from 'react'
+import * as z from 'zod'
 
-export const ActionCell = ({ row }: { row: any }) => {
+interface ActionCellProps {
+  row: any
+  deleteFunction: (id: string) => Promise<void>
+  FormComponent: ReactNode
+  entityKey: string
+}
+
+export const ActionCell = ({
+  row,
+  deleteFunction,
+  entityKey,
+  FormComponent
+}: ActionCellProps) => {
   const { toast } = useToast()
   const [open, setOpen] = useState(false)
   const id = row.original.id
   const [isUpdate, setIsUpdate] = useState(false)
   const queryClient = useQueryClient()
+
   const mutation = useMutation({
-    mutationFn: (vendorPriceId: string) => {
-      return deleteVPrice(vendorPriceId)
+    mutationFn: (priceId: string) => {
+      return deleteFunction('priceId')
     },
-    onSuccess: async () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ['vendor-price-list']
+        queryKey: [entityKey]
       })
-      toast({
-        title: 'Success!',
-        description: 'The price has been removed successfully.'
+      successModal({
+        title: 'Success',
+        description: 'The item has been successfully deleted.'
       })
-    }
-  })
-  const form = useForm<PriceFormValue>({
-    resolver: zodResolver(priceSchema)
-  })
-
-  const [key, setKey] = useState(0)
-  const update = useMutation({
-    mutationFn: (data: UpdatePriceValue) => {
-      return updatePrice(data)
     },
-    onSuccess: async () => {
-      queryClient.invalidateQueries({
-        queryKey: ['price-list']
+    onError: (error: any) => {
+      console.log(error)
+      successModal({
+        title: `Error ${error.responseCode}!`,
+        description: `There was an error deleting the item: ${error?.responseMessage}`,
+        iconClassName: 'fill-red-500 text-white',
+        Icon: TriangleAlert
       })
-
-      form.reset() // Reset the form
-      setKey((prevKey) => prevKey + 1) // Force a rerender by updating the key
     }
   })
-
-  const onSubmit = async (data: UpdatePriceValue) => {
-    data.shipperPriceId = row.original.id
-    update.mutate(data)
-    if (update.isSuccess) {
-      toast({
-        title: 'Success!',
-        description: 'The price list has been updated successfully.'
-      })
-    }
-  }
 
   return (
     <>
@@ -112,12 +107,12 @@ export const ActionCell = ({ row }: { row: any }) => {
       <Dialog open={isUpdate} onOpenChange={setIsUpdate}>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>Update price</DialogTitle>
+            <DialogTitle>Update Price</DialogTitle>
             <DialogDescription>
-              Include a route to the list here. Click submit when you are done.
+              Update price list here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
-          <UpdateVendorPrice vendorId={id} />
+          {FormComponent}
         </DialogContent>
       </Dialog>
 
@@ -128,8 +123,8 @@ export const ActionCell = ({ row }: { row: any }) => {
               Are you absolutely sure?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              the price and remove the details from our servers.
+              This action cannot be undone. This will permanently delete the
+              price and remove the details from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

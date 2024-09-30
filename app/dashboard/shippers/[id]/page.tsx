@@ -1,34 +1,35 @@
-'use client'
-import PriceForm from '@/components/forms/price-form'
-import PriceList from '@/components/tables/admin-tables/price-list'
-import { Button } from '@/components/ui/button'
+"use client";
+import PriceForm from "@/components/forms/create-price/shipper-price";
+import PriceList from "@/components/tables/admin-tables/price-list/shipper-price-list";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
-import { Heading } from '@/components/ui/heading'
-import { Plus } from 'lucide-react'
-import { useParams } from 'next/navigation'
-import React from 'react'
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Heading } from "@/components/ui/heading";
+import { Separator } from "@/components/ui/separator";
+import { Plus } from "lucide-react";
+import { useParams } from "next/navigation";
+import React from "react";
 
 function ShipperId() {
-  const params = useParams()
-  const { id } = params
+  const params = useParams();
+  const { id } = params;
   return (
     <div>
-      <div className='flex justify-between'>
-        <Heading title='Shipper Details' description='Manage shipper details' />
+      <div className="flex justify-between mb-2">
+        <Heading title="Shipper Details" description="Manage shipper details" />
         <Dialog>
           <DialogTrigger asChild>
-            <Button className='text-xs md:text-sm bg-customblue'>
-              <Plus className='mr-2 h-4 w-4' /> Add New Price
+            <Button className="text-xs md:text-sm bg-customblue">
+              <Plus className="mr-2 h-4 w-4" /> Add Price
             </Button>
           </DialogTrigger>
-          <DialogContent className='sm:max-w-[425px]'>
+          <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Create price</DialogTitle>
               <DialogDescription>
@@ -40,9 +41,10 @@ function ShipperId() {
           </DialogContent>
         </Dialog>
       </div>
+      <Separator />
       <PriceList />
     </div>
-  )
+  );
 }
 
-export default ShipperId
+export default ShipperId;

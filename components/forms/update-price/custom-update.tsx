@@ -13,7 +13,7 @@ import { Icons } from '@/components/icons'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useToast } from '../ui/use-toast'
+import { useToast } from '../../ui/use-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getAllRoutes } from '@/app/api/services'
 import { UpdatePriceSchema } from '@/types/admin'
@@ -22,12 +22,14 @@ interface PriceFormProps {
   idKey: string
   mutationFn: (data: any) => Promise<any>
   queryKey: string
+  keyTitle: string
 }
 
 const UpdatePriceForm: React.FC<PriceFormProps> = ({
   idKey,
   mutationFn,
-  queryKey
+  queryKey,
+  keyTitle
 }) => {
   const form = useForm<z.infer<typeof UpdatePriceSchema>>({
     resolver: zodResolver(UpdatePriceSchema)
@@ -56,7 +58,7 @@ const UpdatePriceForm: React.FC<PriceFormProps> = ({
   })
 
   const onSubmit = async (data: any) => {
-    data.priceId = idKey
+    data[`${keyTitle}`] = idKey
     mutation.mutate(data)
     if (mutation.isSuccess) {
       toast({

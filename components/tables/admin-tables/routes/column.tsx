@@ -2,6 +2,7 @@
 
 import { deleteRoute, updateRoute } from '@/app/api/services'
 import { RouteFormValue, UpdateFormValue } from '@/app/dashboard/routes/page'
+import { successModal } from '@/components/custom-toast/success-toast'
 
 import RouteForm from '@/components/forms/route-form'
 import {
@@ -37,13 +38,20 @@ import { formSchema, IRoutes } from '@/types/admin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
-import { EllipsisVertical, Eye, SquarePen, Trash } from 'lucide-react'
+import {
+  CheckIcon,
+  CircleCheck,
+  EllipsisVertical,
+  Eye,
+  SquarePen,
+  Trash,
+  TriangleAlert
+} from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 const ActionCell = ({ row }: { row: any }) => {
-  const { toast } = useToast()
   const [open, setOpen] = useState(false)
 
   const [isUpdate, setIsUpdate] = useState(false)
@@ -56,9 +64,17 @@ const ActionCell = ({ row }: { row: any }) => {
       queryClient.invalidateQueries({
         queryKey: ['routes']
       })
-      toast({
-        title: 'Success!',
-        description: 'The route lists has been removed successfully.'
+      successModal({
+        title: 'Success',
+        description: 'The item has been successfully deleted.'
+      })
+    },
+    onError: (error: any) => {
+      successModal({
+        title: `Error ${error.responseCode}!`,
+        description: `There was an error deleting the item: ${error?.responseMessage}`,
+        iconClassName: 'fill-red-500 text-white',
+        Icon: TriangleAlert
       })
     }
   })
@@ -71,23 +87,30 @@ const ActionCell = ({ row }: { row: any }) => {
     mutationFn: (data: UpdateFormValue) => {
       return updateRoute(data)
     },
-    onSuccess: async () => {
+    onSuccess: async (data) => {
       queryClient.invalidateQueries({
         queryKey: ['routes']
       })
-      toast({
-        title: 'Success!',
-        description: 'The route lists has been updated successfully.'
+      successModal({
+        title: 'Success',
+        description: 'The route details has been updated successfully'
       })
-
       form.reset() // Reset the form
       setKey((prevKey) => prevKey + 1) // Force a rerender by updating the key
+    },
+    onError: (error: any) => {
+      console.log(error)
+      successModal({
+        title: `Error ${error.responseCode}!`,
+        description: `There was an error updating the route details: ${error?.responseMessage}`,
+        iconClassName: 'fill-red-500 text-white',
+        Icon: TriangleAlert
+      })
     }
   })
 
   const onSubmit = async (data: UpdateFormValue) => {
     data.id = row.original.id
-    console.log(data)
     update.mutate(data)
   }
 
@@ -102,9 +125,6 @@ const ActionCell = ({ row }: { row: any }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem>
-            <Eye className='mr-2 h-4 w-4' /> View
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
             <SquarePen className='mr-2 h-4 w-4' /> Update
           </DropdownMenuItem>

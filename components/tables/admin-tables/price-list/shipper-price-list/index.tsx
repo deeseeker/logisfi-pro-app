@@ -6,7 +6,7 @@ import { DataTableSkeletonLoader } from '@/components/skeleton'
 
 export default function PriceList() {
   const { data, isPending } = useQuery({
-    queryKey: ['price-list'],
+    queryKey: ['shipper-price-list'],
     queryFn: getAllPrice
   })
   const dataSource = data?.responseData

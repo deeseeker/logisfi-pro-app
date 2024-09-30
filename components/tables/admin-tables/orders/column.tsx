@@ -2,8 +2,10 @@
 
 import { fulfillOrder, updateRoute } from '@/app/api/services'
 import { UpdateFormValue } from '@/app/dashboard/routes/page'
-import FulfillOrderForm from '@/components/forms/fulfill-order-form'
-import UpdateOrderForm, { formatEnumKey } from '@/components/forms/uorder-form'
+import FulfillOrderForm from '@/components/forms/order/fulfill-order-form'
+import UpdateOrderForm, {
+  formatEnumKey
+} from '@/components/forms/order/update-order-form'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

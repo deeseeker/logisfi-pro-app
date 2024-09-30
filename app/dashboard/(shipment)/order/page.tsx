@@ -1,6 +1,6 @@
 'use client'
-import OrderForm from '@/components/forms/order-form'
-import PriceForm from '@/components/forms/price-form'
+import OrderForm from '@/components/forms/order/order-form'
+import PriceForm from '@/components/forms/create-price/shipper-price'
 import OrdersTable from '@/components/tables/admin-tables/orders'
 import { Button } from '@/components/ui/button'
 import {

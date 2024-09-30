@@ -1,37 +1,38 @@
-'use client'
-import PriceForm from '@/components/forms/price-form'
-import VendorPriceForm from '@/components/forms/vendor-price'
-import PriceList from '@/components/tables/admin-tables/price-list'
-import VendorPriceList from '@/components/tables/admin-tables/vendor-price-list'
-import { Button } from '@/components/ui/button'
+"use client";
+import PriceForm from "@/components/forms/create-price/shipper-price";
+import VendorPriceForm from "@/components/forms/create-price/vendor-price";
+import PriceList from "@/components/tables/admin-tables/price-list/shipper-price-list";
+import VendorPriceList from "@/components/tables/admin-tables/price-list/vendor-price-list";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
-import { Heading } from '@/components/ui/heading'
-import { Plus } from 'lucide-react'
-import { useParams } from 'next/navigation'
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Heading } from "@/components/ui/heading";
+import { Separator } from "@/components/ui/separator";
+import { Plus } from "lucide-react";
+import { useParams } from "next/navigation";
 
-import React from 'react'
+import React from "react";
 
 function VendorId() {
-  const params = useParams()
-  const { id } = params
+  const params = useParams();
+  const { id } = params;
   return (
     <div>
-      <div className='flex justify-between'>
-        <Heading title='Vendor Details' description='Manage vendor details' />
+      <div className="flex justify-between">
+        <Heading title="Vendor Details" description="Manage vendor details" />
         <Dialog>
           <DialogTrigger asChild>
-            <Button className='text-xs md:text-sm bg-customblue'>
-              <Plus className='mr-2 h-4 w-4' /> Add New Price
+            <Button className="text-xs md:text-sm bg-customblue">
+              <Plus className="mr-2 h-4 w-4" /> Add Price
             </Button>
           </DialogTrigger>
-          <DialogContent className='sm:max-w-[425px]'>
+          <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Create price</DialogTitle>
               <DialogDescription>
@@ -43,9 +44,10 @@ function VendorId() {
           </DialogContent>
         </Dialog>
       </div>
+      <Separator />
       <VendorPriceList />
     </div>
-  )
+  );
 }
 
-export default VendorId
+export default VendorId;

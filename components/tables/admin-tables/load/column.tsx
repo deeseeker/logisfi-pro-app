@@ -5,7 +5,9 @@ import Order from '@/app/dashboard/(shipment)/order/page'
 import { UpdateFormValue } from '@/app/dashboard/routes/page'
 
 import RouteForm from '@/components/forms/route-form'
-import UpdateOrderForm, { formatEnumKey } from '@/components/forms/uorder-form'
+import UpdateOrderForm, {
+  formatEnumKey
+} from '@/components/forms/order/update-order-form'
 import {
   AlertDialog,
   AlertDialogAction,

@@ -3,7 +3,7 @@ import { schemaToDate } from '@/lib/utils'
 import { IPrice, priceSchema, priceUpdateSchema } from '@/types/admin'
 import { ColumnDef } from '@tanstack/react-table'
 import * as z from 'zod'
-import { ActionCell } from './cell-action'
+import { VendorCellAction } from './cell-action'
 
 export type PriceFormValue = z.infer<typeof priceSchema>
 export type UpdatePriceValue = z.infer<typeof priceUpdateSchema>
@@ -45,6 +45,6 @@ export const columns: ColumnDef<IPrice>[] = [
   },
   {
     id: 'actions',
-    cell: ActionCell
+    cell: VendorCellAction
   }
 ]

@@ -1,44 +1,44 @@
-import React from 'react'
+import React from "react";
 import {
   Form,
   FormField,
   FormItem,
   FormLabel,
   FormControl,
-  FormMessage
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Icons } from '@/components/icons'
-import { UseFormReturn } from 'react-hook-form'
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/icons";
+import { UseFormReturn } from "react-hook-form";
 
 interface RouteFormProps {
-  form: UseFormReturn<any>
-  onSubmit: (data: any) => void
-  mutation: { isPending: boolean }
-  key?: number
+  form: UseFormReturn<any>;
+  onSubmit: (data: any) => void;
+  mutation: { isPending: boolean };
+  key?: number;
 }
 
 const RouteForm: React.FC<RouteFormProps> = ({
   form,
   onSubmit,
   mutation,
-  key
+  key,
 }) => {
   return (
     <Form {...form} key={key}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-4 py-4'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
         <FormField
           control={form.control}
-          name='origin'
+          name="origin"
           render={({ field }) => (
-            <FormItem className='grid grid-cols-4 items-center gap-4'>
-              <FormLabel className='text-right'>Origin</FormLabel>
+            <FormItem className="grid grid-cols-4 items-center gap-4">
+              <FormLabel className="text-right">Origin</FormLabel>
               <FormControl>
                 <Input
-                  type='text'
-                  placeholder='Enter origin...'
-                  className='col-span-3'
+                  type="text"
+                  placeholder="Enter origin..."
+                  className="col-span-3"
                   disabled={mutation.isPending}
                   {...field}
                 />
@@ -49,15 +49,15 @@ const RouteForm: React.FC<RouteFormProps> = ({
         />
         <FormField
           control={form.control}
-          name='destination'
+          name="destination"
           render={({ field }) => (
-            <FormItem className='grid grid-cols-4 items-center gap-4'>
-              <FormLabel>Destination</FormLabel>
+            <FormItem className="grid grid-cols-4 items-center gap-4">
+              <FormLabel className="text-right">Destination</FormLabel>
               <FormControl>
                 <Input
-                  type='text'
-                  className='col-span-3'
-                  placeholder='Enter destination...'
+                  type="text"
+                  className="col-span-3"
+                  placeholder="Enter destination..."
                   disabled={mutation.isPending}
                   {...field}
                 />
@@ -66,21 +66,21 @@ const RouteForm: React.FC<RouteFormProps> = ({
             </FormItem>
           )}
         />
-        <div className='text-end'>
+        <div className="text-end">
           <Button
-            type='submit'
+            type="submit"
             disabled={mutation.isPending}
-            className='bg-customblue'
+            className="bg-customblue"
           >
             {mutation.isPending && (
-              <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
             Submit
           </Button>
         </div>
       </form>
     </Form>
-  )
-}
+  );
+};
 
-export default RouteForm
+export default RouteForm;

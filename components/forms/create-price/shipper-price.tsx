@@ -17,19 +17,15 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '../ui/select'
+} from '../../ui/select'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useToast } from '../ui/use-toast'
+import { useToast } from '../../ui/use-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import {
-  createPrice,
-  createVendorPrice,
-  getAllRoutes
-} from '@/app/api/services'
+import { createPrice, getAllRoutes } from '@/app/api/services'
 
-interface VendorPriceFormProps {
-  vendorId: string
+interface PriceFormProps {
+  shipperId: string
 }
 
 const FormSchema = z.object({
@@ -39,7 +35,7 @@ const FormSchema = z.object({
   price: z.string()
 })
 
-const VendorPriceForm: React.FC<VendorPriceFormProps> = ({ vendorId }) => {
+const PriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema)
   })
@@ -53,11 +49,11 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({ vendorId }) => {
   const [key, setKey] = useState(0)
   const mutation = useMutation({
     mutationFn: (data: any) => {
-      return createVendorPrice(data)
+      return createPrice(data)
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ['vendor-price-list']
+        queryKey: ['price-list']
       })
       toast({
         title: 'Success!',
@@ -72,8 +68,8 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({ vendorId }) => {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data)
     const formData = {
-      vendorId: vendorId,
-      vendorPrices: [data]
+      shipperId: shipperId,
+      shipperPrices: [data]
     }
     console.log(formData)
     mutation.mutate(formData)
@@ -144,4 +140,4 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({ vendorId }) => {
   )
 }
 
-export default VendorPriceForm
+export default PriceForm

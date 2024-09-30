@@ -1,22 +1,22 @@
-import { Button } from '../ui/button'
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
-} from '../ui/dialog'
+  DialogTrigger,
+} from "../ui/dialog";
 
 interface IDialog {
-  triggerText: string
-  title: string
-  description: string
-  FormComponent: any
-  formKey: number
-  onSubmit: (data: any) => void
-  mutation: any
-  form: any
+  triggerText: string;
+  title: string;
+  description: string;
+  FormComponent: any;
+  formKey: number;
+  onSubmit: (data: any) => void;
+  mutation: any;
+  form: any;
 }
 const CustomDialog = ({
   triggerText,
@@ -26,16 +26,20 @@ const CustomDialog = ({
   formKey,
   onSubmit,
   mutation,
-  form
+  form,
 }: IDialog) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='bg-transparent text-black text-xs md:text-sm overflow-hidden rounded-md py-2 font-normal hover:bg-accent hover:text-accent-foreground'>
+        <Button className="bg-customblue hover:bg-blue-500">
           {triggerText}
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[600px]'>
+      <DialogContent
+        className={`${
+          triggerText === "Add Route" ? "sm:max-w-[500px]" : "sm:max-w-[600px]"
+        }`}
+      >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
@@ -48,7 +52,7 @@ const CustomDialog = ({
         />
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default CustomDialog
+export default CustomDialog;

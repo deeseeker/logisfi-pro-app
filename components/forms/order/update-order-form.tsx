@@ -17,10 +17,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '../ui/select'
+} from '../../ui/select'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useToast } from '../ui/use-toast'
+import { useToast } from '../../ui/use-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createOrder,
@@ -50,7 +50,7 @@ const UpdateOrderForm = ({ data }: { data: any }) => {
     mutationFn: (data: any) => {
       return updateOrder(data)
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['orders']
       })

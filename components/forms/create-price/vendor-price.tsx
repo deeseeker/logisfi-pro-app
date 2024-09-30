@@ -17,15 +17,19 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '../ui/select'
+} from '../../ui/select'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useToast } from '../ui/use-toast'
+import { useToast } from '../../ui/use-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createPrice, getAllRoutes } from '@/app/api/services'
+import {
+  createPrice,
+  createVendorPrice,
+  getAllRoutes
+} from '@/app/api/services'
 
-interface PriceFormProps {
-  shipperId: string
+interface VendorPriceFormProps {
+  vendorId: string
 }
 
 const FormSchema = z.object({
@@ -35,7 +39,7 @@ const FormSchema = z.object({
   price: z.string()
 })
 
-const PriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
+const VendorPriceForm: React.FC<VendorPriceFormProps> = ({ vendorId }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema)
   })
@@ -49,11 +53,11 @@ const PriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
   const [key, setKey] = useState(0)
   const mutation = useMutation({
     mutationFn: (data: any) => {
-      return createPrice(data)
+      return createVendorPrice(data)
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ['price-list']
+        queryKey: ['vendor-price-list']
       })
       toast({
         title: 'Success!',
@@ -68,12 +72,17 @@ const PriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data)
     const formData = {
-      shipperId: shipperId,
-      shipperPrices: [data]
+      vendorId: vendorId,
+      vendorPrices: [data]
     }
     console.log(formData)
     mutation.mutate(formData)
   }
+
+  if (mutation.isSuccess) {
+    return <div>Todo added!</div>
+  }
+
   return (
     <Form {...form} key={key}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-4 py-4'>
@@ -140,4 +149,4 @@ const PriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
   )
 }
 
-export default PriceForm
+export default VendorPriceForm

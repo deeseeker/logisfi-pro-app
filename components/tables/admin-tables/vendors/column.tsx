@@ -119,11 +119,12 @@ const ActionCell = ({ row }: { row: any }) => {
       </DropdownMenu>
 
       <Dialog open={isUpdate} onOpenChange={setIsUpdate}>
-        <DialogContent className='sm:max-w-[425px]'>
+        <DialogContent className='sm:max-w-[600px]'>
           <DialogHeader>
-            <DialogTitle>Update Route</DialogTitle>
+            <DialogTitle>Update Vendor</DialogTitle>
             <DialogDescription>
-              Include a route to the list here. Click submit when you are done.
+              Update vendor detail on the list here. Click submit when you are
+              done.
             </DialogDescription>
           </DialogHeader>
           <VendorForm

@@ -28,7 +28,7 @@ import Image from "next/image";
 function AdminProfile() {
   const { data } = useQuery({ queryKey: ["profile"], queryFn: getProfile });
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       <Card className="relative flex items-center bg-gradient-to-r from-[#205BBB] to-[#06337C]">
         <Image
           alt="vector"
@@ -45,13 +45,26 @@ function AdminProfile() {
           className="absolute right-32 opacity-75 mix-blend-overlay rotate-45 top-[67px]"
         />
         <CardHeader>
-          <Avatar className="h-20 w-20">
-            <AvatarImage src="" alt="profile picture" />
-            <AvatarFallback></AvatarFallback>
-          </Avatar>
+          <Image
+            src="/block.svg"
+            className="absolute mix-blend-overlay opacity-30 left-0 bottom-0"
+            width={134}
+            height={134}
+            alt="block"
+          />
+          <div className="border rounded-full p-1 border-[#A2DAFE]">
+            <Avatar className="h-20 w-20 bg-[#DBEAFF] p-3">
+              <AvatarImage
+                src="/profile.png"
+                className="invert"
+                alt="profile picture"
+              />
+              <AvatarFallback></AvatarFallback>
+            </Avatar>
+          </div>
         </CardHeader>
         <div>
-          <CardTitle className="text-white">
+          <CardTitle className="text-white font-normal">
             {data?.firstName} {data?.lastName}
           </CardTitle>
         </div>

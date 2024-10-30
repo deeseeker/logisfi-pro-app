@@ -1,13 +1,13 @@
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./column";
-import { getAllPrice } from "@/app/api/services";
+import { getAllOrganizations } from "@/app/api/services";
 import { useQuery } from "@tanstack/react-query";
 import { DataTableSkeletonLoader } from "@/components/skeleton";
 
-export default function PriceList() {
+export default function OrganizationTable() {
   const { data, isPending } = useQuery({
-    queryKey: ["shipper-price-list"],
-    queryFn: getAllPrice,
+    queryKey: ["organization"],
+    queryFn: getAllOrganizations,
   });
   const dataSource = data?.responseData;
 
@@ -16,7 +16,11 @@ export default function PriceList() {
       {isPending ? (
         <DataTableSkeletonLoader />
       ) : (
-        <DataTable searchKey="price" columns={columns} data={dataSource} />
+        <DataTable
+          searchKey="organizations"
+          columns={columns}
+          data={dataSource}
+        />
       )}
     </div>
   );

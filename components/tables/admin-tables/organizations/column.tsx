@@ -1,10 +1,16 @@
 "use client";
 
-import { deleteRoute, updateRoute } from "@/app/api/services";
-import { RouteFormValue, UpdateFormValue } from "@/app/dashboard/routes/page";
-import { successModal } from "@/components/custom-toast/success-toast";
-
-import RouteForm from "@/components/forms/route-form";
+import {
+  deleteRoute,
+  deleteShipper,
+  updateRoute,
+  updateShipper,
+} from "@/app/api/services";
+import {
+  VendorFormValue,
+  VendorUpdateValue,
+} from "@/app/dashboard/vendors/page";
+import OrganizationForm from "@/components/forms/organization-form";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,7 +28,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -31,81 +36,72 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
 import { schemaToDate } from "@/lib/utils";
-import { formSchema, IRoutes } from "@/types/admin";
+import {
+  formSchema,
+  Iorganization,
+  IRoutes,
+  IVendors,
+  vendorSchema,
+} from "@/types/admin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  EllipsisVertical,
-  SquarePen,
-  Trash,
-  TriangleAlert,
-} from "lucide-react";
+import { EllipsisVertical, Eye, SquarePen, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 const ActionCell = ({ row }: { row: any }) => {
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
-
+  const id = row.original.id;
+  const router = useRouter();
   const [isUpdate, setIsUpdate] = useState(false);
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: (routeId: string) => {
-      return deleteRoute(routeId);
+    mutationFn: (shipperId: string) => {
+      return deleteShipper(shipperId);
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ["routes"],
+        queryKey: ["organizations"],
       });
-      successModal({
-        title: "Success",
-        description: "The item has been successfully deleted.",
-      });
-    },
-    onError: (error: any) => {
-      successModal({
-        title: `Error ${error.responseCode}!`,
-        description: `There was an error deleting the item: ${error?.responseMessage}`,
-        iconClassName: "fill-red-500 text-white",
-        Icon: TriangleAlert,
+      toast({
+        title: "Success!",
+        description: "The organization lists has been removed successfully.",
       });
     },
   });
-  const form = useForm<UpdateFormValue>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<VendorFormValue>({
+    resolver: zodResolver(vendorSchema),
   });
 
   const [key, setKey] = useState(0);
   const update = useMutation({
-    mutationFn: (data: UpdateFormValue) => {
-      return updateRoute(data);
+    mutationFn: (data: VendorUpdateValue) => {
+      return updateShipper(data);
     },
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ["routes"],
+        queryKey: ["organizations"],
       });
-      successModal({
-        title: "Success",
-        description: "The route details has been updated successfully",
-      });
+
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
     },
-    onError: (error: any) => {
-      console.log(error);
-      successModal({
-        title: `Error ${error.responseCode}!`,
-        description: `There was an error updating the route details: ${error?.responseMessage}`,
-        iconClassName: "fill-red-500 text-white",
-        Icon: TriangleAlert,
-      });
-    },
   });
 
-  const onSubmit = async (data: UpdateFormValue) => {
-    data.id = row.original.id;
+  const onSubmit = async (data: any) => {
+    data.id = id;
     update.mutate(data);
+    if (update.isSuccess) {
+      toast({
+        title: "Success!",
+        description: "The organization lists has been updated successfully.",
+      });
+    }
   };
 
   return (
@@ -119,9 +115,17 @@ const ActionCell = ({ row }: { row: any }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={() => {
+              router.push(`organizations/${id}`);
+            }}
+          >
+            <Eye className="mr-2 h-4 w-4" /> View
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
             <SquarePen className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
+
           <DropdownMenuItem
             className="text-red-600"
             onClick={() => setOpen(true)}
@@ -133,14 +137,15 @@ const ActionCell = ({ row }: { row: any }) => {
       </DropdownMenu>
 
       <Dialog open={isUpdate} onOpenChange={setIsUpdate}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>Update Route</DialogTitle>
+            <DialogTitle>Update Organization</DialogTitle>
             <DialogDescription>
-              Include a route to the list here. Click submit when you are done.
+              Update organization on the list here. Click submit when you are
+              done.
             </DialogDescription>
           </DialogHeader>
-          <RouteForm
+          <OrganizationForm
             key={key}
             onSubmit={onSubmit}
             mutation={update}
@@ -157,7 +162,7 @@ const ActionCell = ({ row }: { row: any }) => {
             </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete your
-              the route and remove the details from our servers.
+              organization and remove the details from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -166,7 +171,7 @@ const ActionCell = ({ row }: { row: any }) => {
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                mutation.mutate(row.original.id);
+                mutation.mutate(id);
                 setOpen(false);
               }}
             >
@@ -179,14 +184,28 @@ const ActionCell = ({ row }: { row: any }) => {
   );
 };
 
-export const columns: ColumnDef<IRoutes>[] = [
+export const columns: ColumnDef<Iorganization>[] = [
   {
-    accessorKey: "origin",
-    header: "Origin",
+    accessorKey: "organizationName",
+    header: "Organization Name",
   },
   {
-    accessorKey: "destination",
-    header: "Destination",
+    accessorKey: "agreedInterestRate",
+    header: "Agreed Interest Rate",
+  },
+  {
+    accessorKey: "availableLoanAmount",
+    header: "Available Loan",
+    cell: ({ row }) => {
+      return <span>{row.original.wallet.availableLoanAmount}</span>;
+    },
+  },
+  {
+    accessorKey: "loanAmountInUse",
+    header: "Outstanding balance",
+    cell: ({ row }) => {
+      return <span>{row.original.wallet.loanAmountInUse}</span>;
+    },
   },
   {
     accessorKey: "createdAt",

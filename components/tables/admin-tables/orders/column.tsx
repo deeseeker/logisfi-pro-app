@@ -1,110 +1,110 @@
-'use client'
+"use client";
 
-import { fulfillOrder, updateRoute } from '@/app/api/services'
-import { UpdateFormValue } from '@/app/dashboard/routes/page'
-import FulfillOrderForm from '@/components/forms/order/fulfill-order-form'
+import { fulfillOrder, updateRoute } from "@/app/api/services";
+import { UpdateFormValue } from "@/app/dashboard/routes/page";
+import FulfillOrderForm from "@/components/forms/order/fulfill-order-form";
 import UpdateOrderForm, {
-  formatEnumKey
-} from '@/components/forms/order/update-order-form'
-import { Button } from '@/components/ui/button'
+  formatEnumKey,
+} from "@/components/forms/order/update-order-form";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog'
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { useToast } from '@/components/ui/use-toast'
-import { schemaToDate } from '@/lib/utils'
-import { formSchema, IOrders, OrderStatusEnums } from '@/types/admin'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { ColumnDef } from '@tanstack/react-table'
-import { EllipsisVertical, Eye, Signature, SquarePen } from 'lucide-react'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
+import { schemaToDate } from "@/lib/utils";
+import { formSchema, IOrders, OrderStatusEnums } from "@/types/admin";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ColumnDef } from "@tanstack/react-table";
+import { EllipsisVertical, Eye, Signature, SquarePen } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const ActionCell = ({ row }: { row: any }) => {
-  const { toast } = useToast()
-  const [open, setOpen] = useState(false)
+  const { toast } = useToast();
+  const [open, setOpen] = useState(false);
 
-  const [isUpdate, setIsUpdate] = useState(false)
-  const queryClient = useQueryClient()
+  const [isUpdate, setIsUpdate] = useState(false);
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (data: any) => {
-      return fulfillOrder(data)
+      return fulfillOrder(data);
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ['orders']
-      })
+        queryKey: ["orders"],
+      });
       toast({
-        title: 'Success!',
-        description: 'The order has been fulfilled successfully.'
-      })
-    }
-  })
+        title: "Success!",
+        description: "The order has been fulfilled successfully.",
+      });
+    },
+  });
   const form = useForm<UpdateFormValue>({
-    resolver: zodResolver(formSchema)
-  })
+    resolver: zodResolver(formSchema),
+  });
 
-  const [key, setKey] = useState(0)
+  const [key, setKey] = useState(0);
   const update = useMutation({
     mutationFn: (data: UpdateFormValue) => {
-      return updateRoute(data)
+      return updateRoute(data);
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ['routes']
-      })
+        queryKey: ["routes"],
+      });
       toast({
-        title: 'Success!',
-        description: 'The route lists has been updated successfully.'
-      })
+        title: "Success!",
+        description: "The route lists has been updated successfully.",
+      });
 
-      form.reset() // Reset the form
-      setKey((prevKey) => prevKey + 1) // Force a rerender by updating the key
-    }
-  })
+      form.reset(); // Reset the form
+      setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    },
+  });
 
   const onSubmit = async (data: UpdateFormValue) => {
-    data.id = row.original.id
-    console.log(data)
-    update.mutate(data)
-  }
+    data.id = row.original.id;
+    console.log(data);
+    update.mutate(data);
+  };
 
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant='ghost' className='h-8 w-8 p-0'>
-            <span className='sr-only'>Open menu</span>
-            <EllipsisVertical className='h-4 w-4' />
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <EllipsisVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align='end'>
+        <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem>
-            <Eye className='mr-2 h-4 w-4' /> View
+            <Eye className="mr-2 h-4 w-4" /> View
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
-            <SquarePen className='mr-2 h-4 w-4' /> Update
+            <SquarePen className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Signature className='mr-2 h-4 w-4' /> Fulfill
+            <Signature className="mr-2 h-4 w-4" /> Fulfill
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <Dialog open={isUpdate} onOpenChange={setIsUpdate}>
-        <DialogContent className='sm:max-w-[425px]'>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Update Order</DialogTitle>
             <DialogDescription>
@@ -115,7 +115,7 @@ const ActionCell = ({ row }: { row: any }) => {
         </DialogContent>
       </Dialog>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className='sm:max-w-[600px]'>
+        <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>Fulfill Order</DialogTitle>
             <DialogDescription>
@@ -127,59 +127,52 @@ const ActionCell = ({ row }: { row: any }) => {
         </DialogContent>
       </Dialog>
     </>
-  )
-}
+  );
+};
 
 export const columns: ColumnDef<IOrders>[] = [
   {
-    accessorKey: 'origin',
-    header: 'Origin',
+    accessorKey: "origin",
+    header: "Origin",
     cell: ({ row }) => {
-      return <span>{row.original.route.origin}</span>
-    }
+      return <span>{row.original.route.origin}</span>;
+    },
   },
   {
-    accessorKey: 'destination',
-    header: 'Destination',
+    accessorKey: "destination",
+    header: "Destination",
     cell: ({ row }) => {
-      return <span>{row.original.route.destination}</span>
-    }
+      return <span>{row.original.route.destination}</span>;
+    },
   },
   {
-    accessorKey: 'numberOfTrucks',
-    header: 'Truck Quantity',
+    accessorKey: "name",
+    header: "Shipper",
     cell: ({ row }) => {
-      return <span>{row.original.numberOfTrucks}</span>
-    }
+      return <span>{row.original.shipper.name}</span>;
+    },
   },
   {
-    accessorKey: 'name',
-    header: 'Shipper',
+    accessorKey: "createdAt",
+    header: "Order Date",
     cell: ({ row }) => {
-      return <span>{row.original.shipper.name}</span>
-    }
+      return <span>{schemaToDate(row.original.createdAt)}</span>;
+    },
   },
   {
-    accessorKey: 'createdAt',
-    header: 'Order Date',
-    cell: ({ row }) => {
-      return <span>{schemaToDate(row.original.createdAt)}</span>
-    }
-  },
-  {
-    accessorKey: 'orderStatus',
-    header: 'Order Status',
+    accessorKey: "orderStatus",
+    header: "Order Status",
     cell: ({ row }) => {
       return (
         <span>
           {formatEnumKey(OrderStatusEnums[Number(row.original.orderStatus)])}
         </span>
-      )
-    }
+      );
+    },
   },
 
   {
-    id: 'actions',
-    cell: ActionCell
-  }
-]
+    id: "actions",
+    cell: ActionCell,
+  },
+];

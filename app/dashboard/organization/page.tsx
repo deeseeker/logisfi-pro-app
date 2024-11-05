@@ -8,13 +8,14 @@ import { useState } from "react";
 import { addNewOrganization } from "@/app/api/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
-import { organizationSchema } from "@/types/admin";
+import { organizationSchema, organizationUpdateSchema } from "@/types/admin";
 import ShippersTable from "@/components/tables/admin-tables/shippers";
 import CustomDialog from "@/components/dialog/custom-dialog";
 import Link from "next/link";
-import OrganizationForm from "@/components/forms/organization-form";
+import OrganizationForm from "@/components/forms/organization/organization-form";
 import OrganizationTable from "@/components/tables/admin-tables/organizations";
 
+export type EditOrganizationValue = z.infer<typeof organizationUpdateSchema>;
 export type OrganizationFormValue = z.infer<typeof organizationSchema>;
 export default function Organization() {
   const { toast } = useToast();
@@ -29,7 +30,7 @@ export default function Organization() {
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ["organizations"],
+        queryKey: ["organization"],
       });
       toast({
         title: "Success!",
@@ -45,7 +46,7 @@ export default function Organization() {
     const formData = {
       organizationName: data.organizationName,
       agreedInterestRate: Number(data.agreedInterestRate),
-      referringOrganizationId: "THH",
+      referringOrganizationId: "",
       initialAdmin: {
         firstName: data?.firstName,
         lastName: data?.lastName,
@@ -54,7 +55,6 @@ export default function Organization() {
       },
       organizationType: "Investor",
     };
-    console.log(formData);
     mutation.mutate(formData);
   };
   return (

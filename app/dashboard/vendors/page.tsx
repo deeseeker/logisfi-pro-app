@@ -31,7 +31,7 @@ export default function Vendors() {
   const queryClient = useQueryClient();
   const [key, setKey] = useState(0);
   const mutation = useMutation({
-    mutationFn: (data: VendorFormValue) => {
+    mutationFn: (data: any) => {
       return addNewVendor(data);
     },
     onSuccess: async () => {
@@ -49,7 +49,21 @@ export default function Vendors() {
   });
 
   const onSubmit = async (data: VendorFormValue) => {
-    mutation.mutate(data);
+    const formData = {
+      name: data.name,
+      address: data.address,
+      city: data.city,
+      state: data.state,
+      country: data.country,
+      phone: data.phone,
+      email: data.email,
+      vendorBankDetail: {
+        accountNumber: data.accountNumber,
+        accountName: data.accountName,
+        bankName: data.bankName,
+      },
+    };
+    mutation.mutate(formData);
   };
   return (
     <div className="space-y-2">

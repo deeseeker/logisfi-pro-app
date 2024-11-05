@@ -5,7 +5,11 @@ import { VendorFormValue, VendorUpdateValue } from "../dashboard/vendors/page";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { UpdateProfileForm } from "@/components/forms/edit-profile";
 import { UpdatePriceValue } from "@/components/tables/admin-tables/price-list/vendor-price-list/column";
-import { OrganizationFormValue } from "../dashboard/organization/page";
+import {
+  EditOrganizationValue,
+  OrganizationFormValue,
+} from "../dashboard/organization/page";
+import { organizationSchema } from "@/types/admin";
 
 export interface LoginResponse {
   isSuccess: boolean;
@@ -53,9 +57,36 @@ export const getAllShipments = async () => {
     throw error.response.data;
   }
 };
+
+export const getAllMobilizations = async () => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.mobilizations);
+    return response.data;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
 export const getAllVendors = async () => {
   try {
     const response = await axiosInstance.get(API_ENDPOINTS.vendors);
+    return response.data;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+
+export const getAllInvestments = async () => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.investments);
+    return response.data;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+
+export const getAllTransactions = async () => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.transactions);
     return response.data;
   } catch (error: any) {
     throw error.response.data;
@@ -222,6 +253,26 @@ export const fulfillOrder = async (data: any) => {
   }
 };
 
+export const availableLoanWallet = async (data: any) => {
+  try {
+    const response = await axiosInstance.post(
+      "finances/available-loan-wallets",
+      data
+    );
+    return response.data.responseData;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+export const mobilizeShipment = async (data: any) => {
+  try {
+    const response = await axiosInstance.post("shipments/mobilize", data);
+    return response.data.responseData;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+
 /*==========DELETE==========*/
 export const deleteRoute = async (routeId: string) => {
   try {
@@ -243,6 +294,22 @@ export const deleteShipper = async (shipperId: string) => {
       `${API_ENDPOINTS.shippers}/${shipperId}`,
       {
         data: { shipperId: shipperId },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching user data", error);
+    throw error.response.data;
+  }
+};
+
+export const deleteOrganization = async (organizationId: string) => {
+  try {
+    const response = await axiosInstance.delete(
+      `${API_ENDPOINTS.organization}/${organizationId}`,
+      {
+        data: { id: organizationId },
       }
     );
 
@@ -309,6 +376,21 @@ export const updateRoute = async (data: RouteFormValue) => {
 export const updateShipper = async (data: VendorUpdateValue) => {
   try {
     const response = await axiosInstance.put("shippers", data);
+    return response.data;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+
+export const updateOrganization = async (data: {
+  organizationId: string;
+  agreedInterestRate: number;
+}) => {
+  try {
+    const response = await axiosInstance.put(
+      `${API_ENDPOINTS.organization}/${data.organizationId}`,
+      data
+    );
     return response.data;
   } catch (error: any) {
     throw error.response.data;

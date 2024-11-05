@@ -56,6 +56,12 @@ function NavItems() {
                 icon: "load",
                 href: "/dashboard/load",
               },
+              {
+                title: "Mobilizations",
+                href: "/dashboard/mobilizations",
+                icon: "transactions",
+                label: "mobilizations",
+              },
             ],
           },
           {

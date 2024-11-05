@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { UseFormReturn } from "react-hook-form";
-import { Separator } from "../ui/separator";
+import { Separator } from "../../ui/separator";
 
 interface OrganizationFormProps {
   form: UseFormReturn<any>;
@@ -27,7 +27,7 @@ const OrganizationForm = ({
   key,
 }: OrganizationFormProps) => {
   return (
-    <Form {...form}>
+    <Form {...form} key={key}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-5 py-4 mb-2">
           <FormField

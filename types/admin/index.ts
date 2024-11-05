@@ -83,6 +83,83 @@ export interface Shipper {
   modifiedBy: string;
 }
 
+export interface IInvestments {
+  id: string;
+  createdAt: string;
+  createdBy: string;
+  modifiedAt: string;
+  modifiedBy: string;
+  investedAmount: number;
+  investmentDate: string;
+  roi: number;
+  maturityValue: number;
+  maturityDate: string;
+  investmentStatus: string;
+  mobilization: Mobilization;
+  organization: Organization;
+}
+
+export type Mobilization = {
+  id: string;
+  createdAt: string;
+  createdBy: string;
+  modifiedAt: string;
+  modifiedBy: string;
+  beneficiaryAccountNumber: string;
+  beneficiaryName: string;
+  bankName: string;
+  bankCode: string;
+  amount: number;
+  mobilizationStatus: string;
+  shipment: Shipment;
+  organization: Organization;
+};
+
+export type Shipment = {
+  id: string;
+  createdAt: string;
+  createdBy: string;
+  modifiedAt: string;
+  modifiedBy: string;
+  shipmentNumber: string;
+  vendor: Vendor;
+  shipper: Shipper;
+  shipperPrice: number;
+  vendorPrice: number;
+  shipmentDate: string;
+  shipmentStatus: string;
+  driverName: string;
+  driverPhone: string;
+  truckNumber: string;
+};
+
+export type Vendor = {
+  id: string;
+  createdAt: string;
+  createdBy: string;
+  modifiedAt: string;
+  modifiedBy: string;
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  phone: string;
+  email: string;
+  vendorBankDetail: VendorBankDetail;
+};
+
+export type VendorBankDetail = {
+  id: string;
+  createdAt: string;
+  createdBy: string;
+  modifiedAt: string;
+  modifiedBy: string;
+  accountName: string;
+  accountNumber: string;
+  bankName: string;
+  bankCode: string;
+};
+
 export interface IVendors {
   id: string;
   createdAt: string;
@@ -96,6 +173,7 @@ export interface IVendors {
   country: string;
   phone: string;
   email: string;
+  vendorBankDetail: VendorBankDetail;
 }
 export interface IPrice {
   id: string;
@@ -175,6 +253,9 @@ export const vendorSchema = z.object({
   country: z.string(),
   phone: z.string(),
   email: z.string().email(),
+  accountNumber: z.string(),
+  accountName: z.string(),
+  bankName: z.string(),
 });
 export const initialAdminSchema = z.object({
   firstName: z.string(),
@@ -191,6 +272,10 @@ export const organizationSchema = z.object({
   lastName: z.string(),
   email: z.string().email(),
   phoneNumber: z.string(),
+});
+
+export const organizationUpdateSchema = z.object({
+  agreedInterestRate: z.string(),
 });
 export const vendorUpdateSchema = z.object({
   id: z.string(),

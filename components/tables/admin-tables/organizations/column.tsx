@@ -1,16 +1,13 @@
 "use client";
 
 import {
-  deleteRoute,
+  deleteOrganization,
   deleteShipper,
-  updateRoute,
-  updateShipper,
+  updateOrganization,
 } from "@/app/api/services";
-import {
-  VendorFormValue,
-  VendorUpdateValue,
-} from "@/app/dashboard/vendors/page";
-import OrganizationForm from "@/components/forms/organization-form";
+import { EditOrganizationValue } from "@/app/dashboard/organization/page";
+import EditOrganizationForm from "@/components/forms/organization/update-organization";
+import { Icons } from "@/components/icons";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,13 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { schemaToDate } from "@/lib/utils";
-import {
-  formSchema,
-  Iorganization,
-  IRoutes,
-  IVendors,
-  vendorSchema,
-} from "@/types/admin";
+import { Iorganization, organizationUpdateSchema } from "@/types/admin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
@@ -61,8 +52,8 @@ const ActionCell = ({ row }: { row: any }) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: (shipperId: string) => {
-      return deleteShipper(shipperId);
+    mutationFn: (organizationId: string) => {
+      return deleteOrganization(organizationId);
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
@@ -74,14 +65,17 @@ const ActionCell = ({ row }: { row: any }) => {
       });
     },
   });
-  const form = useForm<VendorFormValue>({
-    resolver: zodResolver(vendorSchema),
+  const form = useForm<EditOrganizationValue>({
+    resolver: zodResolver(organizationUpdateSchema),
   });
 
   const [key, setKey] = useState(0);
   const update = useMutation({
-    mutationFn: (data: VendorUpdateValue) => {
-      return updateShipper(data);
+    mutationFn: (data: {
+      organizationId: string;
+      agreedInterestRate: number;
+    }) => {
+      return updateOrganization(data);
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
@@ -93,9 +87,13 @@ const ActionCell = ({ row }: { row: any }) => {
     },
   });
 
-  const onSubmit = async (data: any) => {
-    data.id = id;
-    update.mutate(data);
+  const onSubmit = async (data: EditOrganizationValue) => {
+    const formData = {
+      agreedInterestRate: Number(data.agreedInterestRate),
+      organizationId: id,
+    };
+
+    update.mutate(formData);
     if (update.isSuccess) {
       toast({
         title: "Success!",
@@ -137,7 +135,7 @@ const ActionCell = ({ row }: { row: any }) => {
       </DropdownMenu>
 
       <Dialog open={isUpdate} onOpenChange={setIsUpdate}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[450px]">
           <DialogHeader>
             <DialogTitle>Update Organization</DialogTitle>
             <DialogDescription>
@@ -145,7 +143,7 @@ const ActionCell = ({ row }: { row: any }) => {
               done.
             </DialogDescription>
           </DialogHeader>
-          <OrganizationForm
+          <EditOrganizationForm
             key={key}
             onSubmit={onSubmit}
             mutation={update}
@@ -172,9 +170,12 @@ const ActionCell = ({ row }: { row: any }) => {
             <AlertDialogAction
               onClick={() => {
                 mutation.mutate(id);
-                setOpen(false);
+                if (mutation.isSuccess) setOpen(false);
               }}
             >
+              {mutation.isPending && (
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Continue
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -197,21 +198,21 @@ export const columns: ColumnDef<Iorganization>[] = [
     accessorKey: "availableLoanAmount",
     header: "Available Loan",
     cell: ({ row }) => {
-      return <span>{row.original.wallet.availableLoanAmount}</span>;
+      return <span>{row?.original?.wallet?.availableLoanAmount}</span>;
     },
   },
   {
     accessorKey: "loanAmountInUse",
     header: "Outstanding balance",
     cell: ({ row }) => {
-      return <span>{row.original.wallet.loanAmountInUse}</span>;
+      return <span>{row?.original?.wallet?.loanAmountInUse}</span>;
     },
   },
   {
     accessorKey: "createdAt",
     header: "Date Created",
     cell: ({ row }) => {
-      return <span>{schemaToDate(row.original.createdAt)}</span>;
+      return <span>{schemaToDate(row?.original?.createdAt)}</span>;
     },
   },
   {

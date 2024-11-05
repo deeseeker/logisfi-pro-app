@@ -59,7 +59,7 @@ const MobilizeShipmentForm = ({ data }: { data: any }) => {
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ["shipments"],
+        queryKey: ["loads"],
       });
       toast({
         title: "Success!",
@@ -113,64 +113,57 @@ const MobilizeShipmentForm = ({ data }: { data: any }) => {
   return (
     <Form {...form} key={key}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
-        <div>
-          <FormField
-            control={form.control}
-            name="neededAmount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Percentage Amount</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    className="col-span-3"
-                    disabled={mutation.isPending}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />{" "}
-          <FormField
-            control={form.control}
-            name="organizationId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Available Wallets</FormLabel>
-                <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a available wallets" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {loadingWallets ? (
-                        <SelectItem value="loading" disabled>
-                          Loading...
+        <FormField
+          control={form.control}
+          name="neededAmount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Percentage Amount</FormLabel>
+              <FormControl>
+                <Input type="text" disabled={mutation.isPending} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />{" "}
+        <FormField
+          control={form.control}
+          name="organizationId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Available Wallets</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a available wallets" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {loadingWallets ? (
+                      <SelectItem value="loading" disabled>
+                        Loading...
+                      </SelectItem>
+                    ) : walletError ? (
+                      <SelectItem value="error" disabled>
+                        Error fetching wallets
+                      </SelectItem>
+                    ) : (
+                      wallets?.map((wallet: LoanData) => (
+                        <SelectItem
+                          key={wallet.organization.id}
+                          value={wallet.organization.id}
+                        >
+                          {wallet.organization.organizationName}
                         </SelectItem>
-                      ) : walletError ? (
-                        <SelectItem value="error" disabled>
-                          Error fetching wallets
-                        </SelectItem>
-                      ) : (
-                        wallets?.map((wallet: LoanData) => (
-                          <SelectItem
-                            key={wallet.organization.id}
-                            value={wallet.organization.id}
-                          >
-                            {wallet.organization.organizationName}
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="text-end">
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="text-end mt-4">
           <Button type="submit" className="bg-customblue">
             {mutation.isPending && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />

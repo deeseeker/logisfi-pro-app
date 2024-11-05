@@ -15,7 +15,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { schemaToDate } from "@/lib/utils";
-import { ILoad, OrderStatusEnums } from "@/types/admin";
+import {
+  ILoad,
+  MobilizationStatusEnums,
+  OrderStatusEnums,
+} from "@/types/admin";
 import { ColumnDef } from "@tanstack/react-table";
 import { EllipsisVertical, Eye, SquarePen } from "lucide-react";
 import { useState } from "react";
@@ -42,7 +46,7 @@ const ActionCell = ({ row }: { row: any }) => {
   );
 };
 
-export const columns: ColumnDef<ILoad>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "beneficiaryName",
     header: "Beneficiary Name",
@@ -58,6 +62,14 @@ export const columns: ColumnDef<ILoad>[] = [
   {
     accessorKey: "amount",
     header: "Amount",
+  },
+  {
+    header: "Mobilization Status",
+    cell: ({ row }) => {
+      const statusKey = Number(row.original.mobilizationStatus);
+
+      return <span>{MobilizationStatusEnums[statusKey]}</span>;
+    },
   },
 
   {

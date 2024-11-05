@@ -17,6 +17,23 @@ export enum OrderStatusEnums {
   Cancelled,
 }
 
+export enum InvestmentStatusEnums {
+  Active = 1,
+  Matured,
+}
+
+export enum MobilizationStatusEnums {
+  Pending = 1,
+  Approved,
+  Failed,
+}
+export enum ShipmentStatusEnums {
+  Pending = 1,
+  InTransit,
+  Delivered,
+  Cancelled,
+}
+//"pending approved failed  for shipment status "
 export type Status =
   | "Pending"
   | "PartlyFulfilled"

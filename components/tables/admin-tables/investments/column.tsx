@@ -11,6 +11,7 @@ import {
   VendorFormValue,
   VendorUpdateValue,
 } from "@/app/dashboard/vendors/page";
+import { formatEnumKey } from "@/components/forms/order/update-order-form";
 
 import RouteForm from "@/components/forms/route-form";
 import ShipperForm from "@/components/forms/shipper-form";
@@ -43,6 +44,7 @@ import { schemaToDate } from "@/lib/utils";
 import {
   formSchema,
   IInvestments,
+  InvestmentStatusEnums,
   IVendors,
   vendorSchema,
 } from "@/types/admin";
@@ -109,13 +111,20 @@ export const columns: ColumnDef<IInvestments>[] = [
     accessorKey: "maturityValue",
     header: "Maturity Value",
   },
-  {
-    accessorKey: "maturityDate",
-    header: "Maturity Date",
-  },
+
   {
     accessorKey: "investmentStatus",
     header: "Investment Status",
+
+    cell: ({ row }) => {
+      return (
+        <span>
+          {formatEnumKey(
+            InvestmentStatusEnums[Number(row.original.investmentStatus)]
+          )}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "createdAt",

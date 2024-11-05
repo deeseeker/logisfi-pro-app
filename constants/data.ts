@@ -31,12 +31,12 @@ function NavItems() {
                 icon: "investments",
                 label: "investments",
               },
-              {
-                title: "Withdrawals",
-                href: "/dashboard/withdrawals",
-                icon: "withdrawals",
-                label: "withdrawals",
-              },
+              // {
+              //   title: "Withdrawals",
+              //   href: "/dashboard/withdrawals",
+              //   icon: "withdrawals",
+              //   label: "withdrawals",
+              // },
             ],
           },
           {

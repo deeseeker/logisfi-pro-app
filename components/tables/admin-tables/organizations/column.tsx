@@ -194,20 +194,20 @@ export const columns: ColumnDef<Iorganization>[] = [
     accessorKey: "agreedInterestRate",
     header: "Agreed Interest Rate",
   },
-  {
-    accessorKey: "availableLoanAmount",
-    header: "Available Loan",
-    cell: ({ row }) => {
-      return <span>{row?.original?.wallet?.availableLoanAmount}</span>;
-    },
-  },
-  {
-    accessorKey: "loanAmountInUse",
-    header: "Outstanding balance",
-    cell: ({ row }) => {
-      return <span>{row?.original?.wallet?.loanAmountInUse}</span>;
-    },
-  },
+  // {
+  //   accessorKey: "availableLoanAmount",
+  //   header: "Available Loan",
+  //   cell: ({ row }) => {
+  //     return <span>{row?.original?.wallet?.availableLoanAmount}</span>;
+  //   },
+  // },
+  // {
+  //   accessorKey: "loanAmountInUse",
+  //   header: "Outstanding balance",
+  //   cell: ({ row }) => {
+  //     return <span>{row?.original?.wallet?.loanAmountInUse}</span>;
+  //   },
+  // },
   {
     accessorKey: "createdAt",
     header: "Date Created",

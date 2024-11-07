@@ -16,8 +16,8 @@ import Link from "next/link";
 
 export default function Shippers() {
   const { toast } = useToast();
-  const form = useForm<VendorFormValue>({
-    resolver: zodResolver(vendorSchema),
+  const form = useForm<any>({
+    // resolver: zodResolver(vendorSchema),
   });
   const queryClient = useQueryClient();
   const [key, setKey] = useState(0);

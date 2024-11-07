@@ -75,9 +75,11 @@ export const getAllVendors = async () => {
   }
 };
 
-export const getAllInvestments = async () => {
+export const getAllInvestments = async (params = "") => {
   try {
-    const response = await axiosInstance.get(API_ENDPOINTS.investments);
+    const response = await axiosInstance.get(
+      `${API_ENDPOINTS.investments}?OrganizationId=${params}`
+    );
     return response.data;
   } catch (error: any) {
     throw error.response.data;

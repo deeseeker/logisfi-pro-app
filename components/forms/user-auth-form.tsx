@@ -17,6 +17,7 @@ import { signIn } from "@/app/api/services";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserTypeEnum } from "@/types/admin";
+import { useAuth } from "@/context/AuthContext";
 
 const formSchema = z.object({
   email: z.string(),
@@ -25,6 +26,8 @@ const formSchema = z.object({
 
 export type UserFormValue = z.infer<typeof formSchema>;
 export default function UserAuthForm() {
+  // setUser here
+  const { setUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const route = useRouter();
 
@@ -39,7 +42,11 @@ export default function UserAuthForm() {
     if (response?.responseData.accessToken) {
       // OrderStatusEnums[Number(row.original.orderStatus)])
       const userType = response.responseData.userType;
-      localStorage.setItem("roles", JSON.stringify(UserTypeEnum[userType]));
+      const roles = response.responseData.roles;
+      setUser(response.responseData.userType);
+      console.log(response.responseData.roles);
+      localStorage.setItem("user", JSON.stringify(UserTypeEnum[userType]));
+      localStorage.setItem("roles", JSON.stringify(roles));
       localStorage.setItem("token", response.responseData.accessToken);
       localStorage.setItem("refreshToken", response.responseData.refreshToken);
       route.push("/dashboard");

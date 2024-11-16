@@ -13,6 +13,13 @@ export interface IRoutes {
 export enum UserTypeEnum {
   Investor = 1,
   Clearing,
+  AccountManager,
+}
+
+export enum RoleEnum {
+  Initiator = 1,
+  Approver,
+  Admin,
 }
 
 export enum OrderStatusEnums {

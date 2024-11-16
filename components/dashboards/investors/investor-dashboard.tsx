@@ -17,9 +17,13 @@ import ActiveTransactions from "@/components/tables/bank-tables/dashboard";
 import { useQuery } from "@tanstack/react-query";
 import { getAllInvestments, getWallet } from "@/app/api/services";
 import { formatNaira } from "@/utils/helpers";
+import { useAuth } from "@/context/AuthContext";
 
 function InvestorDashboard() {
   const [isHidden, setIsHidden] = useState(false);
+  const { roles } = useAuth();
+  console.log(roles);
+
   const { data, isPending } = useQuery({
     queryKey: ["wallet-details"],
     queryFn: () => getWallet("baed615a-1e4a-465f-58b7-08dd03fe7f64"),
@@ -183,11 +187,15 @@ function InvestorDashboard() {
               </CardContent>
             </Card>
           </div>
-          {/* <Button className="text-xs md:text-sm bg-customblue">
-            {" "}
-            <CoinsIcon className="mr-2 h-4 w-4" />
-            Withdraw
-          </Button> */}
+          {roles
+            ? roles.find((word) => word === "Admin") && (
+                <Button className="text-xs md:text-sm bg-customblue">
+                  {" "}
+                  <CoinsIcon className="mr-2 h-4 w-4" />
+                  Withdraw
+                </Button>
+              )
+            : null}
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7 mt-4">
             <div className="col-span-4">

@@ -32,9 +32,9 @@ export default function ActivationPage({
 }) {
   const { token, email, name } = searchParams;
 
-  if (!token || !email || !name) {
-    return <NotFound />;
-  }
+  // if (!token || !email || !name) {
+  //   return <NotFound />;
+  // }
 
   return (
     <div className="min-h-screen flex items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">

@@ -1,40 +1,19 @@
 import NotFound from "@/app/not-found";
 import ActivateUserForm from "@/components/forms/user-activate-form";
 import Image from "next/image";
-import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({
+export default async function ActivationPage({
   searchParams,
 }: {
-  searchParams: Record<string, string>;
-}): Promise<Metadata> {
-  const { token, email, name } = searchParams;
-
-  if (!token || !email || !name) {
-    return {
-      title: "Not Found",
-      description: "The page you are looking for does not exist.",
-    };
-  }
-
-  return {
-    title: "Activate Your Account",
-    description: "Activate your account to get started with Logisfi.",
-  };
-}
-
-export default function ActivationPage({
-  searchParams,
-}: {
-  searchParams: Record<string, string>;
+  searchParams: { token?: string; email?: string; name?: string };
 }) {
   const { token, email, name } = searchParams;
 
-  // if (!token || !email || !name) {
-  //   return <NotFound />;
-  // }
+  if (!token || !email || !name) {
+    return <NotFound />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">

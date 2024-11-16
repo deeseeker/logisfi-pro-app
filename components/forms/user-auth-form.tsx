@@ -1,67 +1,70 @@
-'use client'
-import { useForm } from 'react-hook-form'
+"use client";
+import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
-} from '../ui/form'
-import * as z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Input } from '../ui/input'
-import { Button } from '../ui/button'
-import { useState } from 'react'
-import { signIn } from '@/app/api/services'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+  FormMessage,
+} from "../ui/form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { useState } from "react";
+import { signIn } from "@/app/api/services";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { UserTypeEnum } from "@/types/admin";
 
 const formSchema = z.object({
   email: z.string(),
-  password: z.string()
-})
+  password: z.string(),
+});
 
-export type UserFormValue = z.infer<typeof formSchema>
+export type UserFormValue = z.infer<typeof formSchema>;
 export default function UserAuthForm() {
-  const [loading, setLoading] = useState(false)
-  const route = useRouter()
+  const [loading, setLoading] = useState(false);
+  const route = useRouter();
 
   const form = useForm<UserFormValue>({
-    resolver: zodResolver(formSchema)
-  })
+    resolver: zodResolver(formSchema),
+  });
 
   const onSubmit = async (data: UserFormValue) => {
-    setLoading(true)
-    const response = await signIn(data)
-    console.log(response)
+    setLoading(true);
+    const response = await signIn(data);
+    console.log(response);
     if (response?.responseData.accessToken) {
-      localStorage.setItem('roles', JSON.stringify(response.responseData.roles))
-      localStorage.setItem('token', response.responseData.accessToken)
-      localStorage.setItem('refreshToken', response.responseData.refreshToken)
-      route.push('/dashboard')
+      // OrderStatusEnums[Number(row.original.orderStatus)])
+      const userType = response.responseData.userType;
+      localStorage.setItem("roles", JSON.stringify(UserTypeEnum[userType]));
+      localStorage.setItem("token", response.responseData.accessToken);
+      localStorage.setItem("refreshToken", response.responseData.refreshToken);
+      route.push("/dashboard");
     } else {
-      console.log('no response')
+      console.log("no response");
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
   return (
     <>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='w-full space-y-2'
+          className="w-full space-y-2"
         >
           <FormField
             control={form.control}
-            name='email'
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
-                    type='email'
-                    placeholder='Enter your email...'
+                    type="email"
+                    placeholder="Enter your email..."
                     disabled={loading}
                     {...field}
                   />
@@ -72,14 +75,14 @@ export default function UserAuthForm() {
           />
           <FormField
             control={form.control}
-            name='password'
+            name="password"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input
-                    type='password'
-                    placeholder='Enter your password...'
+                    type="password"
+                    placeholder="Enter your password..."
                     disabled={loading}
                     {...field}
                   />
@@ -88,16 +91,16 @@ export default function UserAuthForm() {
               </FormItem>
             )}
           />
-          <div className='text-end text-sm'>
-            <Link href='reset/forgot-password' className='text-primary'>
+          <div className="text-end text-sm">
+            <Link href="reset/forgot-password" className="text-primary">
               Forgot Password?
             </Link>
           </div>
-          <Button className='ml-auto w-full bg-customblue' type='submit'>
-            {loading ? 'loading...' : 'Login'}
+          <Button className="ml-auto w-full bg-customblue" type="submit">
+            {loading ? "loading..." : "Login"}
           </Button>
         </form>
       </Form>
     </>
-  )
+  );
 }

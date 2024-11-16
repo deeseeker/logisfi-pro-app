@@ -11,5 +11,7 @@ export const API_ENDPOINTS = {
   investments: "organizations/investments",
   transactions: "organizations/transactions",
   mobilizations: "organizations/mobilizations",
+  activate: "users/accept-invite",
+
   // Add more as needed
 };

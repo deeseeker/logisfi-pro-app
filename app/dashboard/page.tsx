@@ -7,14 +7,16 @@ import useRole from "@/hooks/useRole";
 
 export default function Dashboard() {
   const role = useRole();
+  console.log(role);
 
   const renderContent = () => {
     switch (role) {
-      case "Admin":
+      case "Clearing":
+        console.log("here");
         return <AdminDashboard />;
-      case "bank":
-        return <BankDashboard />;
-      case "investor":
+      // case "bank":
+      //   return <BankDashboard />;
+      case "Investor":
         return <InvestorDashboard />;
       default:
         break;

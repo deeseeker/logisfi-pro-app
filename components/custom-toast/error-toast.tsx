@@ -2,15 +2,15 @@ import { toast } from "@/components/ui/use-toast"; // Import ShadCN's toast hook
 import { CircleCheck } from "lucide-react"; // Import default icon or any icon library
 
 // Reusable Toast Function
-export const successModal = ({
-  title = "Success",
-  description = "Action completed successfully.",
+export const ErrorModal = ({
+  title = "Error",
+  description = "Action failed.",
   Icon = CircleCheck,
-  iconClassName = "fill-green-500 text-white h-7 w-7",
+  iconClassName = "fill-red-600 text-white h-7 w-7",
 }) => {
   toast({
     title: (
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center mr-2">
         <Icon className={iconClassName} />
         <span>{title}</span>
       </div>

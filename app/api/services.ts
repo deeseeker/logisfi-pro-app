@@ -49,6 +49,17 @@ export const getAllOrganizations = async () => {
     throw error.response.data;
   }
 };
+
+export const getOrganizationId = async (params = "") => {
+  try {
+    const response = await axiosInstance.get(
+      `${API_ENDPOINTS.organization}/${params}`
+    );
+    return response.data;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
 export const getAllShipments = async () => {
   try {
     const response = await axiosInstance.get(API_ENDPOINTS.shipment);
@@ -142,6 +153,16 @@ export const getAllPrices = async (type: "shippers" | "vendors") => {
   }
 };
 
+export const getWallet = async (organizationId: string) => {
+  try {
+    const endpoint = `${API_ENDPOINTS.organization}/${organizationId}/wallet`;
+    const response = await axiosInstance.get(endpoint);
+    return response.data.responseData;
+  } catch (error) {
+    console.error("Error fetching wallet details", error);
+  }
+};
+
 /*==========POST==========*/
 export const signIn = async (credentials: UserFormValue) => {
   try {
@@ -149,6 +170,19 @@ export const signIn = async (credentials: UserFormValue) => {
     return response.data;
   } catch (error: any) {
     console.error("Error fetching user data", error);
+  }
+};
+
+export const activateAccount = async (credentials: any) => {
+  try {
+    const response = await axiosInstance.post(
+      API_ENDPOINTS.activate,
+      credentials
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching user data", error);
+    return error.response.data;
   }
 };
 
@@ -201,6 +235,18 @@ export const addNewShipper = async (data: VendorFormValue) => {
 export const addNewOrganization = async (data: any) => {
   try {
     const response = await axiosInstance.post("organizations", data);
+    return response.data;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+
+export const addNewMember = async (data: any) => {
+  try {
+    const response = await axiosInstance.post(
+      `${API_ENDPOINTS}/users/add-to-organization`,
+      data
+    );
     return response.data;
   } catch (error: any) {
     throw error.response.data;

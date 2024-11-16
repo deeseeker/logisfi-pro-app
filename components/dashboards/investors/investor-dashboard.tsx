@@ -14,10 +14,22 @@ import { ProfitGraph } from "@/components/charts/profit-graph";
 import { Button } from "@/components/ui/button";
 import { RecentInvestments } from "@/components/recent-investments";
 import ActiveTransactions from "@/components/tables/bank-tables/dashboard";
+import { useQuery } from "@tanstack/react-query";
+import { getAllInvestments, getWallet } from "@/app/api/services";
+import { formatNaira } from "@/utils/helpers";
 
 function InvestorDashboard() {
   const [isHidden, setIsHidden] = useState(false);
-
+  const { data, isPending } = useQuery({
+    queryKey: ["wallet-details"],
+    queryFn: () => getWallet("baed615a-1e4a-465f-58b7-08dd03fe7f64"),
+  });
+  const { data: res } = useQuery({
+    queryKey: ["investments"],
+    queryFn: () => getAllInvestments("baed615a-1e4a-465f-58b7-08dd03fe7f64"),
+  });
+  console.log(res);
+  const roi = res?.responseData[0]?.roi;
   return (
     <div>
       <Tabs defaultValue="overview" className="space-y-4 ">
@@ -27,7 +39,7 @@ function InvestorDashboard() {
             Analytics
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="overview" className="space-y-4">
+        <TabsContent value="overview" className="space-y-8">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 text-customblue">
             <Card className="bg-[linear-gradient(99.61deg,_#205BBB_2.12%,_#0E3C88_100%)] text-white">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -53,9 +65,15 @@ function InvestorDashboard() {
               <CardContent className="flex gap-2">
                 <div>
                   <div className="text-2xl font-bold">
-                    &#8358;{isHidden ? "*****" : "25,000"}
+                    {isHidden
+                      ? "*****"
+                      : `${
+                          data?.availableLoanAmount
+                            ? formatNaira(data?.availableLoanAmount)
+                            : 0
+                        }`}
                   </div>
-                  <p className="text-xs text-muted-customblue">123456789</p>
+                  {/* <p className="text-xs text-muted-customblue">123456789</p> */}
                 </div>
                 <button onClick={() => setIsHidden(!isHidden)}>
                   {isHidden ? (
@@ -66,7 +84,7 @@ function InvestorDashboard() {
                 </button>
               </CardContent>
             </Card>
-            <Card className="relative bg-[linear-gradient(102.21deg,_#D6EEFD_0%,_#8FD3FE_99.28%)]">
+            {/* <Card className="relative bg-[linear-gradient(102.21deg,_#D6EEFD_0%,_#8FD3FE_99.28%)]">
               <Image
                 src="/back-arrow.png"
                 alt="back arrow"
@@ -100,7 +118,7 @@ function InvestorDashboard() {
               <CardContent>
                 <div className="text-2xl font-bold">5</div>
               </CardContent>
-            </Card>
+            </Card> */}
             <Card className="bg-[linear-gradient(98.55deg,_#DBF0D5_36.12%,_#A4FD8B_100%)]">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -122,7 +140,11 @@ function InvestorDashboard() {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">&#8358;25,000,000</div>
+                <div className="text-2xl font-bold">
+                  {data?.loanAmountInUse
+                    ? formatNaira(data?.loanAmountInUse)
+                    : 0}
+                </div>
               </CardContent>
             </Card>
             <Card className="relative bg-[linear-gradient(100.09deg,_#FADDDE_29.03%,_#FFC0C2_93.76%)]">
@@ -155,17 +177,19 @@ function InvestorDashboard() {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">&#8358;1,200,000</div>
+                <div className="text-2xl font-bold">
+                  {roi ? formatNaira(roi) : 0}
+                </div>
               </CardContent>
             </Card>
           </div>
-          <Button className="text-xs md:text-sm bg-customblue">
+          {/* <Button className="text-xs md:text-sm bg-customblue">
             {" "}
             <CoinsIcon className="mr-2 h-4 w-4" />
             Withdraw
-          </Button>
+          </Button> */}
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7 mt-4">
             <div className="col-span-4">
               <ProfitGraph />
             </div>

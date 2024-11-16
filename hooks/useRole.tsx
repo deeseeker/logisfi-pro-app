@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
 function useRole() {
-  const [role, setRole] = useState('')
+  const [role, setRole] = useState("");
   useEffect(() => {
-    const roles = localStorage.getItem('roles')
+    const roles = localStorage.getItem("roles");
 
     if (roles !== null) {
-      const role = JSON.parse(roles)[1]
-      setRole(role)
+      const role = JSON.parse(roles);
+      setRole(role);
     }
-  }, [])
-  return role
+  }, []);
+  return role;
 }
 
-export default useRole
+export default useRole;

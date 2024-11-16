@@ -6,25 +6,11 @@ import { Heading } from "@/components/ui/heading";
 import { useEffect, useState } from "react";
 
 export default function Profile() {
-  const [role, setRole] = useState<string>();
+  // I need to use a state management for the user object
 
-  useEffect(() => {
-    // Access localStorage only after the component has mounted
-    const userRole = JSON.parse(localStorage.getItem("roles") as string);
-
-    setRole(userRole[1]);
-  }, [role]);
-  const renderContent = () => {
-    switch (role) {
-      case "Admin":
-        return <AdminProfile />;
-      case "bank":
-        return <BankProfile />;
-      case "investor":
-        return <InvestorProfile />;
-      default:
-        break;
-    }
-  };
-  return <div>{role ? renderContent() : <p>Loading...</p>}</div>;
+  return (
+    <div>
+      <AdminProfile />
+    </div>
+  );
 }

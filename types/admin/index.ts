@@ -10,6 +10,11 @@ export interface IRoutes {
   destination: string;
 }
 
+export enum UserTypeEnum {
+  Investor = 1,
+  Clearing,
+}
+
 export enum OrderStatusEnums {
   Pending = 1,
   PartlyFulfilled,
@@ -291,6 +296,16 @@ export const organizationSchema = z.object({
   phoneNumber: z.string(),
 });
 
+export const memberSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().email(), // validates email format
+  phoneNumber: z.string(),
+  gender: z.string(),
+  position: z.string(),
+  userType: z.enum(["AccountManager"]), // valid values based on the provided data
+  userRole: z.enum(["Admin"]), // valid values based on the provided data
+});
 export const organizationUpdateSchema = z.object({
   agreedInterestRate: z.string(),
 });

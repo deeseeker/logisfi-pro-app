@@ -4,14 +4,8 @@ import { NavItem } from "@/types";
 function NavItems() {
   const role = useRole();
   const adminItems: NavItem[] =
-    role === "Admin"
+    role === "Clearing"
       ? [
-          {
-            title: "Account",
-            href: "/dashboard/account",
-            icon: "account",
-            label: "account",
-          },
           {
             title: "Finance",
             icon: "finance",
@@ -91,7 +85,7 @@ function NavItems() {
         ]
       : [];
   const investorItems: NavItem[] =
-    role === "investor"
+    role === "Investor"
       ? [
           {
             title: "Beneficiary",
@@ -115,9 +109,16 @@ function NavItems() {
       icon: "profile",
       label: "profile",
     },
+
     ...adminItems,
     ...investorItems,
     //  role==='admin' && ...adminItems,
+    {
+      title: "Account",
+      href: "/dashboard/account",
+      icon: "account",
+      label: "account",
+    },
     {
       title: "History",
       href: "/dashboard/history",

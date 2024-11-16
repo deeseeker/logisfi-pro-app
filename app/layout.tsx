@@ -19,14 +19,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <AuthProvider>
-        <ReactQueryProvider>
-          <body className={inter.className}>
-            <main>{children}</main>
-            <Toaster />
-          </body>
-        </ReactQueryProvider>
-      </AuthProvider>
+      <ReactQueryProvider>
+        <body className={inter.className}>
+          <main>{children}</main>
+          <Toaster />
+        </body>
+      </ReactQueryProvider>
+      {/* <AuthProvider>
+      </AuthProvider> */}
     </html>
   );
 }

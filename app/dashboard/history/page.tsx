@@ -6,23 +6,25 @@ import InvTransactionHistory from "@/components/tables/investor-tables/history";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
+import useRole from "@/hooks/useRole";
 import { useEffect, useState } from "react";
 
 export default function History() {
-  const [role, setRole] = useState<string | null>(null);
+  // const [role, setRole] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Access localStorage only after the component has mounted
-    const userRole = localStorage.getItem("role");
-    setRole(userRole);
-  }, []);
+  // useEffect(() => {
+  //   // Access localStorage only after the component has mounted
+  //   const userRole = localStorage.getItem("role");
+  //   setRole(userRole);
+  // }, []);
+  const role = useRole();
   const renderContent = () => {
     switch (role) {
       case "Clearing":
         return <AdminProfile />;
       case "bank":
         return <BTransactionHistory />;
-      case "investor":
+      case "Investor":
         return <InvTransactionHistory />;
       default:
         break;

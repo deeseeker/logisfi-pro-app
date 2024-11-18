@@ -2,6 +2,7 @@
 import AdminDashboard from "@/components/dashboards/admin-dashboard";
 import BankDashboard from "@/components/dashboards/bank-dashboard";
 import InvestorDashboard from "@/components/dashboards/investors/investor-dashboard";
+import ShimmerTabs from "@/components/skeleton/dashboard/investor";
 
 import useRole from "@/hooks/useRole";
 
@@ -31,7 +32,7 @@ export default function Dashboard() {
             {/* <Button className='bg-[#001475]'>Download Report</Button> */}
           </div>
         </div>
-        {role ? renderContent() : <p>Loading...</p>}
+        {role ? renderContent() : <ShimmerTabs />}
       </div>
     </div>
   );

@@ -120,7 +120,7 @@ function NavItems() {
       label: "account",
     },
     {
-      title: "History",
+      title: "Transactions",
       href: "/dashboard/history",
       icon: "history",
       label: "history",

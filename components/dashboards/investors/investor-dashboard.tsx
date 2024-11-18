@@ -18,19 +18,18 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllInvestments, getWallet } from "@/app/api/services";
 import { formatNaira } from "@/utils/helpers";
 import { useAuth } from "@/context/AuthContext";
-
 function InvestorDashboard() {
   const [isHidden, setIsHidden] = useState(false);
-  const { roles } = useAuth();
-  console.log(roles);
+  const { roles, profile } = useAuth();
+  console.log(roles, profile);
 
   const { data, isPending } = useQuery({
     queryKey: ["wallet-details"],
-    queryFn: () => getWallet("baed615a-1e4a-465f-58b7-08dd03fe7f64"),
+    queryFn: () => getWallet(`${profile?.organizationId}`),
   });
   const { data: res } = useQuery({
     queryKey: ["investments"],
-    queryFn: () => getAllInvestments("baed615a-1e4a-465f-58b7-08dd03fe7f64"),
+    queryFn: () => getAllInvestments(`${profile?.organizationId}`),
   });
   console.log(res);
   const roi = res?.responseData[0]?.roi;
@@ -196,7 +195,7 @@ function InvestorDashboard() {
                 </Button>
               )
             : null}
-          ç
+
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7 mt-4">
             <div className="col-span-4">
               <ProfitGraph />
@@ -215,6 +214,7 @@ function InvestorDashboard() {
           </div>
         </TabsContent>
       </Tabs>
+
       <ActiveTransactions />
     </div>
   );

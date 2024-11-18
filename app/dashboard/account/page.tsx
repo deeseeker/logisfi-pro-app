@@ -27,6 +27,7 @@ import {
 
 import { schemaToDate } from "@/lib/utils";
 import MemberForm from "@/components/forms/organization/add-member";
+import { AccountAndMembersShimmer } from "@/components/skeleton/account";
 
 export type MemberFormValue = z.infer<typeof memberSchema>;
 export default function Organization() {
@@ -86,63 +87,69 @@ export default function Organization() {
       </div>
       <Separator />
       <div className="space-y-4">
-        <Card>
-          <CardHeader>
-            <h2>Account details</h2>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-y-12 justify-between">
-              <div>
-                <h3>Account Name</h3>
-                <CardDescription>
-                  {dataSource?.organizationName}
-                </CardDescription>
-              </div>
-              <div>
-                <h3>Date Created</h3>
-                <CardDescription>
-                  {schemaToDate(dataSource?.createdAt)}
-                </CardDescription>
-              </div>
-              <div>
-                <h3>Agreed Interest Rate</h3>
-                <CardDescription>
-                  {dataSource?.agreedInterestRate}%
-                </CardDescription>
-              </div>
-              <div>
-                <h3>Interest Earned</h3>
-                <CardDescription>
-                  {dataSource?.wallet?.interestEarned}
-                </CardDescription>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <h2>Members</h2>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-y-12 justify-between">
-              {dataSource?.members?.map((member: any) =>
-                Object.entries(member).map(([key, value]) =>
-                  // Only display fields that are defined in labelMap
-                  labelMap[key] ? (
-                    <div key={key}>
-                      <h3>{labelMap[key]}</h3>
-                      <CardDescription>
-                        {value !== null && value !== undefined
-                          ? String(value)
-                          : "N/A"}
-                      </CardDescription>
-                    </div>
-                  ) : null
-                )
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        {isPending ? (
+          <AccountAndMembersShimmer />
+        ) : (
+          <>
+            <Card>
+              <CardHeader>
+                <h2>Account details</h2>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-y-12 justify-between">
+                  <div>
+                    <h3>Account Name</h3>
+                    <CardDescription>
+                      {dataSource?.organizationName}
+                    </CardDescription>
+                  </div>
+                  <div>
+                    <h3>Date Created</h3>
+                    <CardDescription>
+                      {schemaToDate(dataSource?.createdAt)}
+                    </CardDescription>
+                  </div>
+                  <div>
+                    <h3>Agreed Interest Rate</h3>
+                    <CardDescription>
+                      {dataSource?.agreedInterestRate}%
+                    </CardDescription>
+                  </div>
+                  <div>
+                    <h3>Interest Earned</h3>
+                    <CardDescription>
+                      {dataSource?.wallet?.interestEarned}
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <h2>Members</h2>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-y-12 justify-between">
+                  {dataSource?.members?.map((member: any) =>
+                    Object.entries(member).map(([key, value]) =>
+                      // Only display fields that are defined in labelMap
+                      labelMap[key] ? (
+                        <div key={key}>
+                          <h3>{labelMap[key]}</h3>
+                          <CardDescription>
+                            {value !== null && value !== undefined
+                              ? String(value)
+                              : "N/A"}
+                          </CardDescription>
+                        </div>
+                      ) : null
+                    )
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </div>
   );

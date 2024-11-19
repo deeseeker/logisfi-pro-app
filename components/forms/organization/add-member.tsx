@@ -11,7 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { UseFormReturn } from "react-hook-form";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { RoleEnum } from "@/types/admin";
 
 interface MemberFormProps {
   form: UseFormReturn<any>;
@@ -34,7 +41,7 @@ const MemberForm = ({ form, onSubmit, mutation, key }: MemberFormProps) => {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter state..."
+                    placeholder="Enter first name..."
                     className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
@@ -43,7 +50,7 @@ const MemberForm = ({ form, onSubmit, mutation, key }: MemberFormProps) => {
                 <FormMessage />
               </FormItem>
             )}
-          />{" "}
+          />
           <FormField
             control={form.control}
             name="lastName"
@@ -53,7 +60,7 @@ const MemberForm = ({ form, onSubmit, mutation, key }: MemberFormProps) => {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter state..."
+                    placeholder="Enter last name..."
                     className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
@@ -62,7 +69,7 @@ const MemberForm = ({ form, onSubmit, mutation, key }: MemberFormProps) => {
                 <FormMessage />
               </FormItem>
             )}
-          />{" "}
+          />
           <FormField
             control={form.control}
             name="phoneNumber"
@@ -72,7 +79,7 @@ const MemberForm = ({ form, onSubmit, mutation, key }: MemberFormProps) => {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter phone..."
+                    placeholder="Enter phone number..."
                     className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
@@ -81,7 +88,37 @@ const MemberForm = ({ form, onSubmit, mutation, key }: MemberFormProps) => {
                 <FormMessage />
               </FormItem>
             )}
-          />{" "}
+          />
+          <FormField
+            control={form.control}
+            name="userRole"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>User Role</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a role for your member" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {/* Map through the RoleEnum to create options */}
+                    {Object.entries(RoleEnum)
+                      .filter(([key]) => isNaN(Number(key))) // Exclude reverse-mapped numeric keys
+                      .map(([key, value]) => (
+                        <SelectItem key={value} value={value.toString()}>
+                          {key}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="email"
@@ -90,9 +127,9 @@ const MemberForm = ({ form, onSubmit, mutation, key }: MemberFormProps) => {
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
-                    type="text"
-                    className="col-span-3"
+                    type="email"
                     placeholder="Enter email..."
+                    className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
                   />
@@ -103,34 +140,15 @@ const MemberForm = ({ form, onSubmit, mutation, key }: MemberFormProps) => {
           />
           <FormField
             control={form.control}
-            name="phoneNumber"
+            name="gender"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Gender</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter phone..."
+                    placeholder="Enter gender..."
                     className="col-span-3"
-                    disabled={mutation.isPending}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />{" "}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Position</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    className="col-span-3"
-                    placeholder="Enter email..."
                     disabled={mutation.isPending}
                     {...field}
                   />
@@ -139,36 +157,18 @@ const MemberForm = ({ form, onSubmit, mutation, key }: MemberFormProps) => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="phoneNumber"
+            name="position"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>User Type</FormLabel>
+                <FormLabel>Position</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter phone..."
+                    placeholder="Enter position..."
                     className="col-span-3"
-                    disabled={mutation.isPending}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />{" "}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>User Role</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    className="col-span-3"
-                    placeholder="Enter email..."
                     disabled={mutation.isPending}
                     {...field}
                   />
@@ -178,7 +178,6 @@ const MemberForm = ({ form, onSubmit, mutation, key }: MemberFormProps) => {
             )}
           />
         </div>
-
         <div className="text-end">
           <Button
             type="submit"

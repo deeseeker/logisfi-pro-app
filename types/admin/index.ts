@@ -310,8 +310,7 @@ export const memberSchema = z.object({
   phoneNumber: z.string(),
   gender: z.string(),
   position: z.string(),
-  userType: z.enum(["AccountManager"]), // valid values based on the provided data
-  userRole: z.enum(["Admin"]), // valid values based on the provided data
+  userRole: z.string(), // valid values based on the provided data
 });
 export const organizationUpdateSchema = z.object({
   agreedInterestRate: z.string(),

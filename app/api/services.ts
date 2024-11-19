@@ -238,10 +238,7 @@ export const addNewOrganization = async (data: any) => {
 
 export const addNewMember = async (data: any) => {
   try {
-    const response = await axiosInstance.post(
-      `${API_ENDPOINTS}/users/add-to-organization`,
-      data
-    );
+    const response = await axiosInstance.post(API_ENDPOINTS.newmember, data);
     return response.data;
   } catch (error: any) {
     throw error.response.data;

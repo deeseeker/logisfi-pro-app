@@ -5,18 +5,10 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import {
-  addNewMember,
-  addNewOrganization,
-  getOrganizationId,
-} from "@/app/api/services";
+import { addNewMember, getOrganizationId } from "@/app/api/services";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  memberSchema,
-  organizationSchema,
-  organizationUpdateSchema,
-} from "@/types/admin";
+import { memberSchema } from "@/types/admin";
 import CustomDialog from "@/components/dialog/custom-dialog";
 import {
   Card,
@@ -28,12 +20,17 @@ import {
 import { schemaToDate } from "@/lib/utils";
 import MemberForm from "@/components/forms/organization/add-member";
 import { AccountAndMembersShimmer } from "@/components/skeleton/account";
+import { useAuth } from "@/context/AuthContext";
+import { ErrorModal } from "@/components/custom-toast/error-toast";
+import { error } from "console";
+import { successModal } from "@/components/custom-toast/success-toast";
 
 export type MemberFormValue = z.infer<typeof memberSchema>;
-export default function Organization() {
+export default function Account() {
+  const { profile } = useAuth();
   const { data, isPending } = useQuery({
     queryKey: ["organization"],
-    queryFn: () => getOrganizationId("baed615a-1e4a-465f-58b7-08dd03fe7f64"),
+    queryFn: () => getOrganizationId(`${profile.organizationId}`),
   });
   const dataSource = data?.responseData;
   const { toast } = useToast();
@@ -46,17 +43,27 @@ export default function Organization() {
     mutationFn: (data: any) => {
       return addNewMember(data);
     },
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       queryClient.invalidateQueries({
         queryKey: ["organization"],
       });
-      toast({
-        title: "Success!",
-        description: "The organization data has been updated successfully.",
+      console.log(res);
+      successModal({
+        description:
+          res.responseData ||
+          "The organization data has been updated successfully.",
       });
-
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    },
+    onError: async (error: any) => {
+      console.log(error);
+      const errorMessage =
+        error?.responseMessage || "An unexpected error occurred.";
+
+      ErrorModal({
+        description: errorMessage,
+      });
     },
   });
   const labelMap: { [key: string]: string } = {
@@ -69,7 +76,16 @@ export default function Organization() {
     userType: "User Type",
   };
 
-  const onSubmit = (data: MemberFormValue) => {};
+  const onSubmit = (data: any) => {
+    console.log(profile.userType, data);
+    const formData = {
+      ...data,
+      userType: profile.userType,
+      organizationId: profile.organizationId,
+    };
+    console.log(formData);
+    mutation.mutate(formData);
+  };
   return (
     <div className="space-y-2">
       <div className="flex justify-between">
@@ -130,21 +146,26 @@ export default function Organization() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-y-12 justify-between">
-                  {dataSource?.members?.map((member: any) =>
-                    Object.entries(member).map(([key, value]) =>
-                      // Only display fields that are defined in labelMap
-                      labelMap[key] ? (
-                        <div key={key}>
-                          <h3>{labelMap[key]}</h3>
-                          <CardDescription>
-                            {value !== null && value !== undefined
-                              ? String(value)
-                              : "N/A"}
-                          </CardDescription>
-                        </div>
-                      ) : null
-                    )
-                  )}
+                  {dataSource?.members?.map((member: any, index: any) => (
+                    <div
+                      key={index}
+                      className="grid gap-y-12 pb-4 border-b border-gray-200"
+                    >
+                      {Object.entries(member).map(([key, value]) =>
+                        // Only display fields that are defined in labelMap
+                        labelMap[key] ? (
+                          <div key={key}>
+                            <h3>{labelMap[key]}</h3>
+                            <CardDescription>
+                              {value !== null && value !== undefined
+                                ? String(value)
+                                : "N/A"}
+                            </CardDescription>
+                          </div>
+                        ) : null
+                      )}
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>

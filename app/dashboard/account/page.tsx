@@ -16,18 +16,16 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card";
-
 import { schemaToDate } from "@/lib/utils";
 import MemberForm from "@/components/forms/organization/add-member";
 import { AccountAndMembersShimmer } from "@/components/skeleton/account";
-import { useAuth } from "@/context/AuthContext";
 import { ErrorModal } from "@/components/custom-toast/error-toast";
-import { error } from "console";
 import { successModal } from "@/components/custom-toast/success-toast";
+import { useProfile } from "@/hooks/useRole";
 
 export type MemberFormValue = z.infer<typeof memberSchema>;
 export default function Account() {
-  const { profile } = useAuth();
+  const { data: profile } = useProfile();
   const { data, isPending } = useQuery({
     queryKey: ["organization"],
     queryFn: () => getOrganizationId(`${profile.organizationId}`),
@@ -73,7 +71,6 @@ export default function Account() {
     gender: "Gender",
     position: "Position",
     phoneNumber: "Phone Number",
-    userType: "User Type",
   };
 
   const onSubmit = (data: any) => {

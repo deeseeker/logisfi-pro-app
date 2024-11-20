@@ -18,9 +18,11 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllInvestments, getWallet } from "@/app/api/services";
 import { formatNaira } from "@/utils/helpers";
 import { useAuth } from "@/context/AuthContext";
+import { useProfile } from "@/hooks/useRole";
 function InvestorDashboard() {
   const [isHidden, setIsHidden] = useState(false);
-  const { roles, profile } = useAuth();
+  const { roles } = useAuth();
+  const { data: profile } = useProfile();
   console.log(roles, profile);
 
   const { data, isPending } = useQuery({

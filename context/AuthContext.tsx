@@ -1,5 +1,5 @@
 "use client";
-import { getProfile } from "@/app/api/services";
+import { getProfile, refreshAccessToken } from "@/app/api/services";
 import { useQuery } from "@tanstack/react-query";
 import {
   createContext,
@@ -17,7 +17,6 @@ interface AuthContextType {
   setUser: any;
   roles: string[] | null;
   setRoles: Dispatch<SetStateAction<string[] | null>>;
-  profile: any;
 }
 // coming back to this
 const AuthContext = createContext<AuthContextType>({
@@ -27,7 +26,6 @@ const AuthContext = createContext<AuthContextType>({
   setUser: () => {},
   roles: null,
   setRoles: () => {},
-  profile: null,
 });
 
 export function useAuth() {
@@ -44,6 +42,8 @@ const AuthProvider = ({ children }: any) => {
         : null;
     return storedToken ? storedToken : null;
   });
+
+  const [profile, setProfile] = useState();
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -62,13 +62,6 @@ const AuthProvider = ({ children }: any) => {
       }
     }
   }, []);
-  const { data: profile } = useQuery({
-    queryKey: ["profile"],
-    queryFn: getProfile,
-    enabled: !!token,
-  });
-
-  console.log("Profile in context:", profile);
 
   return (
     <AuthContext.Provider
@@ -79,7 +72,6 @@ const AuthProvider = ({ children }: any) => {
         setUser,
         roles,
         setRoles,
-        profile,
       }}
     >
       {children}

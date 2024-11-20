@@ -1,3 +1,5 @@
+import { getProfile } from "@/app/api/services";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 function useRole() {
@@ -14,3 +16,9 @@ function useRole() {
 }
 
 export default useRole;
+
+export const useProfile = () =>
+  useQuery({
+    queryKey: ["profile"],
+    queryFn: getProfile,
+  });

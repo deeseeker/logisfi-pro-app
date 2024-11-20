@@ -23,11 +23,11 @@ import {
 import VectorSvg from "@/public/vector.svg";
 import ProfileForm from "../forms/edit-profile";
 import Image from "next/image";
-import { useAuth } from "@/context/AuthContext";
 import { ProfileShimmer } from "../skeleton/profile";
+import { useProfile } from "@/hooks/useRole";
 
 function AdminProfile() {
-  const { profile } = useAuth();
+  const { data: profile } = useProfile();
   console.log("Profile in context:", profile);
 
   return (

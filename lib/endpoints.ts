@@ -13,6 +13,7 @@ export const API_ENDPOINTS = {
   mobilizations: "organizations/mobilizations",
   activate: "users/accept-invite",
   newmember: "users/add-to-organization",
+  topup: "finances/top-up-loan",
 
   // Add more as needed
 };

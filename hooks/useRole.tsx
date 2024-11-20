@@ -1,4 +1,4 @@
-import { getProfile } from "@/app/api/services";
+import { getAllOrganizations, getProfile } from "@/app/api/services";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
@@ -21,4 +21,10 @@ export const useProfile = () =>
   useQuery({
     queryKey: ["profile"],
     queryFn: getProfile,
+  });
+
+export const useOrganization = () =>
+  useQuery({
+    queryKey: ["organization"],
+    queryFn: getAllOrganizations,
   });

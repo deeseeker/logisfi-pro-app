@@ -235,7 +235,14 @@ export const addNewOrganization = async (data: any) => {
     throw error.response.data;
   }
 };
-
+export const topupLoan = async (data: any) => {
+  try {
+    const response = await axiosInstance.post(API_ENDPOINTS.topup, data);
+    return response.data;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
 export const addNewMember = async (data: any) => {
   try {
     const response = await axiosInstance.post(API_ENDPOINTS.newmember, data);

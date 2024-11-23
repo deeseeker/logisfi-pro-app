@@ -198,7 +198,7 @@ function InvestorDashboard() {
               )
             : null}
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7 mt-4">
+          {/* <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7 mt-4">
             <div className="col-span-4">
               <ProfitGraph />
             </div>
@@ -213,7 +213,7 @@ function InvestorDashboard() {
                 <RecentInvestments />
               </CardContent>
             </Card>
-          </div>
+          </div> */}
         </TabsContent>
       </Tabs>
 

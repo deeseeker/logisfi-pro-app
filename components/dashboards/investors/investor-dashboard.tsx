@@ -18,7 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllInvestments, getWallet } from "@/app/api/services";
 import { formatNaira } from "@/utils/helpers";
 import { useAuth } from "@/context/AuthContext";
-import { useProfile } from "@/app/dashboard/page";
+import { useProfile } from "@/hooks/useRole";
 
 function InvestorDashboard() {
   const [isHidden, setIsHidden] = useState(false);
@@ -29,10 +29,12 @@ function InvestorDashboard() {
   const { data, isPending } = useQuery({
     queryKey: ["wallet-details"],
     queryFn: () => getWallet(`${profile?.organizationId}`),
+    enabled: !!profile?.organizationId,
   });
   const { data: res } = useQuery({
     queryKey: ["investments"],
     queryFn: () => getAllInvestments(`${profile?.organizationId}`),
+    enabled: !!profile?.organizationId,
   });
   console.log(res);
   const roi = res?.responseData[0]?.roi;

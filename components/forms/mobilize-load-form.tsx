@@ -59,7 +59,7 @@ const MobilizeShipmentForm = ({ data }: { data: any }) => {
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ["loads"],
+        queryKey: ["loads", "wallet-details"],
       });
       toast({
         title: "Success!",

@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserTypeEnum } from "@/types/admin";
 import { useAuth } from "@/context/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 const formSchema = z.object({
   email: z.string(),
@@ -30,7 +31,7 @@ export default function UserAuthForm() {
   const { setUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const route = useRouter();
-
+  const queryClient = useQueryClient();
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
   });
@@ -49,6 +50,7 @@ export default function UserAuthForm() {
       localStorage.setItem("roles", JSON.stringify(roles));
       localStorage.setItem("token", response.responseData.accessToken);
       localStorage.setItem("refreshToken", response.responseData.refreshToken);
+      await queryClient.invalidateQueries({ queryKey: ["profile"] });
       route.push("/dashboard");
     } else {
       console.log("no response");

@@ -52,7 +52,7 @@ function InvestorDashboard() {
             <Card className="bg-[linear-gradient(99.61deg,_#205BBB_2.12%,_#0E3C88_100%)] text-white">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-white">
-                  Wallet Balance
+                  Total Loan Amount
                 </CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +130,7 @@ function InvestorDashboard() {
             <Card className="bg-[linear-gradient(98.55deg,_#DBF0D5_36.12%,_#A4FD8B_100%)]">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Active Invesment
+                  Total Amount Disbursed
                 </CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -164,9 +164,7 @@ function InvestorDashboard() {
                 className="opacity-25 absolute h-[89px] w-[151px] -bottom-[9px] -right-1 mix-blend-screen"
               />
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Expected ROI
-                </CardTitle>
+                <CardTitle className="text-sm font-medium">ROI</CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

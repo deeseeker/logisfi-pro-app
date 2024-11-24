@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: 'Multi-user dashboard that renders contents based on user roles'
 }
 
+
+
 export default function DashboardLayout({
   children
 }: {

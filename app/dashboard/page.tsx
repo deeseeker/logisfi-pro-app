@@ -3,9 +3,21 @@ import AdminDashboard from "@/components/dashboards/admin-dashboard";
 import BankDashboard from "@/components/dashboards/bank-dashboard";
 import InvestorDashboard from "@/components/dashboards/investors/investor-dashboard";
 import ShimmerTabs from "@/components/skeleton/dashboard/investor";
-
+import { useQuery } from "@tanstack/react-query";
+import { getAllOrganizations, getProfile } from "../api/services";
 import useRole from "@/hooks/useRole";
 
+export const useProfile = () =>
+  useQuery({
+    queryKey: ["profile"],
+    queryFn: getProfile,
+  });
+
+export const useOrganization = () =>
+  useQuery({
+    queryKey: ["organization"],
+    queryFn: getAllOrganizations,
+  });
 export default function Dashboard() {
   const role = useRole();
   console.log(role);

@@ -42,7 +42,7 @@ function NavItems() {
               },
               {
                 title: "Shippers",
-                href: "/dashboard/shippers",
+                href: "/dashboard/shipper",
                 icon: "shipper",
                 label: "shippers",
               },
@@ -100,24 +100,24 @@ function NavItems() {
           //     },
           //   ],
           // },
-          {
-            title: "Organizations",
-            href: "/dashboard/organization",
-            icon: "shippers",
-            label: "organizations",
-          },
-          {
-            title: "Shippers",
-            href: "/dashboard/shippers",
-            icon: "shippers",
-            label: "shippers",
-          },
-          {
-            title: "Vendors",
-            href: "/dashboard/vendors",
-            icon: "vendors",
-            label: "vendors",
-          },
+          //{
+          //   title: "Organizations",
+          //   href: "/dashboard/organization",
+          //   icon: "shippers",
+          //   label: "organizations",
+          // },
+          // {
+          //   title: "Shippers",
+          //   href: "/dashboard/shippers",
+          //   icon: "shippers",
+          //   label: "shippers",
+          // },
+          // {
+          //   title: "Vendors",
+          //   href: "/dashboard/vendors",
+          //   icon: "vendors",
+          //   label: "vendors",
+          // },
           {
             title: "Routes",
             href: "/dashboard/routes",

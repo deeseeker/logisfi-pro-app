@@ -1,23 +1,28 @@
 import { columns } from "./column";
-import { getAllVendors } from "@/app/api/services";
+import { getAllShipments } from "@/app/api/services";
 import { useQuery } from "@tanstack/react-query";
 import { DataTableSkeletonLoader } from "@/components/skeleton";
 import { DataTable } from "@/components/ui/table/data-table";
 
-export default function VendorsTable() {
+export default function AdminShipments() {
   const { data, isPending } = useQuery({
-    queryKey: ["vendors"],
-    queryFn: getAllVendors,
+    queryKey: ["shipments"],
+    queryFn: getAllShipments,
   });
-  console.log(data);
-  const dataSource = data?.responseData;
 
+  const dataSource = data?.responseData;
   return (
     <div className="py-10">
       {isPending ? (
         <DataTableSkeletonLoader />
       ) : (
-        <DataTable searchKey="name" columns={columns} data={dataSource} />
+        <DataTable
+          columns={columns}
+          data={dataSource}
+          searchKey="truckNumber"
+          filter1="shipmentStatus"
+          filter2="mobilizationStatus"
+        />
       )}
     </div>
   );

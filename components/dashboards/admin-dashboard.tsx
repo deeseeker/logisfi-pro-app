@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
+import Shipments from "./admin/data-table";
+import AdminShipments from "./admin/data-table";
 
 function AdminDashboard() {
   return (
@@ -157,7 +159,7 @@ function AdminDashboard() {
           </div> */}
         </TabsContent>
       </Tabs>
-      <RecentActivities />
+      <AdminShipments />
     </div>
   );
 }

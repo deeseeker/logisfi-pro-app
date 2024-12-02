@@ -45,6 +45,14 @@ export enum ShipmentStatusEnums {
   Delivered,
   Cancelled,
 }
+
+export enum MobilizationStatusEnums {
+  NotMobilized = 1,
+  PartlyMobilized,
+  Mobilized,
+  Invoiced,
+  InvoicedAndPaid,
+}
 //"pending approved failed  for shipment status "
 export type Status =
   | "Pending"

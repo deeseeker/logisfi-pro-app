@@ -32,7 +32,7 @@ import {
 import { OrderStatusEnums } from "@/types/admin";
 
 export const formatEnumKey = (key: string) => {
-  return key.replace(/([a-z])([A-Z])/g, "$1 $2"); // Add space before uppercase letters
+  return key?.replace(/([a-z])([A-Z])/g, "$1 $2"); // Add space before uppercase letters
 };
 const FormSchema = z.object({
   orderStatus: z.string({

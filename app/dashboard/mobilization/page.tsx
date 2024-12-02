@@ -1,20 +1,20 @@
 "use client";
-import MobilizationsTable from "@/components/tables/admin-tables/mobilizations";
+
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-
 import React from "react";
+import MobilizationTable from "./data-table";
 
-function Load() {
+function Mobilizations() {
   return (
     <div>
       <div className="flex justify-between">
         <Heading title="Mobilizations" description="View your mobilizations" />
       </div>
       <Separator />
-      <MobilizationsTable />
+      <MobilizationTable />
     </div>
   );
 }
 
-export default Load;
+export default Mobilizations;

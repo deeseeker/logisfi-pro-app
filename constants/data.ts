@@ -7,57 +7,78 @@ function NavItems() {
     role === "Clearing"
       ? [
           {
-            title: "Finance",
-            icon: "finance",
-            href: "#",
-            label: "finance",
-            isChidren: true,
-            children: [
-              {
-                title: "Transactions",
-                href: "/dashboard/transactions",
-                icon: "transactions",
-                label: "transactions",
-              },
-              {
-                title: "Investments",
-                href: "/dashboard/investments",
-                icon: "investments",
-                label: "investments",
-              },
-              // {
-              //   title: "Withdrawals",
-              //   href: "/dashboard/withdrawals",
-              //   icon: "withdrawals",
-              //   label: "withdrawals",
-              // },
-            ],
+            title: "Order",
+            icon: "order",
+            href: "/dashboard/order",
           },
           {
             title: "Shipment",
-            icon: "example",
-            href: "#",
-            label: "example",
-            isChidren: true,
-            children: [
-              {
-                title: "Order",
-                icon: "order",
-                href: "/dashboard/order",
-              },
-              {
-                title: "Load",
-                icon: "load",
-                href: "/dashboard/load",
-              },
-              {
-                title: "Mobilizations",
-                href: "/dashboard/mobilizations",
-                icon: "transactions",
-                label: "mobilizations",
-              },
-            ],
+            icon: "load",
+            href: "/dashboard/shipment",
           },
+          {
+            title: "Mobilizations",
+            icon: "mobilization",
+            href: "/dashboard/mobilization",
+          },
+          {
+            title: "Investments",
+            href: "/dashboard/investment",
+            icon: "investments",
+            label: "investments",
+          },
+          // {
+          //   title: "Finance",
+          //   icon: "finance",
+          //   href: "#",
+          //   label: "finance",
+          //   isChidren: true,
+          //   children: [
+          //     {
+          //       title: "Transactions",
+          //       href: "/dashboard/transactions",
+          //       icon: "transactions",
+          //       label: "transactions",
+          //     },
+          //     {
+          //       title: "Investments",
+          //       href: "/dashboard/investments",
+          //       icon: "investments",
+          //       label: "investments",
+          //     },
+          //     // {
+          //     //   title: "Withdrawals",
+          //     //   href: "/dashboard/withdrawals",
+          //     //   icon: "withdrawals",
+          //     //   label: "withdrawals",
+          //     // },
+          //   ],
+          // },
+          // {
+          //   title: "Shipment",
+          //   icon: "example",
+          //   href: "#",
+          //   label: "example",
+          //   isChidren: true,
+          //   children: [
+          //     {
+          //       title: "Order",
+          //       icon: "order",
+          //       href: "/dashboard/order",
+          //     },
+          //     {
+          //       title: "Load",
+          //       icon: "load",
+          //       href: "/dashboard/load",
+          //     },
+          //     {
+          //       title: "Mobilizations",
+          //       href: "/dashboard/mobilizations",
+          //       icon: "transactions",
+          //       label: "mobilizations",
+          //     },
+          //   ],
+          // },
           {
             title: "Organizations",
             href: "/dashboard/organization",
@@ -103,12 +124,6 @@ function NavItems() {
       icon: "dashboard",
       label: "Dashboard",
     },
-    {
-      title: "Profile",
-      href: "/dashboard/profile",
-      icon: "profile",
-      label: "profile",
-    },
 
     ...adminItems,
     ...investorItems,
@@ -119,6 +134,13 @@ function NavItems() {
       icon: "account",
       label: "account",
     },
+    {
+      title: "Profile",
+      href: "/dashboard/profile",
+      icon: "profile",
+      label: "profile",
+    },
+
     {
       title: "Transactions",
       href: "/dashboard/history",

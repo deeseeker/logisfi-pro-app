@@ -1,7 +1,6 @@
 "use client";
 import OrderForm from "@/components/forms/order/order-form";
 import PriceForm from "@/components/forms/create-price/shipper-price";
-import OrdersTable from "@/components/tables/admin-tables/orders";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,6 +14,7 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
 import React from "react";
+import OrdersTable from "./data-table";
 
 function Order() {
   return (

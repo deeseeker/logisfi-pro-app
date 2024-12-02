@@ -16,9 +16,9 @@ import { RecentInvestments } from "@/components/recent-investments";
 import ActiveTransactions from "@/components/tables/bank-tables/dashboard";
 import { useQuery } from "@tanstack/react-query";
 import { getAllInvestments, getWallet } from "@/app/api/services";
-import { formatNaira } from "@/utils/helpers";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/hooks/useRole";
+import { formatNaira } from "@/utils/helpers";
 
 function InvestorDashboard() {
   const [isHidden, setIsHidden] = useState(false);

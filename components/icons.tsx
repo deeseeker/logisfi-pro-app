@@ -16,8 +16,8 @@ import {
   UserPenIcon,
   UserRoundCheck,
   UserRoundCogIcon,
-  WalletMinimal
-} from 'lucide-react'
+  WalletMinimal,
+} from "lucide-react";
 
 export const Icons = {
   dashboard: LayoutDashboardIcon,
@@ -37,5 +37,6 @@ export const Icons = {
   example: BookCheck,
   finance: WalletMinimal,
   spinner: LoaderCircle,
-  load: Container
-}
+  load: Container,
+  mobilization: CreditCardIcon,
+};

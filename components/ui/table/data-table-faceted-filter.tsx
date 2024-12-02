@@ -37,8 +37,6 @@ export function DataTableFacetedFilter<TData, TValue>({
   options,
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues();
-  console.log("pevil", facets);
-  console.log("psav", column);
   const selectedValues = new Set(column?.getFilterValue() as string[]);
 
   // Handle filter updates
@@ -100,7 +98,6 @@ export function DataTableFacetedFilter<TData, TValue>({
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
-                console.log(option);
                 const isSelected = selectedValues.has(option.value);
                 return (
                   <CommandItem

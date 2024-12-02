@@ -2,7 +2,7 @@ import { toast } from "sonner";
 
 export const showSuccessAlert = (message: string) => {
   toast.success(message, {
-    position: "bottom-right",
+    position: "top-right",
   });
 };
 

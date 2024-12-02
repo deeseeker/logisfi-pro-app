@@ -201,7 +201,7 @@ const ActionCell = ({ row }: { row: any }) => {
               done.
             </DialogDescription>
           </DialogHeader>
-          <FulfillOrderForm data={row.original} />
+          <FulfillOrderForm data={row.original} handleOpen={setOpen} />
         </DialogContent>
       </Dialog>
     </>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   Form,
   FormField,
@@ -24,6 +24,7 @@ import { useToast } from "../../ui/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fulfillOrder, getAllVendors, updateOrder } from "@/app/api/services";
 import { ErrorModal } from "@/components/custom-toast/error-toast";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 const FormSchema = z.object({
   vendorId: z.string({
@@ -33,7 +34,13 @@ const FormSchema = z.object({
   driverPhone: z.string(),
   truckNumber: z.string(),
 });
-const FulfillOrderForm = ({ data }: { data: any }) => {
+const FulfillOrderForm = ({
+  data,
+  handleOpen,
+}: {
+  data: any;
+  handleOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -49,22 +56,27 @@ const FulfillOrderForm = ({ data }: { data: any }) => {
     mutationFn: (data: any) => {
       return fulfillOrder(data);
     },
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       queryClient.invalidateQueries({
         queryKey: ["orders"],
       });
-      toast({
-        title: "Success!",
-        description: "Order has been updated successfully.",
-      });
+
+      showSuccessAlert(res.responseMessage);
+      // toast({
+      //   title: "Success!",
+      //   description: "Order has been updated successfully.",
+      // });
 
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
     },
     onError: async (error: any) => {
       console.log(error);
+      // handleOpen(false);
       const errorMessage =
         error?.responseMessage || "An unexpected error occurred.";
+
+      showErrorAlert(errorMessage);
 
       ErrorModal({
         description: errorMessage,

@@ -243,7 +243,7 @@ export const columns: ColumnDef<Order>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "destination",
+    accessorKey: "route.destination",
     header: "Destination",
   },
   {

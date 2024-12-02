@@ -34,13 +34,7 @@ const FormSchema = z.object({
   driverPhone: z.string(),
   truckNumber: z.string(),
 });
-const FulfillOrderForm = ({
-  data,
-  handleOpen,
-}: {
-  data: any;
-  handleOpen: Dispatch<SetStateAction<boolean>>;
-}) => {
+const FulfillOrderForm = ({ data }: { data: any }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });

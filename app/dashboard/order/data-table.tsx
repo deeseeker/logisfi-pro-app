@@ -21,7 +21,7 @@ export default function OrdersTable() {
         <DataTable
           columns={columns}
           data={dataSource}
-          searchKey="shipper"
+          searchKey="shipper_name"
           filter1="orderStatus"
         />
       )}

@@ -1,10 +1,13 @@
 import { UserFormValue } from "@/components/forms/user-auth-form";
 import axiosInstance from "@/lib/axiosInstance";
 import { RouteFormValue } from "../dashboard/routes/page";
-import { VendorFormValue, VendorUpdateValue } from "../dashboard/vendors/page";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { UpdateProfileForm } from "@/components/forms/edit-profile";
 import { UpdatePriceValue } from "@/components/tables/admin-tables/price-list/vendor-price-list/column";
+import {
+  VendorFormValue,
+  VendorUpdateValue,
+} from "../dashboard/(clients)/vendor/page";
 
 export interface LoginResponse {
   isSuccess: boolean;

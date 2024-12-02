@@ -60,14 +60,11 @@ export default function Organization() {
   return (
     <div className="space-y-2">
       <div className="flex justify-between">
-        <Heading
-          title="Organizations"
-          description="Manage all your organizations"
-        />
+        <Heading title="Investors" description="Manage all your investors" />
         <CustomDialog
-          triggerText="Add Organization"
-          title="Add Organization"
-          description="Fill in the details to add a new organization and click submit when you are done."
+          triggerText="Add Investor"
+          title="Add Investor"
+          description="Fill in the details to add a new investor and click submit when you are done."
           FormComponent={OrganizationForm}
           formKey={key}
           onSubmit={onSubmit}

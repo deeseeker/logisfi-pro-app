@@ -1,6 +1,8 @@
 "use client";
 import PriceForm from "@/components/forms/create-price/shipper-price";
+import VendorPriceForm from "@/components/forms/create-price/vendor-price";
 import PriceList from "@/components/tables/admin-tables/price-list/shipper-price-list";
+import VendorPriceList from "@/components/tables/admin-tables/price-list/vendor-price-list";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,15 +16,16 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
 import { useParams } from "next/navigation";
+
 import React from "react";
 
-function ShipperId() {
+function VendorPrice() {
   const params = useParams();
   const { id } = params;
   return (
     <div>
-      <div className="flex justify-between mb-2">
-        <Heading title="Shipper Details" description="Manage shipper details" />
+      <div className="flex justify-between">
+        <Heading title="Vendor Price" description="Manage vendor price" />
         <Dialog>
           <DialogTrigger asChild>
             <Button className="text-xs md:text-sm bg-customblue">
@@ -37,14 +40,14 @@ function ShipperId() {
                 done.
               </DialogDescription>
             </DialogHeader>
-            <PriceForm shipperId={id as string} />
+            <VendorPriceForm vendorId={id as string} />
           </DialogContent>
         </Dialog>
       </div>
       <Separator />
-      <PriceList />
+      <VendorPriceList />
     </div>
   );
 }
 
-export default ShipperId;
+export default VendorPrice;

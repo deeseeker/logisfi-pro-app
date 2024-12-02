@@ -201,7 +201,7 @@ const ActionCell = ({ row }: { row: any }) => {
               done.
             </DialogDescription>
           </DialogHeader>
-          <FulfillOrderForm data={row.original} handleOpen={setOpen} />
+          <FulfillOrderForm data={row.original} />
         </DialogContent>
       </Dialog>
     </>
@@ -231,14 +231,11 @@ export const columns: ColumnDef<Order>[] = [
   },
   {
     accessorKey: "route.origin",
-    // header: "Origin",
-    // cell: ({ row }) => row.original.route.origin,
+
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Origin" />
     ),
-    // cell: ({ row }) => (
-    //   <div className="w-[150px] capitalize">{row.original.route.origin}</div>
-    // ),
+
     enableSorting: false,
     enableHiding: false,
   },

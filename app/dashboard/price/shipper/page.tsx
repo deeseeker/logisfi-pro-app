@@ -16,13 +16,13 @@ import { Plus } from "lucide-react";
 import { useParams } from "next/navigation";
 import React from "react";
 
-function ShipperId() {
+function ShipperPrice() {
   const params = useParams();
   const { id } = params;
   return (
     <div>
       <div className="flex justify-between mb-2">
-        <Heading title="Shipper Details" description="Manage shipper details" />
+        <Heading title="Shipper Price" description="Manage shipper price" />
         <Dialog>
           <DialogTrigger asChild>
             <Button className="text-xs md:text-sm bg-customblue">
@@ -47,4 +47,4 @@ function ShipperId() {
   );
 }
 
-export default ShipperId;
+export default ShipperPrice;

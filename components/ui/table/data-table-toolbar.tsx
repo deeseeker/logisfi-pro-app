@@ -33,7 +33,6 @@ export function DataTableToolbar<TData>({
   filter2,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  console.log(table.getAllColumns());
   const getData = () => {
     switch (filter1) {
       case "orderStatus":
@@ -57,7 +56,8 @@ export function DataTableToolbar<TData>({
         return [];
     }
   };
-  console.log(getData());
+
+  console.log(table.getAllColumns());
 
   return (
     <div className="flex flex-wrap items-center justify-between">

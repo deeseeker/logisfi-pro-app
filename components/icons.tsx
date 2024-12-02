@@ -13,9 +13,12 @@ import {
   LogOutIcon,
   RouteIcon,
   TruckIcon,
+  User,
   UserPenIcon,
+  UserRound,
   UserRoundCheck,
   UserRoundCogIcon,
+  UsersRound,
   WalletMinimal,
 } from "lucide-react";
 
@@ -38,5 +41,8 @@ export const Icons = {
   finance: WalletMinimal,
   spinner: LoaderCircle,
   load: Container,
+  client: UsersRound,
+  investor: UserRound,
+  shipper: User,
   mobilization: CreditCardIcon,
 };

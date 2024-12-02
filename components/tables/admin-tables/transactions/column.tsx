@@ -1,37 +1,5 @@
 "use client";
-
-import {
-  deleteRoute,
-  deleteShipper,
-  updateRoute,
-  updateShipper,
-} from "@/app/api/services";
-import { RouteFormValue } from "@/app/dashboard/routes/page";
-import {
-  VendorFormValue,
-  VendorUpdateValue,
-} from "@/app/dashboard/vendors/page";
-
-import RouteForm from "@/components/forms/route-form";
-import ShipperForm from "@/components/forms/shipper-form";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,19 +8,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { schemaToDate } from "@/lib/utils";
-import {
-  formSchema,
-  IInvestments,
-  IVendors,
-  vendorSchema,
-} from "@/types/admin";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { IInvestments } from "@/types/admin";
 import { ColumnDef } from "@tanstack/react-table";
-import { EllipsisVertical, Eye, SquarePen, Trash } from "lucide-react";
+import { EllipsisVertical, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
 
 const ActionCell = ({ row }: { row: any }) => {
   const id = row.original.id;

@@ -9,7 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 import { vendorSchema } from "@/types/admin";
 import ShippersTable from "@/components/tables/admin-tables/shippers";
-import { VendorFormValue } from "../vendors/page";
+import { VendorFormValue } from "../vendor/page";
 import ShipperForm from "@/components/forms/shipper-form";
 import CustomDialog from "@/components/dialog/custom-dialog";
 import Link from "next/link";

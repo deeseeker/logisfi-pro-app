@@ -1,7 +1,7 @@
 "use client";
 
 import { deleteVendor, updateVendor } from "@/app/api/services";
-import { VendorFormValue } from "@/app/dashboard/vendors/page";
+import { VendorFormValue } from "@/app/dashboard/(clients)/vendor/page";
 import VendorForm from "@/components/forms/vendor-form";
 import {
   AlertDialog,

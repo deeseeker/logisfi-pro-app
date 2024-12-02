@@ -27,33 +27,54 @@ function NavItems() {
             icon: "investments",
             label: "investments",
           },
-          // {
-          //   title: "Finance",
-          //   icon: "finance",
-          //   href: "#",
-          //   label: "finance",
-          //   isChidren: true,
-          //   children: [
-          //     {
-          //       title: "Transactions",
-          //       href: "/dashboard/transactions",
-          //       icon: "transactions",
-          //       label: "transactions",
-          //     },
-          //     {
-          //       title: "Investments",
-          //       href: "/dashboard/investments",
-          //       icon: "investments",
-          //       label: "investments",
-          //     },
-          //     // {
-          //     //   title: "Withdrawals",
-          //     //   href: "/dashboard/withdrawals",
-          //     //   icon: "withdrawals",
-          //     //   label: "withdrawals",
-          //     // },
-          //   ],
-          // },
+          {
+            title: "Clients",
+            icon: "client",
+            href: "#",
+            label: "clients",
+            isChidren: true,
+            children: [
+              {
+                title: "Investors",
+                href: "/dashboard/investors",
+                icon: "investor",
+                label: "investors",
+              },
+              {
+                title: "Shippers",
+                href: "/dashboard/shippers",
+                icon: "shipper",
+                label: "shippers",
+              },
+              {
+                title: "Vendors",
+                href: "/dashboard/vendor",
+                icon: "vendors",
+                label: "vendors",
+              },
+            ],
+          },
+          {
+            title: "Price",
+            icon: "finance",
+            href: "#",
+            label: "finance",
+            isChidren: true,
+            children: [
+              {
+                title: "Shipper Price",
+                href: "/dashboard/shipper-price",
+                icon: "transactions",
+                label: "shipper's price",
+              },
+              {
+                title: "Vendor Price",
+                href: "/dashboard/vendor-price",
+                icon: "investments",
+                label: "vendor's price",
+              },
+            ],
+          },
           // {
           //   title: "Shipment",
           //   icon: "example",

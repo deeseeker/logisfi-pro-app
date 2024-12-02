@@ -5,7 +5,7 @@ import {
   deleteShipper,
   updateOrganization,
 } from "@/app/api/services";
-import { EditOrganizationValue } from "@/app/dashboard/organization/page";
+import { EditOrganizationValue } from "@/app/dashboard/(clients)/investors/page";
 import EditOrganizationForm from "@/components/forms/organization/update-organization";
 import { Icons } from "@/components/icons";
 import {

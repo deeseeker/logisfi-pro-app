@@ -1,8 +1,8 @@
-import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./column";
 import { getAllOrganizations } from "@/app/api/services";
 import { useQuery } from "@tanstack/react-query";
 import { DataTableSkeletonLoader } from "@/components/skeleton";
+import { DataTable } from "@/components/ui/table/data-table";
 
 export default function OrganizationTable() {
   const { data, isPending } = useQuery({
@@ -17,7 +17,7 @@ export default function OrganizationTable() {
         <DataTableSkeletonLoader />
       ) : (
         <DataTable
-          searchKey="organizations"
+          searchKey="organizationName"
           columns={columns}
           data={dataSource}
         />

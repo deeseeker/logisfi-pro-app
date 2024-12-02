@@ -1,7 +1,5 @@
 "use client";
-import PriceForm from "@/components/forms/create-price/shipper-price";
 import VendorPriceForm from "@/components/forms/create-price/vendor-price";
-import PriceList from "@/components/tables/admin-tables/price-list/shipper-price-list";
 import VendorPriceList from "@/components/tables/admin-tables/price-list/vendor-price-list";
 import { Button } from "@/components/ui/button";
 import {

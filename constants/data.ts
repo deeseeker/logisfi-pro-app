@@ -21,12 +21,7 @@ function NavItems() {
             icon: "mobilization",
             href: "/dashboard/mobilization",
           },
-          {
-            title: "Investments",
-            href: "/dashboard/investment",
-            icon: "investments",
-            label: "investments",
-          },
+
           {
             title: "Clients",
             icon: "client",
@@ -147,6 +142,12 @@ function NavItems() {
     },
 
     ...adminItems,
+    {
+      title: "Investments",
+      href: "/dashboard/investment",
+      icon: "investments",
+      label: "investments",
+    },
     ...investorItems,
     //  role==='admin' && ...adminItems,
     {

@@ -8,6 +8,11 @@ import {
   VendorFormValue,
   VendorUpdateValue,
 } from "../dashboard/(clients)/vendor/page";
+import {
+  showErrorAlert,
+  showInfoAlert,
+  showSuccessAlert,
+} from "@/components/alert";
 
 export interface LoginResponse {
   isSuccess: boolean;
@@ -42,7 +47,7 @@ export const getAllOrders = async () => {
 export const getAllOrganizations = async () => {
   try {
     const response = await axiosInstance.get(API_ENDPOINTS.organization);
-    return response.data;
+    return response.data.responseData;
   } catch (error: any) {
     throw error.response.data;
   }
@@ -67,9 +72,11 @@ export const getAllShipments = async () => {
   }
 };
 
-export const getAllMobilizations = async () => {
+export const getAllMobilizations = async (params = "") => {
   try {
-    const response = await axiosInstance.get(API_ENDPOINTS.mobilizations);
+    const response = await axiosInstance.get(
+      `${API_ENDPOINTS.mobilizations}?OrganizationId=${params}`
+    );
     return response.data;
   } catch (error: any) {
     throw error.response.data;
@@ -165,9 +172,12 @@ export const getWallet = async (organizationId: string) => {
 export const signIn = async (credentials: UserFormValue) => {
   try {
     const response = await axiosInstance.post(API_ENDPOINTS.login, credentials);
+    console.log(response.data);
+    showSuccessAlert(response.data.responseMessage);
     return response.data;
   } catch (error: any) {
     console.error("Error fetching user data", error);
+    showErrorAlert(error.response.data.responseMessage);
   }
 };
 

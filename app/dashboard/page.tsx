@@ -1,6 +1,5 @@
 "use client";
 import AdminDashboard from "@/components/dashboards/admin-dashboard";
-import BankDashboard from "@/components/dashboards/bank-dashboard";
 import InvestorDashboard from "@/components/dashboards/investors/investor-dashboard";
 import ShimmerTabs from "@/components/skeleton/dashboard/investor";
 import useRole from "@/hooks/useRole";

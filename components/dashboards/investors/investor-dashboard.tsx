@@ -15,10 +15,16 @@ import { Button } from "@/components/ui/button";
 import { RecentInvestments } from "@/components/recent-investments";
 import ActiveTransactions from "@/components/tables/bank-tables/dashboard";
 import { useQuery } from "@tanstack/react-query";
-import { getAllInvestments, getWallet } from "@/app/api/services";
+import {
+  getAllInvestments,
+  getAllMobilizations,
+  getWallet,
+} from "@/app/api/services";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/hooks/useRole";
 import { formatNaira } from "@/utils/helpers";
+import InvestmentShipments from "./data-table";
+import InvestorShipments from "./data-table";
 
 function InvestorDashboard() {
   const [isHidden, setIsHidden] = useState(false);
@@ -36,7 +42,14 @@ function InvestorDashboard() {
     queryFn: () => getAllInvestments(`${profile?.organizationId}`),
     enabled: !!profile?.organizationId,
   });
+
+  const { data: mobilization, isPending: Loading } = useQuery({
+    queryKey: ["mobilizations"],
+    queryFn: () => getAllMobilizations(`${profile.organizationId}`),
+    enabled: !!profile?.organizationId,
+  });
   console.log(res);
+  const dataSource = mobilization ? mobilization : [];
   const roi = res?.responseData[0]?.roi;
   return (
     <div>
@@ -218,7 +231,7 @@ function InvestorDashboard() {
         </TabsContent>
       </Tabs>
 
-      <ActiveTransactions />
+      <InvestorShipments data={dataSource} isPending={Loading} />
     </div>
   );
 }

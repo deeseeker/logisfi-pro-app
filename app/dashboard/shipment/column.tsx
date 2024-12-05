@@ -200,6 +200,7 @@ export interface Shipment {
 const ActionCell = ({ row }: { row: any }) => {
   const [open, setOpen] = useState(false);
   const [isMobilize, setIsMobilize] = useState(false);
+  const status = MobilizationStatusEnums[row.original.mobilizationStatus];
 
   return (
     <>
@@ -215,20 +216,16 @@ const ActionCell = ({ row }: { row: any }) => {
           <DropdownMenuItem>
             <Eye className="mr-2 h-4 w-4" /> View
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              const status =
-                MobilizationStatusEnums[row.original.mobilizationStatus];
-
-              if (status === "Mobilized") {
-                showErrorAlert("This shipment has been fully mobilized");
-              } else {
+          {status !== "Mobilized" && (
+            <DropdownMenuItem
+              onClick={() => {
                 setIsMobilize(true);
-              }
-            }}
-          >
-            <SquarePen className="mr-2 h-4 w-4" /> Mobilize
-          </DropdownMenuItem>
+              }}
+            >
+              <SquarePen className="mr-2 h-4 w-4" />{" "}
+              {status !== "PartlyMobilized" ? "Mobilize" : "Balance"}
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 

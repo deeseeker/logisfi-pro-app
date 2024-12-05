@@ -7,7 +7,7 @@ import { DataTableSkeletonLoader } from "@/components/skeleton";
 export default function MobilizationsTable() {
   const { data, isPending } = useQuery({
     queryKey: ["mobilizations"],
-    queryFn: getAllMobilizations,
+    queryFn: () => getAllMobilizations(),
   });
   console.log(data);
   const dataSource = data?.responseData;

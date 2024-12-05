@@ -5,14 +5,9 @@ import { DataTable } from "@/components/ui/table/data-table";
 import { columns } from "./column";
 import { useProfile } from "@/hooks/useRole";
 
-export default function MobilizationTable() {
-  const {} = useProfile();
-  const { data, isPending } = useQuery({
-    queryKey: ["mobilizations"],
-    queryFn: () => getAllMobilizations(),
-  });
+export default function InvestorMobilizations({ data, isPending }: any) {
   console.log(data);
-  const dataSource = data?.responseData;
+  //   const dataSource = data?.responseData;
 
   return (
     <div className="py-10">
@@ -20,7 +15,7 @@ export default function MobilizationTable() {
         <DataTableSkeletonLoader />
       ) : (
         <DataTable
-          data={dataSource}
+          data={data}
           columns={columns}
           searchKey="beneficiaryName"
           filter2="mobilizationStatus"

@@ -11,7 +11,6 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (role) {
       case "Clearing":
-        console.log("here");
         return <AdminDashboard />;
       // case "bank":
       //   return <BankDashboard />;

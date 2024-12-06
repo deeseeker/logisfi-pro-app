@@ -21,6 +21,12 @@ function NavItems() {
             icon: "mobilization",
             href: "/dashboard/mobilization",
           },
+          {
+            title: "Investments",
+            href: "/dashboard/investment",
+            icon: "investments",
+            label: "investments",
+          },
 
           {
             title: "Clients",
@@ -125,6 +131,12 @@ function NavItems() {
     role === "Investor"
       ? [
           {
+            title: "Investments",
+            href: "/dashboard/investment",
+            icon: "investments",
+            label: "investments",
+          },
+          {
             title: "Beneficiary",
             href: "/dashboard/beneficiary",
             icon: "beneficiary",
@@ -142,33 +154,28 @@ function NavItems() {
     },
 
     ...adminItems,
-    {
-      title: "Investments",
-      href: "/dashboard/investment",
-      icon: "investments",
-      label: "investments",
-    },
+
     ...investorItems,
     //  role==='admin' && ...adminItems,
-    {
-      title: "Account",
-      href: "/dashboard/account",
-      icon: "account",
-      label: "account",
-    },
-    {
-      title: "Profile",
-      href: "/dashboard/profile",
-      icon: "profile",
-      label: "profile",
-    },
+    // {
+    //   title: "Account",
+    //   href: "/dashboard/account",
+    //   icon: "account",
+    //   label: "account",
+    // },
+    // {
+    //   title: "Profile",
+    //   href: "/dashboard/profile",
+    //   icon: "profile",
+    //   label: "profile",
+    // },
 
-    {
-      title: "Transactions",
-      href: "/dashboard/history",
-      icon: "history",
-      label: "history",
-    },
+    // {
+    //   title: "Transactions",
+    //   href: "/dashboard/history",
+    //   icon: "history",
+    //   label: "history",
+    // },
     {
       title: "Logout",
       href: "/",

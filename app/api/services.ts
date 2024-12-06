@@ -47,7 +47,7 @@ export const getAllOrders = async () => {
 export const getAllOrganizations = async () => {
   try {
     const response = await axiosInstance.get(API_ENDPOINTS.organization);
-    return response.data.responseData;
+    return response.data;
   } catch (error: any) {
     throw error.response.data;
   }

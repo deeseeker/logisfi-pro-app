@@ -21,6 +21,7 @@ import {
   MobilizationStatusEnums,
   OrderStatusEnums,
 } from "@/types/admin";
+import { formatNaira } from "@/utils/helpers";
 import { ColumnDef } from "@tanstack/react-table";
 import { EllipsisVertical, Eye } from "lucide-react";
 
@@ -70,6 +71,9 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Amount" />
     ),
+    cell: ({ row }) => {
+      return <span>{formatNaira(Number(row.getValue("amount")))}</span>;
+    },
   },
   {
     accessorKey: "mobilizationStatus",

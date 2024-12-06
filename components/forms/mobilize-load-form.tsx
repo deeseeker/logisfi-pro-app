@@ -23,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { showErrorAlert, showSuccessAlert } from "../alert";
 
 const FormSchema = z.object({
   neededAmount: z.string(),
@@ -46,28 +47,27 @@ interface LoanData {
   organization: Organization;
 }
 const MobilizeShipmentForm = ({ data }: { data: any }) => {
-  console.log(data);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
   const queryClient = useQueryClient();
-  const { toast } = useToast();
   const [key, setKey] = useState(0);
   const mutation = useMutation({
     mutationFn: (data: any) => {
       return mobilizeShipment(data);
     },
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       queryClient.invalidateQueries({
-        queryKey: ["loads", "wallet-details"],
+        queryKey: ["shipments", "wallet-details"],
       });
-      toast({
-        title: "Success!",
-        description: "Load has been mobilized successfully.",
-      });
+      showSuccessAlert(res);
+      form.reset();
+      setKey((prevKey) => prevKey + 1);
+    },
 
-      form.reset(); // Reset the form
-      setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    onError: async (error: any) => {
+      console.log(error);
+      showErrorAlert(error.responseMessage);
     },
   });
 
@@ -75,7 +75,6 @@ const MobilizeShipmentForm = ({ data }: { data: any }) => {
   const inputtedAmount = form.watch("neededAmount");
   console.log(inputtedAmount);
 
-  // Use React Query to fetch networks based on the selected country
   const {
     data: wallets,
     isLoading: loadingWallets,
@@ -92,7 +91,6 @@ const MobilizeShipmentForm = ({ data }: { data: any }) => {
     enabled: !!inputtedAmount,
   });
   console.log(wallets);
-  // Fetch networks when the selected country changes
   useEffect(() => {
     if (inputtedAmount) {
       refetchAvailableLoan();
@@ -107,7 +105,6 @@ const MobilizeShipmentForm = ({ data }: { data: any }) => {
       organizationId: dataSource.organizationId,
       percentToMobilize: Number(dataSource.neededAmount),
     };
-    console.log(formData);
     mutation.mutate(formData);
   }
   return (

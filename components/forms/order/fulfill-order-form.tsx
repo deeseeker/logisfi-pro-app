@@ -56,17 +56,11 @@ const FulfillOrderForm = ({ data }: { data: any }) => {
       });
 
       showSuccessAlert(res.responseMessage);
-      // toast({
-      //   title: "Success!",
-      //   description: "Order has been updated successfully.",
-      // });
 
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
     },
     onError: async (error: any) => {
-      console.log(error);
-      // handleOpen(false);
       const errorMessage =
         error?.responseMessage || "An unexpected error occurred.";
 
@@ -90,7 +84,6 @@ const FulfillOrderForm = ({ data }: { data: any }) => {
         },
       ],
     };
-    console.log(formData);
     mutation.mutate(formData);
   }
   return (

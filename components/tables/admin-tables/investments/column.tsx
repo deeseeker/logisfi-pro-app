@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { schemaToDate } from "@/lib/utils";
 import { IInvestments, InvestmentStatusEnums } from "@/types/admin";
+import { formatNaira } from "@/utils/helpers";
 import { ColumnDef } from "@tanstack/react-table";
 import { EllipsisVertical, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -53,6 +54,9 @@ export const columns: ColumnDef<IInvestments>[] = [
   {
     accessorKey: "investedAmount",
     header: "Invested Amount",
+    cell: ({ row }) => {
+      return <span>{formatNaira(Number(row.getValue("investedAmount")))}</span>;
+    },
   },
   {
     accessorKey: "investmentDate",
@@ -64,10 +68,16 @@ export const columns: ColumnDef<IInvestments>[] = [
   {
     accessorKey: "roi",
     header: "ROI",
+    cell: ({ row }) => {
+      return <span>{formatNaira(Number(row.getValue("roi")))}</span>;
+    },
   },
   {
     accessorKey: "maturityValue",
     header: "Maturity Value",
+    cell: ({ row }) => {
+      return <span>{formatNaira(Number(row.getValue("maturityValue")))}</span>;
+    },
   },
 
   {

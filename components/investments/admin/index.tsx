@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import TopupForm from "@/components/forms/top-up-loan";
-import InvestmentsTable from "@/components/tables/admin-tables/investments";
+import InvestmentsTable from "@/app/dashboard/investment/data-table";
 
 const FormSchema = z.object({
   amount: z.string(),

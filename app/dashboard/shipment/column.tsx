@@ -26,7 +26,7 @@ import { useState } from "react";
 import MobilizeShipmentForm from "@/components/forms/mobilize-load-form";
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
 import { showErrorAlert } from "@/components/alert";
-import { splitCamelCase } from "@/utils/helpers";
+import { formatNaira, splitCamelCase } from "@/utils/helpers";
 export interface IShipment {
   id: string;
   createdAt: string;
@@ -273,6 +273,9 @@ export const columns: ColumnDef<IShipment>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Vendor Price" />
     ),
+    cell: ({ row }) => {
+      return <span>{formatNaira(Number(row.getValue("vendorPrice")))}</span>;
+    },
   },
   {
     accessorKey: "shipper.name",
@@ -283,6 +286,9 @@ export const columns: ColumnDef<IShipment>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Shipper Price" />
     ),
+    cell: ({ row }) => {
+      return <span>{formatNaira(Number(row.getValue("shipperPrice")))}</span>;
+    },
   },
 
   {
@@ -294,7 +300,6 @@ export const columns: ColumnDef<IShipment>[] = [
     header: "Shipment Status",
     cell: ({ row }) => {
       const statusKey = Number(row.original.shipmentStatus);
-      console.log("debu", Number(row.getValue("shipmentStatus")));
       return (
         <span>
           {ShipmentStatusEnums[Number(row.getValue("shipmentStatus"))]}

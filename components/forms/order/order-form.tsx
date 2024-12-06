@@ -28,6 +28,7 @@ import {
   getAllRoutes,
   getAllShippers,
 } from "@/app/api/services";
+import { showSuccessAlert } from "@/components/alert";
 
 const FormSchema = z.object({
   routeId: z.string({
@@ -58,17 +59,18 @@ const OrderForm = () => {
     mutationFn: (data: any) => {
       return createOrder(data);
     },
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       queryClient.invalidateQueries({
         queryKey: ["orders"],
       });
-      toast({
-        title: "Success!",
-        description: "Order has been created successfully.",
-      });
+
+      showSuccessAlert(res.responseMessage);
 
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    },
+    onError: async (error: any) => {
+      console.log(error);
     },
   });
 
@@ -152,24 +154,6 @@ const OrderForm = () => {
             )}
           />
         </div>
-        {/* <FormField
-          control={form.control}
-          name='numberOfTrucks'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Number of Trucks</FormLabel>
-              <FormControl>
-                <Input
-                  type='text'
-                  className='col-span-3'
-                  disabled={mutation.isPending}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
         <div className="text-end">
           <Button type="submit" className="bg-customblue">
             {mutation.isPending && (

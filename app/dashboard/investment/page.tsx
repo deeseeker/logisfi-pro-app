@@ -12,7 +12,6 @@ export default function Investments() {
   const renderContent = () => {
     switch (role) {
       case "Clearing":
-        console.log("here");
         return <AdminInvestments />;
       case "Investor":
         return <InvestorsInvestments />;

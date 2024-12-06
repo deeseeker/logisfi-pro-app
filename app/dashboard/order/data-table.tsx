@@ -9,7 +9,6 @@ export default function OrdersTable() {
     queryKey: ["orders"],
     queryFn: getAllOrders,
   });
-  console.log(data);
   const dataSource = data?.responseData;
 
   return (

@@ -19,10 +19,7 @@ export default function InvestorsInvestments() {
   return (
     <div className="space-y-2">
       <div className="flex justify-between">
-        <Heading
-          title="Investments"
-          description="Manage all your investments"
-        />
+        <Heading title="Loans" description="Manage all your loans" />
       </div>
       <Separator />
 

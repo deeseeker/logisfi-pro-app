@@ -50,14 +50,14 @@ export const columns: ColumnDef<IInvestments>[] = [
   // },
   {
     accessorKey: "investedAmount",
-    header: "Invested Amount",
+    header: "Disbursed Amount",
     cell: ({ row }) => {
       return <span>{formatNaira(Number(row.getValue("investedAmount")))}</span>;
     },
   },
   {
     accessorKey: "investmentDate",
-    header: "Investment Date",
+    header: "Disbursement Date",
     cell: ({ row }) => {
       return <span>{schemaToDate(row.original.investmentDate)}</span>;
     },
@@ -79,7 +79,7 @@ export const columns: ColumnDef<IInvestments>[] = [
 
   {
     accessorKey: "investmentStatus",
-    header: "Investment Status",
+    header: "Loan Status",
 
     cell: ({ row }) => {
       return (
@@ -95,11 +95,11 @@ export const columns: ColumnDef<IInvestments>[] = [
       return valueNum.includes(row.getValue(id));
     },
   },
-  {
-    accessorKey: "createdAt",
-    header: "Date Created",
-    cell: ({ row }) => {
-      return <span>{schemaToDate(row.original.createdAt)}</span>;
-    },
-  },
+  // {
+  //   accessorKey: "createdAt",
+  //   header: "Date Created",
+  //   cell: ({ row }) => {
+  //     return <span>{schemaToDate(row.original.createdAt)}</span>;
+  //   },
+  // },
 ];

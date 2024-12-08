@@ -74,7 +74,11 @@ export function DataTableToolbar<TData>({
         {table.getColumn(`${filter1}`) && (
           <DataTableFacetedFilter
             column={table.getColumn(`${filter1}`)}
-            title={splitCamelCase(`${filter1}`)}
+            title={
+              filter1 === "investmentStatus"
+                ? "Loan Status"
+                : splitCamelCase(`${filter1}`)
+            }
             options={getData()}
           />
         )}

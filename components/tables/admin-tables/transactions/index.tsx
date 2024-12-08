@@ -7,7 +7,7 @@ import { DataTableSkeletonLoader } from "@/components/skeleton";
 export default function TransactionsTable() {
   const { data, isPending } = useQuery({
     queryKey: ["transactions"],
-    queryFn: getAllTransactions,
+    queryFn: () => getAllTransactions(""),
   });
   const dataSource = data?.responseData;
 

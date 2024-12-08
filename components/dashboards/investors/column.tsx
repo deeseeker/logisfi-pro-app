@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "Mobilization Date",
-    header: "Mobilization Date",
+    header: "Disbursement Date",
     cell: ({ row }) => {
       return <span>{schemaToDate(row.original.createdAt)}</span>;
     },
@@ -30,11 +30,11 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "beneficiaryName",
-    header: "Beneficiary Name",
+    header: "Carrier Name",
   },
   {
     accessorKey: "beneficiaryAccountNumber",
-    header: "Beneficiary Account Number",
+    header: "Carrier Account Number",
   },
   {
     accessorKey: "bankName",

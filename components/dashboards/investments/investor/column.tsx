@@ -46,14 +46,14 @@ const ActionCell = ({ row }: { row: any }) => {
 export const columns: ColumnDef<IInvestments>[] = [
   {
     accessorKey: "investmentDate",
-    header: "Investment Date",
+    header: "Disbursement Date",
     cell: ({ row }) => {
       return <span>{schemaToDate(row.original.investmentDate)}</span>;
     },
   },
   {
     accessorKey: "investedAmount",
-    header: "Invested Amount",
+    header: "Disbursed Amount",
     cell: ({ row }) => {
       return <span>{formatNaira(Number(row.getValue("investedAmount")))}</span>;
     },
@@ -76,7 +76,7 @@ export const columns: ColumnDef<IInvestments>[] = [
 
   {
     accessorKey: "investmentStatus",
-    header: "Investment Status",
+    header: "Loan Status",
 
     cell: ({ row }) => {
       return (

@@ -91,6 +91,15 @@ export const getAllVendors = async () => {
   }
 };
 
+export const getAllInvestment = async (params = "") => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.investments);
+    return response.data;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+
 export const getAllInvestments = async (params = "") => {
   try {
     const response = await axiosInstance.get(

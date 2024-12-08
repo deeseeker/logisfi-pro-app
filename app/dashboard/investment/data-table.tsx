@@ -1,5 +1,5 @@
 import { columns } from "./column";
-import { getAllInvestments } from "@/app/api/services";
+import { getAllInvestment } from "@/app/api/services";
 import { useQuery } from "@tanstack/react-query";
 import { DataTableSkeletonLoader } from "@/components/skeleton";
 import { DataTable } from "@/components/ui/table/data-table";
@@ -7,8 +7,9 @@ import { DataTable } from "@/components/ui/table/data-table";
 export default function InvestmentsTable() {
   const { data, isPending } = useQuery({
     queryKey: ["investments"],
-    queryFn: () => getAllInvestments(""),
+    queryFn: () => getAllInvestment(),
   });
+  console.log(data, "hei");
   const dataSource = data?.responseData;
 
   return (

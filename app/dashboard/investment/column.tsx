@@ -44,10 +44,10 @@ const ActionCell = ({ row }: { row: any }) => {
 };
 
 export const columns: ColumnDef<IInvestments>[] = [
-  {
-    accessorKey: "organization.organizatioName",
-    header: "Organization Name",
-  },
+  // {
+  //   accessorKey: "organization.organizatioName",
+  //   header: "Organization Name",
+  // },
   {
     accessorKey: "investedAmount",
     header: "Invested Amount",

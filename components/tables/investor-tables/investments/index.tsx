@@ -7,7 +7,7 @@ import { DataTableSkeletonLoader } from "@/components/skeleton";
 export default function InvestmentsTable() {
   const { data, isPending } = useQuery({
     queryKey: ["investments"],
-    queryFn: () => getAllInvestments("5ca80894-e5d4-4b21-99e5-1ff1b2463e3b"),
+    queryFn: () => getAllInvestments(),
   });
   const dataSource = data?.responseData;
 

@@ -2,10 +2,11 @@
 
 import AdminInvestments from "@/components/dashboards/investments/admin";
 import InvestorsInvestments from "@/components/dashboards/investments/investor/data-table";
+import InvestorTransactions from "@/components/dashboards/transactions/investor/data-table";
 import { DataTableSkeletonLoader } from "@/components/skeleton";
 import useRole from "@/hooks/useRole";
 
-export default function Investments() {
+export default function Transactions() {
   const role = useRole();
   console.log(role);
 
@@ -14,7 +15,7 @@ export default function Investments() {
       case "Clearing":
         return <AdminInvestments />;
       case "Investor":
-        return <InvestorsInvestments />;
+        return <InvestorTransactions />;
       default:
         break;
     }

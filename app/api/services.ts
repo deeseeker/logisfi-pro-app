@@ -102,9 +102,11 @@ export const getAllInvestments = async (params = "") => {
   }
 };
 
-export const getAllTransactions = async () => {
+export const getAllTransactions = async (params = "") => {
   try {
-    const response = await axiosInstance.get(API_ENDPOINTS.transactions);
+    const response = await axiosInstance.get(
+      `${API_ENDPOINTS.transactions}?OrganizationId=${params}`
+    );
     return response.data;
   } catch (error: any) {
     throw error.response.data;

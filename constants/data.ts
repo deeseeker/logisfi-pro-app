@@ -136,12 +136,12 @@ function NavItems() {
             icon: "investments",
             label: "investments",
           },
-          {
-            title: "Beneficiary",
-            href: "/dashboard/beneficiary",
-            icon: "beneficiary",
-            label: "beneficiary",
-          },
+          // {
+          //   title: "Beneficiary",
+          //   href: "/dashboard/beneficiary",
+          //   icon: "beneficiary",
+          //   label: "beneficiary",
+          // },
         ]
       : [];
 
@@ -170,12 +170,12 @@ function NavItems() {
     //   label: "profile",
     // },
 
-    // {
-    //   title: "Transactions",
-    //   href: "/dashboard/history",
-    //   icon: "history",
-    //   label: "history",
-    // },
+    {
+      title: "Transactions",
+      href: "/dashboard/transactions",
+      icon: "history",
+      label: "history",
+    },
     {
       title: "Logout",
       href: "/",

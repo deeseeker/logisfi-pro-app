@@ -49,7 +49,8 @@ function InvestorDashboard() {
     enabled: !!profile?.organizationId,
   });
   console.log(res);
-  const dataSource = mobilization ? mobilization : [];
+  const dataSource = mobilization ? mobilization.responseData : [];
+  console.log(dataSource, "hellos");
   const roi = res?.responseData[0]?.roi;
   return (
     <div>

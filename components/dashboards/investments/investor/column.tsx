@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { schemaToDate } from "@/lib/utils";
 import { IInvestments, InvestmentStatusEnums } from "@/types/admin";
+import { formatNaira } from "@/utils/helpers";
 import { ColumnDef } from "@tanstack/react-table";
 import { EllipsisVertical, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -44,10 +45,6 @@ const ActionCell = ({ row }: { row: any }) => {
 
 export const columns: ColumnDef<IInvestments>[] = [
   {
-    accessorKey: "investedAmount",
-    header: "Invested Amount",
-  },
-  {
     accessorKey: "investmentDate",
     header: "Investment Date",
     cell: ({ row }) => {
@@ -55,12 +52,26 @@ export const columns: ColumnDef<IInvestments>[] = [
     },
   },
   {
+    accessorKey: "investedAmount",
+    header: "Invested Amount",
+    cell: ({ row }) => {
+      return <span>{formatNaira(Number(row.getValue("investedAmount")))}</span>;
+    },
+  },
+
+  {
     accessorKey: "roi",
     header: "ROI",
+    cell: ({ row }) => {
+      return <span>{formatNaira(Number(row.getValue("roi")))}</span>;
+    },
   },
   {
     accessorKey: "maturityValue",
     header: "Maturity Value",
+    cell: ({ row }) => {
+      return <span>{formatNaira(Number(row.getValue("maturityValue")))}</span>;
+    },
   },
 
   {
@@ -79,13 +90,6 @@ export const columns: ColumnDef<IInvestments>[] = [
     filterFn: (row, id, value) => {
       const valueNum = value.map(Number);
       return valueNum.includes(row.getValue(id));
-    },
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Date Created",
-    cell: ({ row }) => {
-      return <span>{schemaToDate(row.original.createdAt)}</span>;
     },
   },
 ];

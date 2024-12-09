@@ -125,6 +125,12 @@ function NavItems() {
             icon: "routes",
             label: "routes",
           },
+          {
+            title: "Account",
+            href: "/dashboard/account",
+            icon: "account",
+            label: "account",
+          },
         ]
       : [];
   const investorItems: NavItem[] =

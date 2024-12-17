@@ -1,45 +1,99 @@
-import React from 'react'
+import React, { useState } from "react";
 import {
   Form,
   FormField,
   FormItem,
   FormLabel,
   FormControl,
-  FormMessage
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Icons } from '@/components/icons'
-import { UseFormReturn } from 'react-hook-form'
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/icons";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { VendorFormValue } from "@/app/dashboard/(clients)/vendor/page";
+import { addNewShipper } from "@/app/api/services";
+import { showSuccessAlert } from "../alert";
 
-interface ShipperFormProps {
-  form: UseFormReturn<any>
-  onSubmit: (data: any) => void
-  mutation: { isPending: boolean }
-  key?: number
-}
+export const formSchema = z.object({
+  name: z
+    .string()
+    .min(1, { message: "Name is required" })
+    .max(50, { message: "Name cannot exceed 50 characters" })
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "Name can only contain letters and spaces",
+    }),
+  address: z
+    .string()
+    .min(1, { message: "Address is required" })
+    .max(100, { message: "Address cannot exceed 100 characters" }),
+  state: z
+    .string()
+    .min(1, { message: "State is required" })
+    .max(50, { message: "State cannot exceed 50 characters" }),
+  phone: z
+    .string()
+    .regex(/^\+\d{1,4}\d{7,10}$/, {
+      message:
+        "Phone number must start with a valid country code (e.g., +234) followed by 7 to 10 digits",
+    })
+    .optional(),
 
-const ShipperForm: React.FC<ShipperFormProps> = ({
-  form,
-  onSubmit,
-  mutation,
-  key
-}) => {
+  country: z
+    .string()
+    .min(1, { message: "Country is required" })
+    .max(50, { message: "Country cannot exceed 50 characters" }),
+  city: z
+    .string()
+    .min(1, { message: "City is required" })
+    .max(50, { message: "City cannot exceed 50 characters" }),
+  email: z.string().email({ message: "Please enter a valid email address" }),
+});
+
+export type ShipperFormValue = z.infer<typeof formSchema>;
+
+const ShipperForm = ({}) => {
+  const form = useForm<ShipperFormValue>({
+    resolver: zodResolver(formSchema),
+  });
+  const queryClient = useQueryClient();
+  const [key, setKey] = useState(0);
+  const mutation = useMutation({
+    mutationFn: (data: VendorFormValue) => {
+      return addNewShipper(data);
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({
+        queryKey: ["shippers"],
+      });
+      showSuccessAlert("Success!");
+      form.reset(); // Reset the form
+      setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    },
+  });
+
+  const onSubmit = async (data: any) => {
+    mutation.mutate(data);
+  };
+  console.log(form);
   return (
-    <Form {...form} key={key}>
+    <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className='grid grid-cols-2 gap-5 py-4'>
+        <div className="grid grid-cols-2 gap-5 py-4">
           <FormField
             control={form.control}
-            name='name'
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input
-                    type='text'
-                    placeholder='Enter name...'
-                    className='col-span-3'
+                    type="text"
+                    placeholder="Enter name..."
+                    className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
                   />
@@ -47,18 +101,18 @@ const ShipperForm: React.FC<ShipperFormProps> = ({
                 <FormMessage />
               </FormItem>
             )}
-          />{' '}
+          />{" "}
           <FormField
             control={form.control}
-            name='address'
+            name="address"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Address</FormLabel>
                 <FormControl>
                   <Input
-                    type='text'
-                    placeholder='Enter address...'
-                    className='col-span-3'
+                    type="text"
+                    placeholder="Enter address..."
+                    className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
                   />
@@ -69,15 +123,15 @@ const ShipperForm: React.FC<ShipperFormProps> = ({
           />
           <FormField
             control={form.control}
-            name='state'
+            name="state"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>State</FormLabel>
                 <FormControl>
                   <Input
-                    type='text'
-                    placeholder='Enter state...'
-                    className='col-span-3'
+                    type="text"
+                    placeholder="Enter state..."
+                    className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
                   />
@@ -85,18 +139,18 @@ const ShipperForm: React.FC<ShipperFormProps> = ({
                 <FormMessage />
               </FormItem>
             )}
-          />{' '}
+          />{" "}
           <FormField
             control={form.control}
-            name='phone'
+            name="phone"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Phone</FormLabel>
                 <FormControl>
                   <Input
-                    type='text'
-                    placeholder='Enter phone...'
-                    className='col-span-3'
+                    type="text"
+                    placeholder="Enter phone..."
+                    className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
                   />
@@ -104,18 +158,18 @@ const ShipperForm: React.FC<ShipperFormProps> = ({
                 <FormMessage />
               </FormItem>
             )}
-          />{' '}
+          />{" "}
           <FormField
             control={form.control}
-            name='country'
+            name="country"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Country</FormLabel>
                 <FormControl>
                   <Input
-                    type='text'
-                    className='col-span-3'
-                    placeholder='Enter country...'
+                    type="text"
+                    className="col-span-3"
+                    placeholder="Enter country..."
                     disabled={mutation.isPending}
                     {...field}
                   />
@@ -123,18 +177,18 @@ const ShipperForm: React.FC<ShipperFormProps> = ({
                 <FormMessage />
               </FormItem>
             )}
-          />{' '}
+          />{" "}
           <FormField
             control={form.control}
-            name='city'
+            name="city"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>City</FormLabel>
                 <FormControl>
                   <Input
-                    type='text'
-                    className='col-span-3'
-                    placeholder='Enter city...'
+                    type="text"
+                    className="col-span-3"
+                    placeholder="Enter city..."
                     disabled={mutation.isPending}
                     {...field}
                   />
@@ -142,18 +196,18 @@ const ShipperForm: React.FC<ShipperFormProps> = ({
                 <FormMessage />
               </FormItem>
             )}
-          />{' '}
+          />{" "}
           <FormField
             control={form.control}
-            name='email'
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
-                    type='text'
-                    className='col-span-3'
-                    placeholder='Enter email...'
+                    type="text"
+                    className="col-span-3"
+                    placeholder="Enter email..."
                     disabled={mutation.isPending}
                     {...field}
                   />
@@ -164,21 +218,21 @@ const ShipperForm: React.FC<ShipperFormProps> = ({
           />
         </div>
 
-        <div className='text-end'>
+        <div className="text-end">
           <Button
-            type='submit'
+            type="submit"
             disabled={mutation.isPending}
-            className='bg-customblue'
+            className="bg-customblue"
           >
             {mutation.isPending && (
-              <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
             Submit
           </Button>
         </div>
       </form>
     </Form>
-  )
-}
+  );
+};
 
-export default ShipperForm
+export default ShipperForm;

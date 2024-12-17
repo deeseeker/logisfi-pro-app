@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <ReactQueryProvider>
         <AuthProvider>
-          <body className={inter.className}>
+          <body className={inter.className} suppressHydrationWarning={true}>
             <main>{children}</main>
             {/* <Toaster /> */}
             <Toaster richColors expand={false} />

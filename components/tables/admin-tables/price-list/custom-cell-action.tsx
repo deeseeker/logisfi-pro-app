@@ -1,4 +1,4 @@
-import { successModal } from '@/components/custom-toast/success-toast'
+import { successModal } from "@/components/custom-toast/success-toast";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -7,105 +7,105 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog'
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { useToast } from '@/components/ui/use-toast'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   CheckIcon,
   EllipsisVertical,
   SquarePen,
   Trash,
-  TriangleAlert
-} from 'lucide-react'
-import { ReactNode, useState } from 'react'
-import * as z from 'zod'
+  TriangleAlert,
+} from "lucide-react";
+import { ReactNode, useState } from "react";
+import * as z from "zod";
 
 interface ActionCellProps {
-  row: any
-  deleteFunction: (id: string) => Promise<void>
-  FormComponent: ReactNode
-  entityKey: string
+  row: any;
+  deleteFunction: (id: string) => Promise<void>;
+  FormComponent: ReactNode;
+  entityKey: string;
 }
 
 export const ActionCell = ({
   row,
   deleteFunction,
   entityKey,
-  FormComponent
+  FormComponent,
 }: ActionCellProps) => {
-  const { toast } = useToast()
-  const [open, setOpen] = useState(false)
-  const id = row.original.id
-  const [isUpdate, setIsUpdate] = useState(false)
-  const queryClient = useQueryClient()
+  const { toast } = useToast();
+  const [open, setOpen] = useState(false);
+  const id = row.original.id;
+  const [isUpdate, setIsUpdate] = useState(false);
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: (priceId: string) => {
-      return deleteFunction('priceId')
+      return deleteFunction("priceId");
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: [entityKey]
-      })
+        queryKey: [entityKey],
+      });
       successModal({
-        title: 'Success',
-        description: 'The item has been successfully deleted.'
-      })
+        title: "Success",
+        description: "The item has been successfully deleted.",
+      });
     },
     onError: (error: any) => {
-      console.log(error)
+      console.log(error);
       successModal({
         title: `Error ${error.responseCode}!`,
         description: `There was an error deleting the item: ${error?.responseMessage}`,
-        iconClassName: 'fill-red-500 text-white',
-        Icon: TriangleAlert
-      })
-    }
-  })
+        iconClassName: "fill-red-500 text-white",
+        Icon: TriangleAlert,
+      });
+    },
+  });
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button variant='ghost' className='h-8 w-8 p-0'>
-            <span className='sr-only'>Open menu</span>
-            <EllipsisVertical className='h-4 w-4' />
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <EllipsisVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align='end'>
+        <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
-            <SquarePen className='mr-2 h-4 w-4' /> Update
+            <SquarePen className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            className='text-red-600'
+            className="text-red-600"
             onClick={() => setOpen(true)}
           >
-            <Trash className='mr-2 h-4 w-4' />
+            <Trash className="mr-2 h-4 w-4" />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <Dialog open={isUpdate} onOpenChange={setIsUpdate}>
-        <DialogContent className='sm:max-w-[425px]'>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Update Price</DialogTitle>
             <DialogDescription>
@@ -119,7 +119,7 @@ export const ActionCell = ({
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className='text-red-500'>
+            <AlertDialogTitle className="text-red-500">
               Are you absolutely sure?
             </AlertDialogTitle>
             <AlertDialogDescription>
@@ -133,8 +133,8 @@ export const ActionCell = ({
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                mutation.mutate(id)
-                setOpen(false)
+                mutation.mutate(id);
+                setOpen(false);
               }}
             >
               Continue
@@ -143,5 +143,5 @@ export const ActionCell = ({
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
-}
+  );
+};

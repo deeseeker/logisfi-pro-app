@@ -1,16 +1,9 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
-import { ChevronDownIcon } from "lucide-react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 import { vendorSchema, vendorUpdateSchema } from "@/types/admin";

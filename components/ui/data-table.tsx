@@ -72,7 +72,7 @@ export function DataTable<TData, TValue>({
           }
           className="mb-4 w-full md:max-w-sm"
         />
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto bg-[#f5f9ff]">
               Columns <ChevronDown />

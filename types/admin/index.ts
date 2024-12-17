@@ -301,16 +301,37 @@ export const initialAdminSchema = z.object({
   phoneNumber: z.string(),
 });
 export const organizationSchema = z.object({
-  organizationName: z.string(),
-  agreedInterestRate: z.string(),
-  // referringOrganizationId: z.string().uuid(),
-  // organizationType: z.string(),
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string().email(),
-  phoneNumber: z.string(),
+  organizationName: z
+    .string()
+    .min(1, { message: "Organization Name is required" })
+    .max(50, { message: "Organization Name cannot exceed 50 characters" })
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "Organization Name can only contain letters and spaces",
+    }),
+  agreedInterestRate: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, {
+      message:
+        "Agreed Interest Rate must be a valid number with up to 2 decimal places",
+    })
+    .transform((val) => parseFloat(val)),
+  firstName: z
+    .string()
+    .min(1, { message: "First Name is required" })
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "First Name can only contain letters and spaces",
+    }),
+  lastName: z
+    .string()
+    .min(1, { message: "Last Name is required" })
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "Last Name can only contain letters and spaces",
+    }),
+  phoneNumber: z.string().regex(/^\+234\d{10}$/, {
+    message: "Phone Number must be in the +234 format and contain 10 digits",
+  }),
+  email: z.string().email({ message: "Email must be a valid email address" }),
 });
-
 export const memberSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),

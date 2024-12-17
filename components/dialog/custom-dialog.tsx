@@ -14,10 +14,10 @@ interface IDialog {
   title: string;
   description: ReactNode;
   FormComponent: any;
-  formKey: number;
-  onSubmit: (data: any) => void;
-  mutation: any;
-  form: any;
+  formKey?: number;
+  onSubmit?: (data: any) => void;
+  mutation?: any;
+  form?: any;
 }
 const CustomDialog = ({
   triggerText,
@@ -46,7 +46,7 @@ const CustomDialog = ({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <FormComponent
-          key={formKey}
+          // key={formKey}
           onSubmit={onSubmit}
           mutation={mutation}
           form={form}

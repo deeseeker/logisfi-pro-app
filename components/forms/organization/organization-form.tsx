@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormField,
@@ -10,22 +10,54 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
-import { UseFormReturn } from "react-hook-form";
 import { Separator } from "../../ui/separator";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { organizationSchema, organizationUpdateSchema } from "@/types/admin";
+import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addNewOrganization } from "@/app/api/services";
+import { showSuccessAlert } from "@/components/alert";
+export type EditOrganizationValue = z.infer<typeof organizationUpdateSchema>;
+export type OrganizationFormValue = z.infer<typeof organizationSchema>;
 
-interface OrganizationFormProps {
-  form: UseFormReturn<any>;
-  onSubmit: (data: any) => void;
-  mutation: { isPending: boolean };
-  key?: number;
-}
+const OrganizationForm = () => {
+  const form = useForm<OrganizationFormValue>({
+    resolver: zodResolver(organizationSchema),
+  });
+  const queryClient = useQueryClient();
+  const [key, setKey] = useState(0);
+  const mutation = useMutation({
+    mutationFn: (data: any) => {
+      return addNewOrganization(data);
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({
+        queryKey: ["organization"],
+      });
 
-const OrganizationForm = ({
-  form,
-  onSubmit,
-  mutation,
-  key,
-}: OrganizationFormProps) => {
+      showSuccessAlert("Success!");
+
+      form.reset(); // Reset the form
+      setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    },
+  });
+
+  const onSubmit = (data: OrganizationFormValue) => {
+    const formData = {
+      organizationName: data.organizationName,
+      agreedInterestRate: Number(data.agreedInterestRate),
+      referringOrganizationId: "",
+      initialAdmin: {
+        firstName: data?.firstName,
+        lastName: data?.lastName,
+        email: data?.email,
+        phoneNumber: data?.phoneNumber,
+      },
+      organizationType: "Investor",
+    };
+    mutation.mutate(formData);
+  };
   return (
     <Form {...form} key={key}>
       <form onSubmit={form.handleSubmit(onSubmit)}>

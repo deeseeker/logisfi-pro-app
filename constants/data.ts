@@ -21,12 +21,12 @@ function NavItems() {
             icon: "mobilization",
             href: "/dashboard/mobilization",
           },
-          {
-            title: "Investments",
-            href: "/dashboard/investment",
-            icon: "investments",
-            label: "investments",
-          },
+          // {
+          //   title: "Investments",
+          //   href: "/dashboard/investment",
+          //   icon: "investments",
+          //   label: "investments",
+          // },
 
           {
             title: "Clients",
@@ -136,12 +136,12 @@ function NavItems() {
   const investorItems: NavItem[] =
     role === "Investor"
       ? [
-          {
-            title: "Investments",
-            href: "/dashboard/investment",
-            icon: "investments",
-            label: "investments",
-          },
+          // {
+          //   title: "Investments",
+          //   href: "/dashboard/investment",
+          //   icon: "investments",
+          //   label: "investments",
+          // },
           // {
           //   title: "Beneficiary",
           //   href: "/dashboard/beneficiary",

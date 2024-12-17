@@ -100,7 +100,7 @@ const ActionCell = ({ row }: { row: any }) => {
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
@@ -109,13 +109,13 @@ const ActionCell = ({ row }: { row: any }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             onClick={() => {
               router.push(`shippers/${id}`);
             }}
           >
             <Eye className="mr-2 h-4 w-4" /> View
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
             <SquarePen className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
@@ -138,12 +138,7 @@ const ActionCell = ({ row }: { row: any }) => {
               Update shipper on the list here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
-          <ShipperForm
-            key={key}
-            onSubmit={onSubmit}
-            mutation={update}
-            form={form}
-          />
+          <ShipperForm />
         </DialogContent>
       </Dialog>
 

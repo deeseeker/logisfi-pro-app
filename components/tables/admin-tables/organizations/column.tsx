@@ -5,7 +5,7 @@ import {
   deleteShipper,
   updateOrganization,
 } from "@/app/api/services";
-import { EditOrganizationValue } from "@/app/dashboard/(clients)/investors/page";
+import { EditOrganizationValue } from "@/components/forms/organization/organization-form";
 import EditOrganizationForm from "@/components/forms/organization/update-organization";
 import { Icons } from "@/components/icons";
 import {
@@ -104,7 +104,7 @@ const ActionCell = ({ row }: { row: any }) => {
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
@@ -113,13 +113,13 @@ const ActionCell = ({ row }: { row: any }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             onClick={() => {
               router.push(`organizations/${id}`);
             }}
           >
             <Eye className="mr-2 h-4 w-4" /> View
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem onClick={() => setIsUpdate(true)}>
             <SquarePen className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

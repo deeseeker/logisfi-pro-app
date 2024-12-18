@@ -185,7 +185,7 @@ export const signIn = async (credentials: UserFormValue) => {
     const response = await axiosInstance.post(API_ENDPOINTS.login, credentials);
     console.log(response.data.responseMessage);
     // showSuccessAlert(response.data.responseMessage);
-    return response.data.responseMessage;
+    return response.data;
   } catch (error: any) {
     // console.error("Error fetching user data", error);
     console.log(error.response.data.responseMessage);

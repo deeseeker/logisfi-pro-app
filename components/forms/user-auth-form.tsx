@@ -38,7 +38,7 @@ export default function UserAuthForm() {
   });
 
   const onSubmit = async (data: UserFormValue) => {
-    // setLoading(true);
+    setLoading(true);
     const response = await signIn(data);
 
     console.log("err", response);

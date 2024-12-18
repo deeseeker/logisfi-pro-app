@@ -31,11 +31,11 @@ const OrganizationForm = () => {
     mutationFn: (data: any) => {
       return addNewOrganization(data);
     },
-    onSuccess: async () => {
+    onSuccess: async (response) => {
       queryClient.invalidateQueries({
         queryKey: ["organization"],
       });
-
+      console.log(response);
       showSuccessAlert("Success!");
 
       form.reset(); // Reset the form

@@ -19,7 +19,7 @@ import Link from "next/link";
 import { UserTypeEnum } from "@/types/admin";
 import { useAuth } from "@/context/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
-import { showErrorAlert } from "../alert";
+import { showErrorAlert, showSuccessAlert } from "../alert";
 
 const formSchema = z.object({
   email: z.string(),
@@ -54,6 +54,7 @@ export default function UserAuthForm() {
       localStorage.setItem("refreshToken", response.responseData.refreshToken);
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
       setLoading(false);
+      showSuccessAlert(response.responseMessage);
       route.push("/dashboard");
     } else {
       showErrorAlert(response.responseMessage);

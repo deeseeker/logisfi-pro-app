@@ -7,9 +7,9 @@ function TopNav() {
   console.log(data);
   return (
     <div className=" p-4 border border-[#D9D9DC80] bg-white">
-      <h2 className="text-2xl tracking-tight text-customblue">
+      {/* <h2 className="text-2xl tracking-tight text-customblue">
         {isPending ? "" : data.firstName + " " + data.lastName} 👋
-      </h2>
+      </h2> */}
     </div>
   );
 }

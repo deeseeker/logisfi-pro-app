@@ -1,3 +1,5 @@
+import { forgotPassword } from "@/app/api/services";
+
 export const API_ENDPOINTS = {
   routes: "routes",
   orders: "orders",
@@ -6,6 +8,7 @@ export const API_ENDPOINTS = {
   vendors: "vendors",
   shippers: "shippers",
   login: "users/login",
+  forgotPassword: "users/forgot-password",
   refreshToken: "users/refreshToken",
   profile: "users/profile",
   investments: "organizations/investments",

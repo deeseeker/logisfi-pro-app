@@ -193,7 +193,22 @@ export const signIn = async (credentials: UserFormValue) => {
     // showErrorAlert(error.responseMessage);
   }
 };
-
+export const forgotPassword = async (credentials: { email: string }) => {
+  try {
+    const response = await axiosInstance.post(
+      API_ENDPOINTS.forgotPassword,
+      credentials
+    );
+    console.log(response.data.responseMessage);
+    // showSuccessAlert(response.data.responseMessage);
+    return response.data;
+  } catch (error: any) {
+    // console.error("Error fetching user data", error);
+    console.log(error.response.data.responseMessage);
+    return error.response.data;
+    // showErrorAlert(error.responseMessage);
+  }
+};
 export const activateAccount = async (credentials: any) => {
   try {
     const response = await axiosInstance.post(

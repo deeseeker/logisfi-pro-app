@@ -31,28 +31,16 @@ export const ResetPasswordForm = () => {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="adeyemi@gmail.com" {...field} />
+                        <Input placeholder="" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
-                  name="newPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Reset Token</FormLabel>
-                      <FormControl>
-                        <Input placeholder="12345678" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />{" "}
-                <FormField
-                  control={form.control}
-                  name="newPassword"
+                  name=""
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>New Password</FormLabel>

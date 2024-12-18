@@ -85,7 +85,7 @@ export const getAllMobilizations = async (params = "") => {
 export const getAllVendors = async () => {
   try {
     const response = await axiosInstance.get(API_ENDPOINTS.vendors);
-    return response.data;
+    return response.data?.responseData;
   } catch (error: any) {
     throw error.response.data;
   }
@@ -124,7 +124,7 @@ export const getAllTransactions = async (params = "") => {
 export const getAllShippers = async () => {
   try {
     const response = await axiosInstance.get(API_ENDPOINTS.shippers);
-    return response.data;
+    return response.data.responseData;
   } catch (error: any) {
     throw error.response.data;
   }

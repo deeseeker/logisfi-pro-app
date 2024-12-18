@@ -23,19 +23,20 @@ import { z } from "zod";
 import { useToast } from "../../ui/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createPrice, getAllRoutes } from "@/app/api/services";
-
-interface PriceFormProps {
-  shipperId: string;
-}
+import { useShippers } from "@/hooks/useRole";
+import { showSuccessAlert } from "@/components/alert";
 
 const FormSchema = z.object({
   routeId: z.string({
     required_error: "Please select a route.",
   }),
+  shipperId: z.string({
+    required_error: "Please select a shipper.",
+  }),
   price: z.string(),
 });
 
-const PriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
+const PriceForm = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -43,6 +44,7 @@ const PriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
     queryKey: ["routes"],
     queryFn: getAllRoutes,
   });
+  const { data: Shippers, isPending: loading } = useShippers();
   const queryClient = useQueryClient();
   const dataSource = data?.responseData;
   const { toast } = useToast();
@@ -51,14 +53,12 @@ const PriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
     mutationFn: (data: any) => {
       return createPrice(data);
     },
-    onSuccess: async () => {
+    onSuccess: async (data: any) => {
       queryClient.invalidateQueries({
         queryKey: ["shipper-price-list"],
       });
-      toast({
-        title: "Success!",
-        description: "The price lists has been updated successfully.",
-      });
+      console.log(data);
+      showSuccessAlert(data.responseData);
 
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
@@ -66,10 +66,15 @@ const PriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
     const formData = {
-      shipperId: shipperId,
-      shipperPrices: [data],
+      shipperId: data.shipperId,
+
+      shipperPrices: [
+        {
+          routeId: data.routeId,
+          price: data.price,
+        },
+      ],
     };
     console.log(formData);
     mutation.mutate(formData);
@@ -77,6 +82,31 @@ const PriceForm: React.FC<PriceFormProps> = ({ shipperId }) => {
   return (
     <Form {...form} key={key}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
+        <FormField
+          control={form.control}
+          name="shipperId"
+          render={({ field }) => (
+            <FormItem className="grid grid-cols-4 items-center gap-4">
+              <FormLabel>Shipper</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select a shipper to add price" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Shippers?.map((data: any) => (
+                    <SelectItem key={data.id} value={data.id}>
+                      {loading ? "loading..." : <span>{data.name}</span>}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="routeId"

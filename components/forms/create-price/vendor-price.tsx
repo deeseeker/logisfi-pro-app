@@ -27,6 +27,8 @@ import {
   createVendorPrice,
   getAllRoutes,
 } from "@/app/api/services";
+import { useVendors } from "@/hooks/useRole";
+import { showSuccessAlert } from "@/components/alert";
 
 interface VendorPriceFormProps {
   vendorId: string;
@@ -35,6 +37,9 @@ interface VendorPriceFormProps {
 const FormSchema = z.object({
   routeId: z.string({
     required_error: "Please select a route.",
+  }),
+  vendorId: z.string({
+    required_error: "Please select a vendor.",
   }),
   price: z.string(),
 });
@@ -47,6 +52,7 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({ vendorId }) => {
     queryKey: ["routes"],
     queryFn: getAllRoutes,
   });
+  const { data: Vendors, isPending: loading } = useVendors();
   const queryClient = useQueryClient();
   const dataSource = data?.responseData;
   const { toast } = useToast();
@@ -55,14 +61,12 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({ vendorId }) => {
     mutationFn: (data: any) => {
       return createVendorPrice(data);
     },
-    onSuccess: async () => {
+    onSuccess: async (data: any) => {
       queryClient.invalidateQueries({
         queryKey: ["vendor-price-list"],
       });
-      toast({
-        title: "Success!",
-        description: "The price lists has been updated successfully.",
-      });
+
+      showSuccessAlert(data.responseData);
 
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
@@ -72,8 +76,13 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({ vendorId }) => {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
     const formData = {
-      vendorId: vendorId,
-      vendorPrices: [data],
+      vendorId: data.vendorId,
+      vendorPrices: [
+        {
+          routeId: data.routeId,
+          price: data.price,
+        },
+      ],
     };
     console.log(formData);
     mutation.mutate(formData);
@@ -82,6 +91,31 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({ vendorId }) => {
   return (
     <Form {...form} key={key}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
+        <FormField
+          control={form.control}
+          name="vendorId"
+          render={({ field }) => (
+            <FormItem className="grid grid-cols-4 items-center gap-4">
+              <FormLabel>Vendor</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select a vendor to add price" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Vendors?.map((data: any) => (
+                    <SelectItem key={data.id} value={data.id}>
+                      {loading ? "loading..." : <span>{data.name}</span>}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="routeId"

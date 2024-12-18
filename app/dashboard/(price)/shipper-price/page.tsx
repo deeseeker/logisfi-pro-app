@@ -13,12 +13,9 @@ import {
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
-import { useParams } from "next/navigation";
 import React from "react";
 
 function ShipperPrice() {
-  const params = useParams();
-  const { id } = params;
   return (
     <div>
       <div className="flex justify-between mb-2">
@@ -37,7 +34,7 @@ function ShipperPrice() {
                 done.
               </DialogDescription>
             </DialogHeader>
-            <PriceForm shipperId={id as string} />
+            <PriceForm />
           </DialogContent>
         </Dialog>
       </div>

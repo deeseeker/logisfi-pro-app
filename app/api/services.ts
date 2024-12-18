@@ -183,12 +183,14 @@ export const getWallet = async (organizationId: string) => {
 export const signIn = async (credentials: UserFormValue) => {
   try {
     const response = await axiosInstance.post(API_ENDPOINTS.login, credentials);
-    console.log(response.data);
-    showSuccessAlert(response.data.responseMessage);
-    return response.data;
+    console.log(response.data.responseMessage);
+    // showSuccessAlert(response.data.responseMessage);
+    return response.data.responseMessage;
   } catch (error: any) {
-    console.error("Error fetching user data", error);
-    showErrorAlert(error.response.data.responseMessage);
+    // console.error("Error fetching user data", error);
+    console.log(error.response.data.responseMessage);
+    return error.response.data;
+    // showErrorAlert(error.responseMessage);
   }
 };
 

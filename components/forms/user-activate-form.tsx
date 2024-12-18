@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useToast } from "../ui/use-toast";
 import { successModal } from "../custom-toast/success-toast";
 import { ErrorModal } from "../custom-toast/error-toast";
+import { showErrorAlert, showSuccessAlert } from "../alert";
 
 const formSchema = z.object({
   newPassword: z.string(),
@@ -60,19 +61,13 @@ export default function ActivateUserForm({
       setActivationStatus(
         res.responseMessage || "Account activated successfully!"
       );
-      successModal({
-        title: "Success",
-        description: res.responseMessage,
-      });
+      showSuccessAlert("Successful");
       route.push("/");
     } else {
       setLoading(false);
       setActivationStatus(res.responseMessage || "Account activated failed!");
       console.log("heyyyy");
-      ErrorModal({
-        title: "Error",
-        description: res.responseMessage,
-      });
+      showErrorAlert(res.responseMessage);
     }
   };
   return (

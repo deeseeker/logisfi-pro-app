@@ -19,6 +19,7 @@ import Link from "next/link";
 import { UserTypeEnum } from "@/types/admin";
 import { useAuth } from "@/context/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
+import { showErrorAlert } from "../alert";
 
 const formSchema = z.object({
   email: z.string(),
@@ -37,10 +38,11 @@ export default function UserAuthForm() {
   });
 
   const onSubmit = async (data: UserFormValue) => {
-    setLoading(true);
+    // setLoading(true);
     const response = await signIn(data);
-    console.log(response);
-    if (response?.responseData.accessToken) {
+
+    console.log("err", response);
+    if (response.isSuccess) {
       // OrderStatusEnums[Number(row.original.orderStatus)])
       const userType = response.responseData.userType;
       const roles = response.responseData.roles;
@@ -51,11 +53,12 @@ export default function UserAuthForm() {
       localStorage.setItem("token", response.responseData.accessToken);
       localStorage.setItem("refreshToken", response.responseData.refreshToken);
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
+      setLoading(false);
       route.push("/dashboard");
     } else {
-      console.log("no response");
+      showErrorAlert(response.responseMessage);
+      setLoading(false);
     }
-    setLoading(false);
   };
   return (
     <>

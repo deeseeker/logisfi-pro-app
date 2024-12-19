@@ -42,15 +42,15 @@ const OrderForm = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
-  const { data, isPending } = useQuery({
+  const { data, isPending, isLoading } = useQuery({
     queryKey: ["routes"],
     queryFn: getAllRoutes,
   });
-  const results = useQuery({
+  const { data: shippers, isPending: loading } = useQuery({
     queryKey: ["shippers"],
     queryFn: getAllShippers,
   });
-  const shippers = results?.data?.responseData;
+
   const queryClient = useQueryClient();
   const dataSource = data?.responseData;
   const { toast } = useToast();
@@ -84,7 +84,7 @@ const OrderForm = () => {
     mutation.mutate(formData);
   }
   return (
-    <Form {...form} key={key}>
+    <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
         <div className="grid grid-cols-2 gap-4">
           <FormField
@@ -105,8 +105,8 @@ const OrderForm = () => {
                   <SelectContent>
                     {dataSource?.map((data: any) => (
                       <SelectItem key={data.id} value={data.id}>
-                        {isPending ? (
-                          "loading..."
+                        {isLoading ? (
+                          <p>loading...</p>
                         ) : (
                           <span>
                             {data.origin} - {data.destination}
@@ -139,11 +139,7 @@ const OrderForm = () => {
                   <SelectContent>
                     {shippers?.map((data: any) => (
                       <SelectItem key={data.id} value={data.id}>
-                        {results.isPending ? (
-                          "loading..."
-                        ) : (
-                          <span>{data.name}</span>
-                        )}
+                        {loading ? "loading..." : <span>{data.name}</span>}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -237,7 +237,10 @@ const ActionCell = ({ row }: { row: any }) => {
               Mobilize your shipment here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
-          <MobilizeShipmentForm data={row.original} />
+          <MobilizeShipmentForm
+            data={row.original}
+            handleOpen={setIsMobilize}
+          />
         </DialogContent>
       </Dialog>
     </>

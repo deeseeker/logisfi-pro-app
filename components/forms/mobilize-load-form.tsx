@@ -46,7 +46,7 @@ interface LoanData {
   interestEarned: number;
   organization: Organization;
 }
-const MobilizeShipmentForm = ({ data }: { data: any }) => {
+const MobilizeShipmentForm = ({ data, handleOpen }: any) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -58,8 +58,9 @@ const MobilizeShipmentForm = ({ data }: { data: any }) => {
     },
     onSuccess: async (res: any) => {
       queryClient.invalidateQueries({
-        queryKey: ["shipments", "wallet-details"],
+        queryKey: ["shipments"],
       });
+      handleOpen(false);
       showSuccessAlert(res);
       form.reset();
       setKey((prevKey) => prevKey + 1);
@@ -67,6 +68,7 @@ const MobilizeShipmentForm = ({ data }: { data: any }) => {
 
     onError: async (error: any) => {
       console.log(error);
+      handleOpen(false);
       showErrorAlert(error.responseMessage);
     },
   });

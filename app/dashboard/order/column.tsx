@@ -145,9 +145,9 @@ const ActionCell = ({ row }: { row: any }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem>
+          {/* <DropdownMenuItem>
             <Eye className="mr-2 h-4 w-4" /> View
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem
             onClick={() => {
               const status = OrderStatusEnums[row.original.orderStatus];
@@ -201,7 +201,7 @@ const ActionCell = ({ row }: { row: any }) => {
               done.
             </DialogDescription>
           </DialogHeader>
-          <FulfillOrderForm data={row.original} />
+          <FulfillOrderForm data={row.original} handleOpen={setOpen} />
         </DialogContent>
       </Dialog>
     </>

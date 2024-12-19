@@ -34,15 +34,15 @@ const FormSchema = z.object({
   driverPhone: z.string(),
   truckNumber: z.string(),
 });
-const FulfillOrderForm = ({ data }: { data: any }) => {
+const FulfillOrderForm = ({ data, handleOpen }: any) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
-  const results = useQuery({
+  const { data: vendors, isPending } = useQuery({
     queryKey: ["vendors"],
     queryFn: getAllVendors,
   });
-  const vendors = results?.data?.responseData;
+
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [key, setKey] = useState(0);
@@ -54,8 +54,8 @@ const FulfillOrderForm = ({ data }: { data: any }) => {
       queryClient.invalidateQueries({
         queryKey: ["orders"],
       });
-
-      showSuccessAlert(res.responseMessage);
+      handleOpen(false);
+      showSuccessAlert(res.responseData);
 
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
@@ -63,7 +63,7 @@ const FulfillOrderForm = ({ data }: { data: any }) => {
     onError: async (error: any) => {
       const errorMessage =
         error?.responseMessage || "An unexpected error occurred.";
-
+      handleOpen(false);
       showErrorAlert(errorMessage);
 
       ErrorModal({
@@ -106,15 +106,17 @@ const FulfillOrderForm = ({ data }: { data: any }) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {vendors?.map((data: any) => (
-                      <SelectItem key={data.id} value={data.id}>
-                        {results.isPending ? (
-                          "loading..."
-                        ) : (
-                          <span>{data.name}</span>
-                        )}
+                    {isPending ? (
+                      <SelectItem disabled value="loading">
+                        <p>Loading...</p>
                       </SelectItem>
-                    ))}
+                    ) : (
+                      vendors?.map((data: any) => (
+                        <SelectItem key={data.id} value={data.id}>
+                          <span>{data.name}</span>
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
 

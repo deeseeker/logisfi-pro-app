@@ -13,16 +13,17 @@ import {
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import OrdersTable from "./data-table";
 
 function Order() {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div>
       <div className="flex justify-between">
         <Heading title="Order" description="Manage your orders" />
 
-        <Dialog>
+        <Dialog modal={false} open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button className="text-xs md:text-sm bg-customblue">
               <Plus className="mr-2 h-4 w-4" /> Create Order
@@ -36,7 +37,7 @@ function Order() {
                 done.
               </DialogDescription>
             </DialogHeader>
-            <OrderForm />
+            <OrderForm handleOpen={setIsOpen} />
           </DialogContent>
         </Dialog>
       </div>

@@ -28,7 +28,7 @@ import {
   getAllRoutes,
   getAllShippers,
 } from "@/app/api/services";
-import { showSuccessAlert } from "@/components/alert";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 const FormSchema = z.object({
   routeId: z.string({
@@ -38,7 +38,7 @@ const FormSchema = z.object({
     required_error: "Please select a route.",
   }),
 });
-const OrderForm = () => {
+const OrderForm = ({ handleOpen }: any) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -63,7 +63,7 @@ const OrderForm = () => {
       queryClient.invalidateQueries({
         queryKey: ["orders"],
       });
-
+      handleOpen(false);
       showSuccessAlert(res.responseMessage);
 
       form.reset(); // Reset the form
@@ -71,6 +71,8 @@ const OrderForm = () => {
     },
     onError: async (error: any) => {
       console.log(error);
+      handleOpen(false);
+      showErrorAlert(error.responseMessage);
     },
   });
 
@@ -137,11 +139,17 @@ const OrderForm = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {shippers?.map((data: any) => (
-                      <SelectItem key={data.id} value={data.id}>
-                        {loading ? "loading..." : <span>{data.name}</span>}
+                    {isPending ? (
+                      <SelectItem disabled value="loading">
+                        <p>Loading...</p>
                       </SelectItem>
-                    ))}
+                    ) : (
+                      shippers?.map((data: any) => (
+                        <SelectItem key={data.id} value={data.id}>
+                          <span>{data.name}</span>
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
 

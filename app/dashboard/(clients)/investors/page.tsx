@@ -16,8 +16,6 @@ import OrganizationForm from "@/components/forms/organization/organization-form"
 import OrganizationTable from "@/components/tables/admin-tables/organizations";
 
 export default function Organization() {
-  const { toast } = useToast();
-
   return (
     <div className="space-y-2">
       <div className="flex justify-between">

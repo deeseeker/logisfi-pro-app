@@ -17,11 +17,11 @@ import { organizationSchema, organizationUpdateSchema } from "@/types/admin";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addNewOrganization } from "@/app/api/services";
-import { showSuccessAlert } from "@/components/alert";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 export type EditOrganizationValue = z.infer<typeof organizationUpdateSchema>;
 export type OrganizationFormValue = z.infer<typeof organizationSchema>;
 
-const OrganizationForm = () => {
+const OrganizationForm = ({ handleOpen }: any) => {
   const form = useForm<OrganizationFormValue>({
     resolver: zodResolver(organizationSchema),
   });
@@ -35,11 +35,19 @@ const OrganizationForm = () => {
       queryClient.invalidateQueries({
         queryKey: ["organization"],
       });
+
       console.log(response);
-      showSuccessAlert("Success!");
+      handleOpen(false);
+
+      showSuccessAlert(response.responseData);
 
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    },
+    onError: async (response: any) => {
+      console.log(response);
+      handleOpen(false);
+      showErrorAlert(response?.responseMessage);
     },
   });
 
@@ -59,7 +67,7 @@ const OrganizationForm = () => {
     mutation.mutate(formData);
   };
   return (
-    <Form {...form} key={key}>
+    <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-5 py-4 mb-2">
           <FormField

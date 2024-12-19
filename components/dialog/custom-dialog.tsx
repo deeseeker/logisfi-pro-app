@@ -1,4 +1,6 @@
-import { ReactNode } from "react";
+"use client";
+import { ReactNode, useState } from "react";
+
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -29,8 +31,9 @@ const CustomDialog = ({
   mutation,
   form,
 }: IDialog) => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <Dialog>
+    <Dialog modal={false} open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button className="bg-customblue hover:bg-blue-500">
           {triggerText}
@@ -47,6 +50,7 @@ const CustomDialog = ({
         </DialogHeader>
         <FormComponent
           // key={formKey}
+          handleOpen={setIsOpen}
           onSubmit={onSubmit}
           mutation={mutation}
           form={form}

@@ -58,7 +58,7 @@ export const getOrganizationId = async (params = "") => {
     const response = await axiosInstance.get(
       `${API_ENDPOINTS.organization}/${params}`
     );
-    return response.data;
+    return response.data?.responseData;
   } catch (error: any) {
     throw error.response.data;
   }

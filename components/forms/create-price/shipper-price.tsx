@@ -24,7 +24,7 @@ import { useToast } from "../../ui/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createPrice, getAllRoutes } from "@/app/api/services";
 import { useShippers } from "@/hooks/useRole";
-import { showSuccessAlert } from "@/components/alert";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 const FormSchema = z.object({
   routeId: z.string({
@@ -36,7 +36,7 @@ const FormSchema = z.object({
   price: z.string(),
 });
 
-const PriceForm = () => {
+const PriceForm = ({ handleOpen }: { handleOpen: any }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -47,7 +47,6 @@ const PriceForm = () => {
   const { data: Shippers, isPending: loading } = useShippers();
   const queryClient = useQueryClient();
   const dataSource = data?.responseData;
-  const { toast } = useToast();
   const [key, setKey] = useState(0);
   const mutation = useMutation({
     mutationFn: (data: any) => {
@@ -57,11 +56,15 @@ const PriceForm = () => {
       queryClient.invalidateQueries({
         queryKey: ["shipper-price-list"],
       });
-      console.log(data);
+      handleOpen(false);
       showSuccessAlert(data.responseData);
 
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    },
+    onError: async (error: any) => {
+      handleOpen(false);
+      showErrorAlert(error.responseMessage);
     },
   });
 
@@ -76,7 +79,7 @@ const PriceForm = () => {
         },
       ],
     };
-    console.log(formData);
+
     mutation.mutate(formData);
   }
   return (

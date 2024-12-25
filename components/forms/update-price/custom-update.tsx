@@ -1,87 +1,90 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import {
   Form,
   FormField,
   FormItem,
   FormLabel,
   FormControl,
-  FormMessage
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Icons } from '@/components/icons'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { useToast } from '../../ui/use-toast'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getAllRoutes } from '@/app/api/services'
-import { UpdatePriceSchema } from '@/types/admin'
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/icons";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAllRoutes } from "@/app/api/services";
+import { UpdatePriceSchema } from "@/types/admin";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 interface PriceFormProps {
-  idKey: string
-  mutationFn: (data: any) => Promise<any>
-  queryKey: string
-  keyTitle: string
+  dataSource: any;
+  mutationFn: (data: any) => Promise<any>;
+  queryKey: string;
+  keyTitle: string;
+  onOpen: any;
 }
 
 const UpdatePriceForm: React.FC<PriceFormProps> = ({
-  idKey,
+  dataSource,
   mutationFn,
   queryKey,
-  keyTitle
+  keyTitle,
+  onOpen,
 }) => {
   const form = useForm<z.infer<typeof UpdatePriceSchema>>({
-    resolver: zodResolver(UpdatePriceSchema)
-  })
+    defaultValues: {
+      newPrice: dataSource.price || "",
+    },
+    resolver: zodResolver(UpdatePriceSchema),
+  });
 
   const { data, isPending } = useQuery({
-    queryKey: ['routes'],
-    queryFn: getAllRoutes
-  })
+    queryKey: ["routes"],
+    queryFn: getAllRoutes,
+  });
 
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
+  const queryClient = useQueryClient();
 
-  const [key, setKey] = useState(0)
+  const [key, setKey] = useState(0);
 
   const mutation = useMutation({
     mutationFn: mutationFn,
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       queryClient.invalidateQueries({
-        queryKey: [queryKey]
-      })
-
-      form.reset() // Reset the form
-      setKey((prevKey) => prevKey + 1) // Force a rerender by updating the key
-    }
-  })
+        queryKey: [queryKey],
+      });
+      onOpen(false);
+      showSuccessAlert(res.responseMessage);
+      form.reset(); // Reset the form
+      setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    },
+    onError: async (error: any) => {
+      onOpen(false);
+      showErrorAlert(error.responseMessage);
+    },
+  });
 
   const onSubmit = async (data: any) => {
-    data[`${keyTitle}`] = idKey
-    mutation.mutate(data)
-    if (mutation.isSuccess) {
-      toast({
-        title: 'Success!',
-        description: 'The price list has been updated successfully.'
-      })
-    }
-  }
+    data[`${keyTitle}`] = dataSource.id;
+    mutation.mutate(data);
+  };
 
   return (
     <Form {...form} key={key}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-4 py-4'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
         <FormField
           control={form.control}
-          name='newPrice'
+          name="newPrice"
           render={({ field }) => (
-            <FormItem className='grid grid-cols-4 items-center gap-4'>
+            <FormItem className="grid grid-cols-4 items-center gap-4">
               <FormLabel>New Price</FormLabel>
               <FormControl>
                 <Input
-                  type='text'
-                  className='col-span-3'
-                  placeholder='Enter new price...'
+                  type="text"
+                  className="col-span-3"
+                  placeholder="Enter new price..."
                   disabled={mutation.isPending}
                   {...field}
                 />
@@ -90,17 +93,17 @@ const UpdatePriceForm: React.FC<PriceFormProps> = ({
             </FormItem>
           )}
         />
-        <div className='text-end'>
-          <Button type='submit' className='bg-customblue'>
+        <div className="text-end">
+          <Button type="submit" className="bg-customblue">
             {mutation.isPending && (
-              <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
             Submit
           </Button>
         </div>
       </form>
     </Form>
-  )
-}
+  );
+};
 
-export default UpdatePriceForm
+export default UpdatePriceForm;

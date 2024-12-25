@@ -1,3 +1,4 @@
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { successModal } from "@/components/custom-toast/success-toast";
 import {
   AlertDialog,
@@ -49,7 +50,6 @@ export const ActionCell = ({
   entityKey,
   FormComponent,
 }: ActionCellProps) => {
-  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const id = row.original.id;
   const [isUpdate, setIsUpdate] = useState(false);
@@ -59,23 +59,17 @@ export const ActionCell = ({
     mutationFn: (priceId: string) => {
       return deleteFunction("priceId");
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({
         queryKey: [entityKey],
       });
-      successModal({
-        title: "Success",
-        description: "The item has been successfully deleted.",
-      });
+      setIsUpdate(false);
+      showSuccessAlert(data.responseMessage);
     },
     onError: (error: any) => {
       console.log(error);
-      successModal({
-        title: `Error ${error.responseCode}!`,
-        description: `There was an error deleting the item: ${error?.responseMessage}`,
-        iconClassName: "fill-red-500 text-white",
-        Icon: TriangleAlert,
-      });
+      setIsUpdate(false);
+      showErrorAlert(error.responseMessage);
     },
   });
 

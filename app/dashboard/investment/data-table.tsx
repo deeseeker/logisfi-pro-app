@@ -18,7 +18,7 @@ export default function InvestmentsTable() {
         <DataTableSkeletonLoader />
       ) : (
         <DataTable
-          searchKey="organizatioName"
+          searchKey="investmentStatus"
           columns={columns}
           data={dataSource}
           filter1="investmentStatus"

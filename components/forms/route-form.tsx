@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormField,
@@ -10,21 +10,47 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
-import { UseFormReturn } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
+import { RouteFormValue } from "@/app/dashboard/routes/page";
+import { formSchema } from "@/types/admin";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addNewRoute } from "@/app/api/services";
+import { showErrorAlert, showSuccessAlert } from "../alert";
 
-interface RouteFormProps {
-  form: UseFormReturn<any>;
-  onSubmit: (data: any) => void;
-  mutation: { isPending: boolean };
-  key?: number;
-}
+const RouteForm = ({ handleOpen, data }: { handleOpen: any; data?: any }) => {
+  const form = useForm<RouteFormValue>({
+    defaultValues: {
+      origin: data?.origin || "",
+      destination: data?.destination || "",
+    },
+    resolver: zodResolver(formSchema),
+  });
+  const queryClient = useQueryClient();
+  const [key, setKey] = useState(0);
+  const mutation = useMutation({
+    mutationFn: (data: RouteFormValue) => {
+      return addNewRoute(data);
+    },
+    onSuccess: async (res: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ["routes"],
+      });
+      handleOpen(false);
+      showSuccessAlert(res.responseMessage);
 
-const RouteForm: React.FC<RouteFormProps> = ({
-  form,
-  onSubmit,
-  mutation,
-  key,
-}) => {
+      form.reset(); // Reset the form
+      setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    },
+    onError: async (error: any) => {
+      handleOpen(false);
+      showErrorAlert(error.responseMessage);
+    },
+  });
+
+  const onSubmit = async (data: RouteFormValue) => {
+    mutation.mutate(data);
+  };
   return (
     <Form {...form} key={key}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
@@ -37,7 +63,7 @@ const RouteForm: React.FC<RouteFormProps> = ({
               <FormControl>
                 <Input
                   type="text"
-                  placeholder="Enter origin..."
+                  // placeholder="Enter origin..."
                   className="col-span-3"
                   disabled={mutation.isPending}
                   {...field}

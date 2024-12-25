@@ -13,17 +13,12 @@ import {
 } from "@/components/ui/dialog";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, Plus } from "lucide-react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { addNewRoute } from "@/app/api/services";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
@@ -35,56 +30,29 @@ import { successModal } from "@/components/custom-toast/success-toast";
 export type RouteFormValue = z.infer<typeof formSchema>;
 export type UpdateFormValue = z.infer<typeof updateRouteSchema>;
 export default function Routes() {
-  const form = useForm<RouteFormValue>({
-    resolver: zodResolver(formSchema),
-  });
-  const queryClient = useQueryClient();
-  const [key, setKey] = useState(0);
-  const mutation = useMutation({
-    mutationFn: (data: RouteFormValue) => {
-      return addNewRoute(data);
-    },
-    onSuccess: async () => {
-      queryClient.invalidateQueries({
-        queryKey: ["routes"],
-      });
-      successModal({
-        title: "Success",
-        description: "The route details has been included successfully",
-      });
+  const [isOpen, setIsOpen] = useState(false);
 
-      form.reset(); // Reset the form
-      setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
-    },
-  });
-
-  const onSubmit = async (data: RouteFormValue) => {
-    mutation.mutate(data);
-  };
   return (
     <div className="space-y-2">
       <div className="flex justify-between">
         <Heading title="Routes" description="Manage all your routes" />
-        <CustomDialog
-          triggerText="Add Route"
-          title="Add Route"
-          description={
-            <>
-              <p>
+        <Dialog modal={false} open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button className="text-xs md:text-sm bg-customblue">
+              <Plus className="mr-2 h-4 w-4" /> Add Route
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Add Route</DialogTitle>
+              <DialogDescription>
                 To include multiple routes to the list here. Click the link
                 below.
-              </p>
-              <Link href="#" className="text-customblue text-sm underline">
-                Multiple routes
-              </Link>
-            </>
-          }
-          FormComponent={RouteForm}
-          formKey={key}
-          onSubmit={onSubmit}
-          mutation={mutation}
-          form={form}
-        />
+              </DialogDescription>
+            </DialogHeader>
+            <RouteForm handleOpen={setIsOpen} />
+          </DialogContent>
+        </Dialog>
       </div>
       <Separator />
 

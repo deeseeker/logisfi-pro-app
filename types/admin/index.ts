@@ -120,6 +120,53 @@ export interface Shipper {
   modifiedBy: string;
 }
 
+export interface Members {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  gender: string;
+  position: string;
+  phoneNumber: string;
+  userType: number;
+  organizationId: string;
+}
+export type OrganizationId = {
+  organizationName: string;
+  agreedInterestRate: number;
+  wallet: {
+    availableLoanAmount: number;
+    loanAmountInUse: number;
+    interestEarned: number;
+    organization: {
+      id: string;
+      organizationName: string;
+    };
+    id: string;
+    createdAt: string;
+    createdBy: string;
+    modifiedAt: string;
+    modifiedBy: string;
+  };
+  members: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    gender: string;
+    position: string;
+    phoneNumber: string;
+    userType: number;
+    organizationId: string;
+  }[];
+  referredOrganizations: unknown[]; // Assuming no specific structure is given
+  id: string;
+  createdAt: string;
+  createdBy: string;
+  modifiedAt: string;
+  modifiedBy: string;
+};
+
 export interface IInvestments {
   id: string;
   createdAt: string;

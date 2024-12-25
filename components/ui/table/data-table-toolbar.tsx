@@ -73,7 +73,7 @@ export function DataTableToolbar<TData>({
 
         {filter1 && table?.getColumn(`${filter1}`) && (
           <DataTableFacetedFilter
-            column={table.getColumn(`${filter1}`)}
+            column={table?.getColumn(`${filter1}`)}
             title={
               filter1 === "investmentStatus"
                 ? "Loan Status"
@@ -84,7 +84,7 @@ export function DataTableToolbar<TData>({
         )}
         {filter2 && table?.getColumn(`${filter2}`) && (
           <DataTableFacetedFilter
-            column={table.getColumn(`${filter2}`)}
+            column={table?.getColumn(`${filter2}`)}
             title={splitCamelCase(`${filter2}`)}
             options={getData2()}
           />

@@ -76,8 +76,8 @@ function InvestorDashboard() {
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="h-4 w-4 text-muted-customblue"
                 >
                   <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" />
@@ -126,8 +126,8 @@ function InvestorDashboard() {
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="h-4 w-4 text-muted-customblue"
                 >
                   <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
@@ -154,8 +154,8 @@ function InvestorDashboard() {
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="h-4 w-4 text-muted-customblue"
                 >
                   <path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" />
@@ -187,8 +187,8 @@ function InvestorDashboard() {
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="h-4 w-4 text-muted-customblue"
                 >
                   <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z" />

@@ -1,26 +1,26 @@
 import { columns } from "./column";
-import { getAllShipments } from "@/app/api/services";
 import { useQuery } from "@tanstack/react-query";
 import { DataTableSkeletonLoader } from "@/components/skeleton";
 import { DataTable } from "@/components/ui/table/data-table";
+import { getOrganizationId } from "@/app/api/services";
+import { useProfile } from "@/hooks/useRole";
 
-export default function AdminShipments() {
-  const { data, isPending } = useQuery({
-    queryKey: ["shipments"],
-    queryFn: getAllShipments,
+export default function AccountTable() {
+  const { data: profile } = useProfile();
+  const { data: organization, isPending } = useQuery({
+    queryKey: ["organization"],
+    queryFn: () => getOrganizationId(`${profile.organizationId}`),
   });
 
-  const dataSource = data?.responseData;
   return (
     <div className="py-10">
       {isPending ? (
         <DataTableSkeletonLoader />
       ) : (
         <DataTable
+          searchKey="position"
           columns={columns}
-          data={dataSource}
-          searchKey="truckNumber"
-          filter1="shipmentStatus"
+          data={organization?.members}
         />
       )}
     </div>

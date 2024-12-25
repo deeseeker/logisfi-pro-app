@@ -13,14 +13,15 @@ import {
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 
 function ShipperPrice() {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div>
       <div className="flex justify-between mb-2">
         <Heading title="Shipper Price" description="Manage shipper price" />
-        <Dialog>
+        <Dialog modal={false} open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button className="text-xs md:text-sm bg-customblue">
               <Plus className="mr-2 h-4 w-4" /> Add Price
@@ -34,7 +35,7 @@ function ShipperPrice() {
                 done.
               </DialogDescription>
             </DialogHeader>
-            <PriceForm />
+            <PriceForm handleOpen={setIsOpen} />
           </DialogContent>
         </Dialog>
       </div>

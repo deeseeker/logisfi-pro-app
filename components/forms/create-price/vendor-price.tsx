@@ -28,10 +28,11 @@ import {
   getAllRoutes,
 } from "@/app/api/services";
 import { useVendors } from "@/hooks/useRole";
-import { showSuccessAlert } from "@/components/alert";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 interface VendorPriceFormProps {
   vendorId: string;
+  handleOpen: any;
 }
 
 const FormSchema = z.object({
@@ -44,7 +45,10 @@ const FormSchema = z.object({
   price: z.string(),
 });
 
-const VendorPriceForm: React.FC<VendorPriceFormProps> = ({ vendorId }) => {
+const VendorPriceForm: React.FC<VendorPriceFormProps> = ({
+  vendorId,
+  handleOpen,
+}) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -55,7 +59,6 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({ vendorId }) => {
   const { data: Vendors, isPending: loading } = useVendors();
   const queryClient = useQueryClient();
   const dataSource = data?.responseData;
-  const { toast } = useToast();
   const [key, setKey] = useState(0);
   const mutation = useMutation({
     mutationFn: (data: any) => {
@@ -67,9 +70,14 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({ vendorId }) => {
       });
 
       showSuccessAlert(data.responseData);
+      handleOpen(false);
 
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    },
+    onError: async (error: any) => {
+      handleOpen(false);
+      showErrorAlert(error.responseMessage);
     },
   });
 

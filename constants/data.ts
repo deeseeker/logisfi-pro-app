@@ -142,6 +142,12 @@ function NavItems() {
             icon: "investments",
             label: "investments",
           },
+          {
+            title: "Transactions",
+            href: "/dashboard/transactions",
+            icon: "history",
+            label: "history",
+          },
           // {
           //   title: "Beneficiary",
           //   href: "/dashboard/beneficiary",
@@ -176,12 +182,6 @@ function NavItems() {
     //   label: "profile",
     // },
 
-    {
-      title: "Transactions",
-      href: "/dashboard/transactions",
-      icon: "history",
-      label: "history",
-    },
     {
       title: "Logout",
       href: "/",

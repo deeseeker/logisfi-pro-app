@@ -1,15 +1,17 @@
-import { updateVPrice } from '@/app/api/services'
-import UpdatePriceForm from './custom-update'
+import { updateVPrice } from "@/app/api/services";
+import UpdatePriceForm from "./custom-update";
 
-export const UpdateVendorPrice: React.FC<{ vendorId: string }> = ({
-  vendorId
+export const UpdateVendorPrice: React.FC<{ data: any; handleOpen: any }> = ({
+  data,
+  handleOpen,
 }) => {
   return (
     <UpdatePriceForm
-      keyTitle='vendorPriceId'
-      idKey={vendorId}
+      keyTitle="vendorPriceId"
+      dataSource={data}
       mutationFn={updateVPrice}
-      queryKey='vendor-price-list'
+      queryKey="vendor-price-list"
+      onOpen={handleOpen}
     />
-  )
-}
+  );
+};

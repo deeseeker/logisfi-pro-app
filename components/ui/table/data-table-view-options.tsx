@@ -36,8 +36,8 @@ export function DataTableViewOptions<TData>({
         <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
-          .getAllColumns()
-          .filter(
+          ?.getAllColumns()
+          ?.filter(
             (column) =>
               typeof column.accessorFn !== "undefined" && column.getCanHide()
           )

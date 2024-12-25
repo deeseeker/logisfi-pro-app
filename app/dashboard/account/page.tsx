@@ -22,81 +22,49 @@ import { AccountAndMembersShimmer } from "@/components/skeleton/account";
 import { ErrorModal } from "@/components/custom-toast/error-toast";
 import { successModal } from "@/components/custom-toast/success-toast";
 import { useProfile } from "@/hooks/useRole";
+import AccountTable from "./data-table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export type MemberFormValue = z.infer<typeof memberSchema>;
 export default function Account() {
+  const [isOpen, setIsOpen] = useState(false);
   const { data: profile } = useProfile();
-  const { data, isPending } = useQuery({
+  const { data: organization, isPending } = useQuery({
     queryKey: ["organization"],
     queryFn: () => getOrganizationId(`${profile.organizationId}`),
   });
-  const dataSource = data?.responseData;
-  const { toast } = useToast();
-  const form = useForm<MemberFormValue>({
-    resolver: zodResolver(memberSchema),
-  });
-  const queryClient = useQueryClient();
-  const [key, setKey] = useState(0);
-  const mutation = useMutation({
-    mutationFn: (data: any) => {
-      return addNewMember(data);
-    },
-    onSuccess: async (res: any) => {
-      queryClient.invalidateQueries({
-        queryKey: ["organization"],
-      });
-      console.log(res);
-      successModal({
-        description:
-          res.responseData ||
-          "The organization data has been updated successfully.",
-      });
-      form.reset(); // Reset the form
-      setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
-    },
-    onError: async (error: any) => {
-      console.log(error);
-      const errorMessage =
-        error?.responseMessage || "An unexpected error occurred.";
 
-      ErrorModal({
-        description: errorMessage,
-      });
-    },
-  });
-  const labelMap: { [key: string]: string } = {
-    firstName: "First Name",
-    lastName: "Last Name",
-    email: "Email",
-    gender: "Gender",
-    position: "Position",
-    phoneNumber: "Phone Number",
-  };
-
-  const onSubmit = (data: any) => {
-    console.log(profile.userType, data);
-    const formData = {
-      ...data,
-      userType: profile.userType,
-      organizationId: profile.organizationId,
-    };
-    console.log(formData);
-    mutation.mutate(formData);
-  };
   return (
     <div className="space-y-2">
       <div className="flex justify-between">
         <Heading title="Account" description="Manage all your account" />
-        <CustomDialog
-          triggerText="Add Member"
-          title="Add Member"
-          description="Fill in the details to add a new member and click submit when you are done."
-          FormComponent={MemberForm}
-          formKey={key}
-          onSubmit={onSubmit}
-          mutation={mutation}
-          form={form}
-        />
+        <Dialog modal={false} open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button className="text-xs md:text-sm bg-customblue">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Member
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Add Member</DialogTitle>
+              <DialogDescription>
+                Fill in the details to add a new member and click submit when
+                you are done.
+              </DialogDescription>
+            </DialogHeader>
+            <MemberForm handleOpen={setIsOpen} />
+          </DialogContent>
+        </Dialog>
       </div>
       <Separator />
       <div className="space-y-4">
@@ -113,59 +81,32 @@ export default function Account() {
                   <div>
                     <h3>Account Name</h3>
                     <CardDescription>
-                      {dataSource?.organizationName}
+                      {organization?.organizationName}
                     </CardDescription>
                   </div>
                   <div>
                     <h3>Date Created</h3>
                     <CardDescription>
-                      {schemaToDate(dataSource?.createdAt)}
+                      {schemaToDate(organization?.createdAt)}
                     </CardDescription>
                   </div>
                   <div>
                     <h3>Agreed Interest Rate</h3>
                     <CardDescription>
-                      {dataSource?.agreedInterestRate}%
+                      {organization?.agreedInterestRate}%
                     </CardDescription>
                   </div>
                   <div>
                     <h3>Interest Earned</h3>
                     <CardDescription>
-                      {dataSource?.wallet?.interestEarned}
+                      {organization?.wallet?.interestEarned}
                     </CardDescription>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader>
-                <h2>Members</h2>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-y-12 justify-between">
-                  {dataSource?.members?.map((member: any, index: any) => (
-                    <div
-                      key={index}
-                      className="grid gap-y-12 pb-4 border-b border-gray-200"
-                    >
-                      {Object.entries(member).map(([key, value]) =>
-                        // Only display fields that are defined in labelMap
-                        labelMap[key] ? (
-                          <div key={key}>
-                            <h3>{labelMap[key]}</h3>
-                            <CardDescription>
-                              {value !== null && value !== undefined
-                                ? String(value)
-                                : "N/A"}
-                            </CardDescription>
-                          </div>
-                        ) : null
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+
+            <AccountTable />
           </>
         )}
       </div>

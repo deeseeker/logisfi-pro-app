@@ -16,7 +16,6 @@ export default function OrdersTable() {
       {isPending ? (
         <DataTableSkeletonLoader />
       ) : (
-        // <DataTable searchKey="shipper" columns={columns} data={dataSource} />
         <DataTable
           columns={columns}
           data={dataSource}

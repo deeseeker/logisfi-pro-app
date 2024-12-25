@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormField,
@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
-import { UseFormReturn } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import {
   Select,
   SelectContent,
@@ -18,18 +18,55 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RoleEnum } from "@/types/admin";
+import { memberSchema, RoleEnum } from "@/types/admin";
+import { useProfile } from "@/hooks/useRole";
+import { MemberFormValue } from "@/app/dashboard/account/page";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addNewMember } from "@/app/api/services";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
-interface MemberFormProps {
-  form: UseFormReturn<any>;
-  onSubmit: (data: any) => void;
-  mutation: { isPending: boolean };
-  key?: number;
-}
+const MemberForm = ({ handleOpen }: { handleOpen: any }) => {
+  const { data: profile } = useProfile();
+  const form = useForm<MemberFormValue>({
+    resolver: zodResolver(memberSchema),
+  });
+  const queryClient = useQueryClient();
+  const [key, setKey] = useState(0);
+  const mutation = useMutation({
+    mutationFn: (data: any) => {
+      return addNewMember(data);
+    },
+    onSuccess: async (res: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ["organization"],
+      });
+      console.log(res);
+      handleOpen(false);
+      showSuccessAlert(res.responseData);
 
-const MemberForm = ({ form, onSubmit, mutation, key }: MemberFormProps) => {
+      form.reset(); // Reset the form
+      setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    },
+    onError: async (error: any) => {
+      console.log(error);
+      const errorMessage =
+        error?.responseMessage || "An unexpected error occurred.";
+      handleOpen(false);
+      showErrorAlert(error.responseMessage);
+    },
+  });
+  const onSubmit = (data: any) => {
+    const formData = {
+      ...data,
+      userType: profile.userType,
+      organizationId: profile.organizationId,
+    };
+    console.log(formData);
+    mutation.mutate(formData);
+  };
   return (
-    <Form {...form} key={key}>
+    <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-5 py-2">
           <FormField

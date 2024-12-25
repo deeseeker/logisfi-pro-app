@@ -2,6 +2,7 @@
 
 import { deleteRoute, updateRoute } from "@/app/api/services";
 import { RouteFormValue, UpdateFormValue } from "@/app/dashboard/routes/page";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { successModal } from "@/components/custom-toast/success-toast";
 
 import RouteForm from "@/components/forms/route-form";
@@ -54,22 +55,14 @@ const ActionCell = ({ row }: { row: any }) => {
     mutationFn: (routeId: string) => {
       return deleteRoute(routeId);
     },
-    onSuccess: async () => {
+    onSuccess: async (res) => {
       queryClient.invalidateQueries({
         queryKey: ["routes"],
       });
-      successModal({
-        title: "Success",
-        description: "The item has been successfully deleted.",
-      });
+      showSuccessAlert(res.responseMessage);
     },
     onError: (error: any) => {
-      successModal({
-        title: `Error ${error.responseCode}!`,
-        description: `There was an error deleting the item: ${error?.responseMessage}`,
-        iconClassName: "fill-red-500 text-white",
-        Icon: TriangleAlert,
-      });
+      showErrorAlert(error.responseMessage);
     },
   });
   const form = useForm<UpdateFormValue>({
@@ -81,25 +74,17 @@ const ActionCell = ({ row }: { row: any }) => {
     mutationFn: (data: UpdateFormValue) => {
       return updateRoute(data);
     },
-    onSuccess: async (data) => {
+    onSuccess: async (res) => {
       queryClient.invalidateQueries({
         queryKey: ["routes"],
       });
-      successModal({
-        title: "Success",
-        description: "The route details has been updated successfully",
-      });
+      showSuccessAlert(res.responseMessage);
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
     },
     onError: (error: any) => {
       console.log(error);
-      successModal({
-        title: `Error ${error.responseCode}!`,
-        description: `There was an error updating the route details: ${error?.responseMessage}`,
-        iconClassName: "fill-red-500 text-white",
-        Icon: TriangleAlert,
-      });
+      showErrorAlert(error.responseMessage);
     },
   });
 
@@ -140,12 +125,7 @@ const ActionCell = ({ row }: { row: any }) => {
               Include a route to the list here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
-          <RouteForm
-            key={key}
-            onSubmit={onSubmit}
-            mutation={update}
-            form={form}
-          />
+          <RouteForm data={row.original} handleOpen={setIsUpdate} />
         </DialogContent>
       </Dialog>
 

@@ -15,16 +15,17 @@ import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
 import { useParams } from "next/navigation";
 
-import React from "react";
+import React, { useState } from "react";
 
 function VendorPrice() {
   const params = useParams();
   const { id } = params;
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div>
       <div className="flex justify-between">
         <Heading title="Vendor Price" description="Manage vendor price" />
-        <Dialog>
+        <Dialog modal={false} open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button className="text-xs md:text-sm bg-customblue">
               <Plus className="mr-2 h-4 w-4" /> Add Price
@@ -38,7 +39,7 @@ function VendorPrice() {
                 done.
               </DialogDescription>
             </DialogHeader>
-            <VendorPriceForm vendorId={id as string} />
+            <VendorPriceForm handleOpen={setIsOpen} vendorId={id as string} />
           </DialogContent>
         </Dialog>
       </div>

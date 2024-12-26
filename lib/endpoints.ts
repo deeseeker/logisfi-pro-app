@@ -17,6 +17,7 @@ export const API_ENDPOINTS = {
   activate: "users/accept-invite",
   newmember: "users/add-to-organization",
   topup: "finances/top-up-loan",
+  dashboard: "dashboard/admin-summary",
 
   // Add more as needed
 };

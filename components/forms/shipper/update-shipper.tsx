@@ -14,9 +14,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { VendorFormValue } from "@/app/dashboard/(clients)/vendor/page";
-import { addNewShipper } from "@/app/api/services";
-import { showSuccessAlert } from "../alert";
+import {
+  VendorFormValue,
+  VendorUpdateValue,
+} from "@/app/dashboard/(clients)/vendor/page";
+import { addNewShipper, updateShipper } from "@/app/api/services";
+import { showErrorAlert, showSuccessAlert } from "../../alert";
+import { vendorSchema } from "@/types/admin";
 
 export const formSchema = z.object({
   name: z
@@ -34,14 +38,10 @@ export const formSchema = z.object({
     .string()
     .min(1, { message: "State is required" })
     .max(50, { message: "State cannot exceed 50 characters" }),
-  phone: z
-    .string()
-    .regex(/^\+\d{1,4}\d{7,10}$/, {
-      message:
-        "Phone number must start with a valid country code (e.g., +234) followed by 7 to 10 digits",
-    })
-    .optional(),
-
+  phone: z.string().regex(/^\+\d{1,4}\d{7,10}$/, {
+    message:
+      "Phone number must start with a valid country code (e.g., +234) followed by 7 to 10 digits",
+  }),
   country: z
     .string()
     .min(1, { message: "Country is required" })
@@ -55,30 +55,50 @@ export const formSchema = z.object({
 
 export type ShipperFormValue = z.infer<typeof formSchema>;
 
-const ShipperForm = ({}) => {
+const EditShipperForm = ({ handleOpen, dataSource }: any) => {
   const form = useForm<ShipperFormValue>({
+    defaultValues: {
+      name: dataSource.name || "",
+      address: dataSource.address || "",
+      state: dataSource.state || "",
+      phone: dataSource.phone || "",
+      country: dataSource.country || "",
+      city: dataSource.city || "",
+      email: dataSource.email || "",
+    },
     resolver: zodResolver(formSchema),
   });
   const queryClient = useQueryClient();
   const [key, setKey] = useState(0);
-  const mutation = useMutation({
-    mutationFn: (data: VendorFormValue) => {
-      return addNewShipper(data);
+  const update = useMutation({
+    mutationFn: (data: VendorUpdateValue) => {
+      return updateShipper(data);
     },
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       queryClient.invalidateQueries({
         queryKey: ["shippers"],
       });
-      showSuccessAlert("Success!");
+      handleOpen(false);
+      showSuccessAlert(res.responseMessage);
+
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
     },
+    onError: async (error: any) => {
+      handleOpen(false);
+      showErrorAlert(error.responseMessage);
+    },
   });
 
-  const onSubmit = async (data: any) => {
-    mutation.mutate(data);
+  const onSubmit = async (data: ShipperFormValue) => {
+    console.log(data);
+    const formData = {
+      ...data,
+      id: dataSource.id,
+    };
+    update.mutate(formData);
   };
-  console.log(form);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -94,7 +114,7 @@ const ShipperForm = ({}) => {
                     type="text"
                     placeholder="Enter name..."
                     className="col-span-3"
-                    disabled={mutation.isPending}
+                    disabled={update.isPending}
                     {...field}
                   />
                 </FormControl>
@@ -113,7 +133,7 @@ const ShipperForm = ({}) => {
                     type="text"
                     placeholder="Enter address..."
                     className="col-span-3"
-                    disabled={mutation.isPending}
+                    disabled={update.isPending}
                     {...field}
                   />
                 </FormControl>
@@ -132,7 +152,7 @@ const ShipperForm = ({}) => {
                     type="text"
                     placeholder="Enter state..."
                     className="col-span-3"
-                    disabled={mutation.isPending}
+                    disabled={update.isPending}
                     {...field}
                   />
                 </FormControl>
@@ -151,7 +171,7 @@ const ShipperForm = ({}) => {
                     type="text"
                     placeholder="Enter phone..."
                     className="col-span-3"
-                    disabled={mutation.isPending}
+                    disabled={update.isPending}
                     {...field}
                   />
                 </FormControl>
@@ -170,7 +190,7 @@ const ShipperForm = ({}) => {
                     type="text"
                     className="col-span-3"
                     placeholder="Enter country..."
-                    disabled={mutation.isPending}
+                    disabled={update.isPending}
                     {...field}
                   />
                 </FormControl>
@@ -189,7 +209,7 @@ const ShipperForm = ({}) => {
                     type="text"
                     className="col-span-3"
                     placeholder="Enter city..."
-                    disabled={mutation.isPending}
+                    disabled={update.isPending}
                     {...field}
                   />
                 </FormControl>
@@ -208,7 +228,7 @@ const ShipperForm = ({}) => {
                     type="text"
                     className="col-span-3"
                     placeholder="Enter email..."
-                    disabled={mutation.isPending}
+                    disabled={update.isPending}
                     {...field}
                   />
                 </FormControl>
@@ -221,10 +241,10 @@ const ShipperForm = ({}) => {
         <div className="text-end">
           <Button
             type="submit"
-            disabled={mutation.isPending}
+            disabled={update.isPending}
             className="bg-customblue"
           >
-            {mutation.isPending && (
+            {update.isPending && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
             Submit
@@ -235,4 +255,4 @@ const ShipperForm = ({}) => {
   );
 };
 
-export default ShipperForm;
+export default EditShipperForm;

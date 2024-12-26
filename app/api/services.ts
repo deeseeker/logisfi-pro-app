@@ -13,6 +13,7 @@ import {
   showInfoAlert,
   showSuccessAlert,
 } from "@/components/alert";
+import { Aperture } from "lucide-react";
 
 export interface LoginResponse {
   isSuccess: boolean;
@@ -275,6 +276,12 @@ export const addNewOrganization = async (data: any) => {
   } catch (error: any) {
     throw error.response.data;
   }
+};
+export const dashboard = async (data: any) => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.dashboard);
+    return response.data.responseData;
+  } catch (error) {}
 };
 export const topupLoan = async (data: any) => {
   try {

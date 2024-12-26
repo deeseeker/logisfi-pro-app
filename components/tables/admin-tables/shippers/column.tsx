@@ -10,7 +10,9 @@ import {
   VendorFormValue,
   VendorUpdateValue,
 } from "@/app/dashboard/(clients)/vendor/page";
-import ShipperForm from "@/components/forms/shipper-form";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
+import ShipperForm from "@/components/forms/shipper/shipper-form";
+import EditShipperForm from "@/components/forms/shipper/update-shipper";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,45 +60,16 @@ const ActionCell = ({ row }: { row: any }) => {
     mutationFn: (shipperId: string) => {
       return deleteShipper(shipperId);
     },
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       queryClient.invalidateQueries({
         queryKey: ["shippers"],
       });
-      toast({
-        title: "Success!",
-        description: "The shipper lists has been removed successfully.",
-      });
+      showSuccessAlert(res.responseMessage);
+    },
+    onError: async (error: any) => {
+      showErrorAlert(error.responseMessage);
     },
   });
-  const form = useForm<VendorFormValue>({
-    resolver: zodResolver(vendorSchema),
-  });
-
-  const [key, setKey] = useState(0);
-  const update = useMutation({
-    mutationFn: (data: VendorUpdateValue) => {
-      return updateShipper(data);
-    },
-    onSuccess: async () => {
-      queryClient.invalidateQueries({
-        queryKey: ["shippers"],
-      });
-
-      form.reset(); // Reset the form
-      setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
-    },
-  });
-
-  const onSubmit = async (data: VendorUpdateValue) => {
-    data.id = id;
-    update.mutate(data);
-    if (update.isSuccess) {
-      toast({
-        title: "Success!",
-        description: "The shipper lists has been updated successfully.",
-      });
-    }
-  };
 
   return (
     <>
@@ -138,7 +111,7 @@ const ActionCell = ({ row }: { row: any }) => {
               Update shipper on the list here. Click submit when you are done.
             </DialogDescription>
           </DialogHeader>
-          <ShipperForm />
+          <EditShipperForm handleOpen={setIsUpdate} dataSource={row.original} />
         </DialogContent>
       </Dialog>
 

@@ -65,42 +65,6 @@ const ActionCell = ({ row }: { row: any }) => {
       });
     },
   });
-  const form = useForm<EditOrganizationValue>({
-    resolver: zodResolver(organizationUpdateSchema),
-  });
-
-  const [key, setKey] = useState(0);
-  const update = useMutation({
-    mutationFn: (data: {
-      organizationId: string;
-      agreedInterestRate: number;
-    }) => {
-      return updateOrganization(data);
-    },
-    onSuccess: async () => {
-      queryClient.invalidateQueries({
-        queryKey: ["organizations"],
-      });
-
-      form.reset(); // Reset the form
-      setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
-    },
-  });
-
-  const onSubmit = async (data: EditOrganizationValue) => {
-    const formData = {
-      agreedInterestRate: Number(data.agreedInterestRate),
-      organizationId: id,
-    };
-
-    update.mutate(formData);
-    if (update.isSuccess) {
-      toast({
-        title: "Success!",
-        description: "The organization lists has been updated successfully.",
-      });
-    }
-  };
 
   return (
     <>
@@ -144,10 +108,8 @@ const ActionCell = ({ row }: { row: any }) => {
             </DialogDescription>
           </DialogHeader>
           <EditOrganizationForm
-            key={key}
-            onSubmit={onSubmit}
-            mutation={update}
-            form={form}
+            dataSource={row.original}
+            handleOpen={setIsUpdate}
           />
         </DialogContent>
       </Dialog>
@@ -194,20 +156,7 @@ export const columns: ColumnDef<Iorganization>[] = [
     accessorKey: "agreedInterestRate",
     header: "Agreed Interest Rate",
   },
-  // {
-  //   accessorKey: "availableLoanAmount",
-  //   header: "Available Loan",
-  //   cell: ({ row }) => {
-  //     return <span>{row?.original?.wallet?.availableLoanAmount}</span>;
-  //   },
-  // },
-  // {
-  //   accessorKey: "loanAmountInUse",
-  //   header: "Outstanding balance",
-  //   cell: ({ row }) => {
-  //     return <span>{row?.original?.wallet?.loanAmountInUse}</span>;
-  //   },
-  // },
+
   {
     accessorKey: "createdAt",
     header: "Date Created",

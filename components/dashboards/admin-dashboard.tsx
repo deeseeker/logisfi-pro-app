@@ -12,8 +12,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import Shipments from "./admin/data-table";
 import AdminShipments from "./admin/data-table";
+import { useQuery } from "@tanstack/react-query";
+import { dashboard } from "@/app/api/services";
+import { format } from "util";
+import { formatNaira } from "@/utils/helpers";
 
 function AdminDashboard() {
+  const { data, isPending } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: dashboard,
+  });
+
   return (
     <div>
       <Tabs defaultValue="overview" className="space-y-4 ">
@@ -46,7 +55,9 @@ function AdminDashboard() {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">50</div>
+                <div className="text-2xl font-bold">
+                  {isPending ? "..." : data?.totalInvestors}
+                </div>
               </CardContent>
             </Card>
             <Card className="relative bg-[linear-gradient(102.21deg,_#D6EEFD_0%,_#8FD3FE_99.28%)]">
@@ -59,7 +70,7 @@ function AdminDashboard() {
               />
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 text-customblue">
                 <CardTitle className="text-sm font-medium">
-                  Active Investors
+                  Pending Withdrawals
                 </CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +88,9 @@ function AdminDashboard() {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">5</div>
+                <div className="text-2xl font-bold">
+                  {isPending ? "..." : data?.pendingFundWithdrawals}
+                </div>
               </CardContent>
             </Card>
             <Card className="bg-[linear-gradient(98.55deg,_#DBF0D5_36.12%,_#A4FD8B_100%)]">
@@ -102,7 +115,9 @@ function AdminDashboard() {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">&#8358;12,234</div>
+                <div className="text-2xl font-bold">
+                  {isPending ? "..." : data?.loanAmountAvailable}
+                </div>
               </CardContent>
             </Card>
             <Card className="relative bg-[linear-gradient(100.09deg,_#FADDDE_29.03%,_#FFC0C2_93.76%)]">
@@ -137,7 +152,9 @@ function AdminDashboard() {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">&#8358;14500000</div>
+                <div className="text-2xl font-bold">
+                  {isPending ? "..." : data?.loanAmountInUse}
+                </div>
               </CardContent>
             </Card>
           </div>

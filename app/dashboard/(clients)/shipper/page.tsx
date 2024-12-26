@@ -2,7 +2,7 @@
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import ShippersTable from "@/components/tables/admin-tables/shippers";
-import ShipperForm from "@/components/forms/shipper-form";
+import ShipperForm from "@/components/forms/shipper/shipper-form";
 import CustomDialog from "@/components/dialog/custom-dialog";
 import Link from "next/link";
 

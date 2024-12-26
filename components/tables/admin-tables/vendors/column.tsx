@@ -2,6 +2,7 @@
 
 import { deleteVendor, updateVendor } from "@/app/api/services";
 import { VendorFormValue } from "@/app/dashboard/(clients)/vendor/page";
+import { showSuccessAlert } from "@/components/alert";
 import VendorForm from "@/components/forms/vendor-form";
 import {
   AlertDialog,
@@ -40,27 +41,33 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 const ActionCell = ({ row }: { row: any }) => {
-  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const router = useRouter();
   const id = row.original.id;
+  console.log(row.original);
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (vendorId: string) => {
       return deleteVendor(vendorId);
     },
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       queryClient.invalidateQueries({
         queryKey: ["vendors"],
       });
-      toast({
-        title: "Success!",
-        description: "The vendor lists has been removed successfully.",
-      });
+      showSuccessAlert(res.responseMessage);
     },
   });
   const form = useForm<VendorFormValue>({
+    defaultValues: {
+      name: row.original.name || "",
+      address: row.original.address || "",
+      state: row.original.state || "",
+      phone: row.original.phone || "",
+      country: row.original.country || "",
+      city: row.original.city || "",
+      email: row.original.email || "",
+    },
     resolver: zodResolver(vendorSchema),
   });
 
@@ -69,14 +76,11 @@ const ActionCell = ({ row }: { row: any }) => {
     mutationFn: (data: VendorFormValue) => {
       return updateVendor(data);
     },
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       queryClient.invalidateQueries({
         queryKey: ["vendors"],
       });
-      toast({
-        title: "Success!",
-        description: "The vendor lists has been updated successfully.",
-      });
+      showSuccessAlert(res.responseMessage);
       form.reset(); // Reset the form
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
     },
@@ -194,8 +198,8 @@ export const columns: ColumnDef<IVendors>[] = [
     },
   },
   {
-    accessorKey: "accountNumber",
-    header: "Account Number",
+    accessorKey: "bankName",
+    header: "Bank Name",
     cell: ({ row }) => {
       return <span>{row.original.vendorBankDetail?.bankName}</span>;
     },

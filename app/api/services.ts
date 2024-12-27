@@ -101,6 +101,15 @@ export const getAllInvestment = async (params = "") => {
   }
 };
 
+export const getInvoices = async (params = "") => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.invoice);
+    return response.data.responseData;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+
 export const getAllInvestments = async (params = "") => {
   try {
     const response = await axiosInstance.get(
@@ -302,6 +311,17 @@ export const addNewMember = async (data: any) => {
 export const createPrice = async (data: UpdatePriceValue) => {
   try {
     const response = await axiosInstance.post("shippers/create-prices", data);
+    return response.data;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+export const generateInvoice = async (data: any) => {
+  try {
+    const response = await axiosInstance.post(
+      "finances/generate-invoice",
+      data
+    );
     return response.data;
   } catch (error: any) {
     throw error.response.data;

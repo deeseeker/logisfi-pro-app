@@ -29,6 +29,12 @@ export enum OrderStatusEnums {
   Cancelled,
 }
 
+export enum InvoiceStatusEnums {
+  Pending = 1,
+  Paid,
+  Cancelled,
+}
+
 export enum InvestmentStatusEnums {
   Active = 1,
   Matured,

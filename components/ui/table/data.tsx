@@ -70,3 +70,17 @@ export const investmentStatus = [
     value: "2",
   },
 ];
+export const invoiceStatus = [
+  {
+    label: "Pending",
+    value: "1",
+  },
+  {
+    label: "Paid",
+    value: "2",
+  },
+  {
+    label: "Cancelled",
+    value: "3",
+  },
+];

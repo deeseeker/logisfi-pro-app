@@ -27,7 +27,12 @@ function NavItems() {
             icon: "investments",
             label: "investments",
           },
-
+          {
+            title: "Invoice",
+            href: "/dashboard/invoice",
+            icon: "invoice",
+            label: "invoice",
+          },
           {
             title: "Clients",
             icon: "client",

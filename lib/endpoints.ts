@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
   newmember: "users/add-to-organization",
   topup: "finances/top-up-loan",
   dashboard: "dashboard/admin-summary",
+  invoice: "finances/invoices",
 
   // Add more as needed
 };

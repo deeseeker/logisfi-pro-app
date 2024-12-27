@@ -12,6 +12,7 @@ import { DataTableViewOptions } from "./data-table-view-options";
 import { TrashIcon } from "lucide-react";
 import {
   investmentStatus,
+  invoiceStatus,
   mobilizationStatus,
   orderStatus,
   shipmentStatus,
@@ -42,6 +43,8 @@ export function DataTableToolbar<TData>({
 
       case "investmentStatus":
         return investmentStatus;
+      case "invoiceStatus":
+        return invoiceStatus;
 
       default:
         return [];

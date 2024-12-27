@@ -11,6 +11,7 @@ import {
   LayoutDashboardIcon,
   LoaderCircle,
   LogOutIcon,
+  ReceiptText,
   RouteIcon,
   TruckIcon,
   User,
@@ -45,4 +46,5 @@ export const Icons = {
   investor: UserRound,
   shipper: User,
   mobilization: CreditCardIcon,
+  invoice: ReceiptText,
 };

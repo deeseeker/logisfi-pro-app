@@ -32,7 +32,7 @@ const ActionCell = ({ row }: { row: any }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => {
-              router.push("#");
+              router.push(`invoice/${id}`);
             }}
           >
             <Eye className="mr-2 h-4 w-4" /> View

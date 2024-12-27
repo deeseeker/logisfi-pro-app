@@ -178,6 +178,14 @@ export const getAllPrices = async (type: "shippers" | "vendors") => {
     console.error("Error fetching price list", error);
   }
 };
+export const generateInvoiceId = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(`finances/invoice/${id}`);
+    return response.data.responseData;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
 
 export const getWallet = async (organizationId: string) => {
   try {
@@ -327,6 +335,7 @@ export const generateInvoice = async (data: any) => {
     throw error.response.data;
   }
 };
+
 export const createOrder = async (data: any) => {
   try {
     const response = await axiosInstance.post("orders", data);

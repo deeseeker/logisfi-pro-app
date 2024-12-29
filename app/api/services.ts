@@ -397,6 +397,15 @@ export const mobilizeShipment = async (data: any) => {
   }
 };
 
+export const payInvoice = async (data: { invoiceId: string }) => {
+  try {
+    const response = await axiosInstance.post("finances/invoice-paid", data);
+    return response.data.responseData;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+
 /*==========DELETE==========*/
 export const deleteRoute = async (routeId: string) => {
   try {

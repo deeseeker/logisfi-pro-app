@@ -1,11 +1,11 @@
 "use client";
-import { generateInvoiceId } from "@/app/api/services";
+import { generateInvoiceId, payInvoice } from "@/app/api/services";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { schemaToDate } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import InvoiceIdTable from "./data-table";
 import {
@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 export default function InvoiceId() {
   const params = useParams();
@@ -28,11 +29,29 @@ export default function InvoiceId() {
     queryKey: ["invoice-id"],
     queryFn: () => generateInvoiceId(id as string),
   });
-  console.log(data?.invoiceItems.length);
+  console.log(data);
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (data: { invoiceId: string }) => {
+      return payInvoice(data);
+    },
+    onSuccess: async (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ["invoice-id"],
+      });
+      setOpen(false);
+      showSuccessAlert(data.responseData);
+    },
+    onError: async (error: any) => {
+      setOpen(false);
+      showErrorAlert(error.responseMessage);
+    },
+  });
+
   return (
     <div>
       <div className="flex justify-between mb-4">
-        <Heading title="Invoice" description="" />
+        <Heading title="Invoice Details" description="" />
         <Button
           onClick={() => setOpen(true)}
           className="text-xs md:text-sm bg-customblue"
@@ -57,7 +76,7 @@ export default function InvoiceId() {
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
-                  //   mutation.mutate(id);
+                  mutation.mutate({ invoiceId: id as string });
                   setOpen(false);
                 }}
               >
@@ -72,9 +91,9 @@ export default function InvoiceId() {
         "loading..."
       ) : (
         <Card className="relative w-1/2 mt-6">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          {/* <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle>Invoice Details</CardTitle>
-          </CardHeader>
+          </CardHeader> */}
           <CardContent className="grid gap-4 pt-4">
             <p>
               <strong>Invoice Number: </strong> {data?.invoiceNumber}

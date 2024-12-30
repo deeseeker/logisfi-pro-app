@@ -1,4 +1,4 @@
-import { forgotPassword } from "@/app/api/services";
+import { forgotPassword, resetPassword } from "@/app/api/services";
 
 export const API_ENDPOINTS = {
   routes: "routes",
@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
   shippers: "shippers",
   login: "users/login",
   forgotPassword: "users/forgot-password",
+  resetPassword: "users/reset-password",
   refreshToken: "users/refreshToken",
   profile: "users/profile",
   investments: "organizations/investments",

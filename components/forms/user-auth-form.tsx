@@ -105,7 +105,10 @@ export default function UserAuthForm() {
             )}
           />
           <div className="text-end text-sm">
-            <Link href="reset/forgot-password" className="text-primary">
+            <Link
+              href="reset-password/forgot-password"
+              className="text-primary"
+            >
               Forgot Password?
             </Link>
           </div>

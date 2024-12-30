@@ -79,7 +79,7 @@ export default function ForgotPasswordForm() {
           />
 
           <Button className="ml-auto w-full bg-customblue" type="submit">
-            {false ? "processing..." : "Send"}
+            {loading ? "processing..." : "Send"}
           </Button>
         </form>
       </Form>

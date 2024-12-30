@@ -139,6 +139,14 @@ export const getAllShippers = async () => {
     throw error.response.data;
   }
 };
+export const getAllWithdrawals = async () => {
+  try {
+    const response = await axiosInstance.get("finances/fund-withdrawals");
+    return response.data.responseData;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
 export const getProfile = async () => {
   try {
     const response = await axiosInstance.get(`${API_ENDPOINTS.profile}`);
@@ -319,6 +327,15 @@ export const addNewMember = async (data: any) => {
 export const createPrice = async (data: UpdatePriceValue) => {
   try {
     const response = await axiosInstance.post("shippers/create-prices", data);
+    return response.data;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+
+export const withdrawFunds = async (data: any) => {
+  try {
+    const response = await axiosInstance.post("finances/fund-withdrawal", data);
     return response.data;
   } catch (error: any) {
     throw error.response.data;

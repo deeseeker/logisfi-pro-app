@@ -25,10 +25,21 @@ import { useProfile } from "@/hooks/useRole";
 import { formatNaira } from "@/utils/helpers";
 import InvestmentShipments from "./data-table";
 import InvestorShipments from "./data-table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import PriceForm from "@/components/forms/create-price/shipper-price";
+import Withdraw from "@/components/forms/fund-withdrawal";
 
 function InvestorDashboard() {
   const [isHidden, setIsHidden] = useState(false);
   const { roles } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
   const { data: profile } = useProfile();
   console.log(roles, profile);
 
@@ -205,11 +216,25 @@ function InvestorDashboard() {
           </div>
           {roles
             ? roles.find((word) => word === "Admin") && (
-                <Button className="text-xs md:text-sm bg-customblue">
-                  {" "}
-                  <CoinsIcon className="mr-2 h-4 w-4" />
-                  Withdraw
-                </Button>
+                <Dialog modal={false} open={isOpen} onOpenChange={setIsOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="text-xs md:text-sm bg-customblue">
+                      {" "}
+                      <CoinsIcon className="mr-2 h-4 w-4" />
+                      Withdraw
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Create price</DialogTitle>
+                      <DialogDescription>
+                        Include a price to the list here. Click submit when you
+                        are done.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <Withdraw handleOpen={setIsOpen} />
+                  </DialogContent>
+                </Dialog>
               )
             : null}
 

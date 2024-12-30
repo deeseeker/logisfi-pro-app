@@ -14,8 +14,6 @@ import Shipments from "./admin/data-table";
 import AdminShipments from "./admin/data-table";
 import { useQuery } from "@tanstack/react-query";
 import { dashboard } from "@/app/api/services";
-import { format } from "util";
-import { formatNaira } from "@/utils/helpers";
 
 function AdminDashboard() {
   const { data, isPending } = useQuery({

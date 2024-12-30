@@ -148,6 +148,12 @@ function NavItems() {
             label: "investments",
           },
           {
+            title: "Withdrawals",
+            href: "/dashboard/withdrawal",
+            icon: "investments",
+            label: "investments",
+          },
+          {
             title: "Transactions",
             href: "/dashboard/transactions",
             icon: "history",

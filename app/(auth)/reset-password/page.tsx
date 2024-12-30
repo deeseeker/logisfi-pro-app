@@ -1,5 +1,6 @@
 import { ResetPasswordForm } from "@/components/forms/reset-password-form";
 import Image from "next/image";
+import { Suspense } from "react";
 
 export default function ResetPage() {
   return (
@@ -22,7 +23,9 @@ export default function ResetPage() {
               Must be at least 6 characters.
             </p>
           </div>
-          <ResetPasswordForm />
+          <Suspense fallback={<div>Loading...</div>}>
+            <ResetPasswordForm />
+          </Suspense>
         </div>
       </div>
     </div>

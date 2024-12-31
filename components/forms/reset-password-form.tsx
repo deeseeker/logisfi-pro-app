@@ -19,8 +19,7 @@ export const ResetPasswordForm = () => {
   const [loading, setLoading] = useState(false);
   const route = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
-  const encodedToken = encodeURIComponent(token as string);
+  const token = searchParams.get("token")?.replace(/%20/g, "+") ?? "";
   const email = searchParams.get("email");
 
   const form = useForm<any>({});
@@ -29,7 +28,7 @@ export const ResetPasswordForm = () => {
     const payload = {
       email: email,
       newPassword: data.newPassword,
-      token: encodedToken,
+      token: token,
     };
 
     setLoading(true);

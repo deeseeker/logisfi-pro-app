@@ -19,7 +19,7 @@ export const ResetPasswordForm = () => {
   const [loading, setLoading] = useState(false);
   const route = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get("token")?.replace(/%20/g, "+") ?? "";
+  const token = decodeURIComponent(searchParams.get("token") ?? "");
   const email = searchParams.get("email");
 
   const form = useForm<any>({});

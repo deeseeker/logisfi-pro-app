@@ -19,9 +19,9 @@ export const ResetPasswordForm = () => {
   const [loading, setLoading] = useState(false);
   const route = useRouter();
   const searchParams = useSearchParams();
-  const token = decodeURIComponent(searchParams.get("token") ?? "");
+  const token = decodeURIComponent(searchParams.get("token") as string);
   const email = searchParams.get("email");
-
+  console.log("decoded", token);
   const form = useForm<any>({});
 
   const onSubmit = async (data: any) => {

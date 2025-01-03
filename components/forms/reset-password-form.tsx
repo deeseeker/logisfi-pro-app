@@ -45,8 +45,6 @@ export const ResetPasswordForm = () => {
       route.push("/");
     } else {
       setLoading(false);
-
-      console.log(res);
       showErrorAlert(res.responseMessage);
     }
   };

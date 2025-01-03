@@ -150,8 +150,8 @@ function NavItems() {
           {
             title: "Withdrawals",
             href: "/dashboard/withdrawal",
-            icon: "investments",
-            label: "investments",
+            icon: "withdrawals",
+            label: "withdrawals",
           },
           {
             title: "Transactions",

@@ -42,11 +42,15 @@ const OrderForm = ({ handleOpen }: any) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
-  const { data, isPending, isLoading } = useQuery({
+  const { data, isPending, isLoading, isError } = useQuery({
     queryKey: ["routes"],
     queryFn: getAllRoutes,
   });
-  const { data: shippers, isPending: loading } = useQuery({
+  const {
+    data: shippers,
+    isPending: loading,
+    isError: error,
+  } = useQuery({
     queryKey: ["shippers"],
     queryFn: getAllShippers,
   });
@@ -95,6 +99,41 @@ const OrderForm = ({ handleOpen }: any) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Route</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a route" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {isPending ? (
+                        <SelectItem value="loading" disabled>
+                          Loading...
+                        </SelectItem>
+                      ) : isError ? (
+                        <SelectItem value="error" disabled>
+                          Error fetching routes
+                        </SelectItem>
+                      ) : (
+                        dataSource?.map((data: any) => (
+                          <SelectItem key={data.id} value={data.id}>
+                            {data.origin} - {data.destination}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* <FormField
+            control={form.control}
+            name="routeId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Route</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -105,25 +144,57 @@ const OrderForm = ({ handleOpen }: any) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {dataSource?.map((data: any) => (
-                      <SelectItem key={data.id} value={data.id}>
-                        {isLoading ? (
-                          <p>loading...</p>
-                        ) : (
-                          <span>
-                            {data.origin} - {data.destination}
-                          </span>
-                        )}
-                      </SelectItem>
-                    ))}
+                    {dataSource
+                      ? dataSource?.map((data: any) => (
+                          <SelectItem key={data.id} value={data.id}>
+                            <span>
+                              {data.origin} - {data.destination}
+                            </span>
+                          </SelectItem>
+                        ))
+                      : "loading..."}
                   </SelectContent>
                 </Select>
 
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           <FormField
+            control={form.control}
+            name="shipperId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Shipper</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a shipper" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {loading ? (
+                        <SelectItem value="loading" disabled>
+                          Loading...
+                        </SelectItem>
+                      ) : error ? (
+                        <SelectItem value="error" disabled>
+                          Error fetching shippers
+                        </SelectItem>
+                      ) : (
+                        shippers?.map((data: any) => (
+                          <SelectItem key={data.id} value={data.id}>
+                            {data.name}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* <FormField
             control={form.control}
             name="shipperId"
             render={({ field }) => (
@@ -156,7 +227,7 @@ const OrderForm = ({ handleOpen }: any) => {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
         </div>
         <div className="text-end">
           <Button type="submit" className="bg-customblue">

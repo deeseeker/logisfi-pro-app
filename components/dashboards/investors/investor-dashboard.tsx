@@ -226,10 +226,10 @@ function InvestorDashboard() {
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                      <DialogTitle>Create price</DialogTitle>
+                      <DialogTitle>Withdraw</DialogTitle>
                       <DialogDescription>
-                        Include a price to the list here. Click submit when you
-                        are done.
+                        Enter details to withdraw your funds. Click submit when
+                        you are done.
                       </DialogDescription>
                     </DialogHeader>
                     <Withdraw handleOpen={setIsOpen} />
@@ -237,23 +237,6 @@ function InvestorDashboard() {
                 </Dialog>
               )
             : null}
-
-          {/* <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7 mt-4">
-            <div className="col-span-4">
-              <ProfitGraph />
-            </div>
-            <Card className="col-span-4 md:col-span-3">
-              <CardHeader>
-                <CardTitle>Recent Investments</CardTitle>
-                <CardDescription>
-                  You made 265 investments this month.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <RecentInvestments />
-              </CardContent>
-            </Card>
-          </div> */}
         </TabsContent>
       </Tabs>
 

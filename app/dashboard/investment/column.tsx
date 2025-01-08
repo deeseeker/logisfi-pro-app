@@ -44,10 +44,6 @@ const ActionCell = ({ row }: { row: any }) => {
 };
 
 export const columns: ColumnDef<IInvestments>[] = [
-  // {
-  //   accessorKey: "organization.organizatioName",
-  //   header: "Organization Name",
-  // },
   {
     accessorKey: "investedAmount",
     header: "Disbursed Amount",
@@ -79,7 +75,7 @@ export const columns: ColumnDef<IInvestments>[] = [
 
   {
     accessorKey: "investmentStatus",
-    header: "Loan Status",
+    header: "Investment Status",
 
     cell: ({ row }) => {
       return (
@@ -95,11 +91,4 @@ export const columns: ColumnDef<IInvestments>[] = [
       return valueNum.includes(row.getValue(id));
     },
   },
-  // {
-  //   accessorKey: "createdAt",
-  //   header: "Date Created",
-  //   cell: ({ row }) => {
-  //     return <span>{schemaToDate(row.original.createdAt)}</span>;
-  //   },
-  // },
 ];

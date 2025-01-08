@@ -52,11 +52,15 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
-  const { data, isPending } = useQuery({
+  const {
+    data,
+    isPending,
+    isError: error,
+  } = useQuery({
     queryKey: ["routes"],
     queryFn: getAllRoutes,
   });
-  const { data: Vendors, isPending: loading } = useVendors();
+  const { data: Vendors, isPending: loading, isError } = useVendors();
   const queryClient = useQueryClient();
   const dataSource = data?.responseData;
   const [key, setKey] = useState(0);
@@ -100,6 +104,74 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({
     <Form {...form} key={key}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
         <FormField
+          control={form.control}
+          name="vendorId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Shipper</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a shipper" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {loading ? (
+                      <SelectItem value="loading" disabled>
+                        Loading...
+                      </SelectItem>
+                    ) : isError ? (
+                      <SelectItem value="error" disabled>
+                        Error fetching vendors
+                      </SelectItem>
+                    ) : (
+                      Vendors?.map((data: any) => (
+                        <SelectItem key={data.id} value={data.id}>
+                          {data.name}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="routeId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Route</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a route" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {isPending ? (
+                      <SelectItem value="loading" disabled>
+                        Loading...
+                      </SelectItem>
+                    ) : error ? (
+                      <SelectItem value="error" disabled>
+                        Error fetching routes
+                      </SelectItem>
+                    ) : (
+                      dataSource?.map((data: any) => (
+                        <SelectItem key={data.id} value={data.id}>
+                          {data.origin} - {data.destination}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* <FormField
           control={form.control}
           name="vendorId"
           render={({ field }) => (
@@ -154,12 +226,12 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={form.control}
           name="price"
           render={({ field }) => (
-            <FormItem className="grid grid-cols-4 items-center gap-4">
+            <FormItem>
               <FormLabel>New Price</FormLabel>
               <FormControl>
                 <Input

@@ -41,7 +41,9 @@ const CustomDialog = ({
       </DialogTrigger>
       <DialogContent
         className={`${
-          triggerText === "Add Route" ? "sm:max-w-[500px]" : "sm:max-w-[600px]"
+          triggerText === "Add Route" || triggerText === "Top up"
+            ? "sm:max-w-[500px]"
+            : "sm:max-w-[600px]"
         }`}
       >
         <DialogHeader>

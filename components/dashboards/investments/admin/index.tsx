@@ -59,7 +59,10 @@ export default function AdminInvestments() {
   return (
     <div className="space-y-2">
       <div className="flex justify-between">
-        <Heading title="Loans" description="Manage all your loans" />
+        <Heading
+          title="Investments"
+          description="Manage all client investments"
+        />
 
         <CustomDialog
           triggerText="Top up"

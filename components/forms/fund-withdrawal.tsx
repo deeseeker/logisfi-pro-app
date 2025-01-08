@@ -82,7 +82,7 @@ const Withdraw = ({ handleOpen }: { handleOpen: any }) => {
                 <Input
                   type="text"
                   className="col-span-3"
-                  placeholder="Enter new price..."
+                  placeholder=""
                   disabled={mutation.isPending}
                   {...field}
                 />
@@ -125,7 +125,7 @@ const Withdraw = ({ handleOpen }: { handleOpen: any }) => {
                 <Input
                   type="text"
                   className="col-span-3"
-                  placeholder="Enter new price..."
+                  placeholder=""
                   disabled={mutation.isPending}
                   {...field}
                 />

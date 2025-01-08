@@ -9,7 +9,6 @@ export default function InvestmentsTable() {
     queryKey: ["investments"],
     queryFn: () => getAllInvestment(),
   });
-  console.log(data, "hei");
   const dataSource = data?.responseData;
 
   return (

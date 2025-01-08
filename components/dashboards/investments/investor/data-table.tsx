@@ -31,7 +31,7 @@ export default function InvestorsInvestments() {
           <DataTableSkeletonLoader />
         ) : (
           <DataTable
-            searchKey="investments"
+            searchKey="investmentDate"
             columns={columns}
             data={dataSource}
             filter1="investmentStatus"

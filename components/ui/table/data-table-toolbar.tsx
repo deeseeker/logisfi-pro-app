@@ -60,8 +60,6 @@ export function DataTableToolbar<TData>({
     }
   };
 
-  console.log(table.getAllColumns());
-
   return (
     <div className="flex flex-wrap items-center justify-between">
       <div className="flex flex-1 flex-wrap items-center gap-2">
@@ -77,11 +75,7 @@ export function DataTableToolbar<TData>({
         {filter1 && table?.getColumn(`${filter1}`) && (
           <DataTableFacetedFilter
             column={table?.getColumn(`${filter1}`)}
-            title={
-              filter1 === "investmentStatus"
-                ? "Loan Status"
-                : splitCamelCase(`${filter1}`)
-            }
+            title={splitCamelCase(`${filter1}`)}
             options={getData()}
           />
         )}

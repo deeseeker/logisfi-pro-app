@@ -11,7 +11,7 @@ export default function InvestorMobilizations({ data, isPending }: any) {
       {isPending ? (
         <DataTableSkeletonLoader />
       ) : (
-        <DataTable data={data} columns={columns} searchKey="beneficiaryName" />
+        <DataTable data={data} columns={columns} searchKey="shipment_origin" />
       )}
     </div>
   );

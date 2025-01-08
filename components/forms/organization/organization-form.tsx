@@ -79,7 +79,7 @@ const OrganizationForm = ({ handleOpen }: any) => {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter name..."
+                    placeholder=""
                     className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
@@ -98,7 +98,7 @@ const OrganizationForm = ({ handleOpen }: any) => {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter address..."
+                    placeholder=""
                     className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
@@ -121,7 +121,7 @@ const OrganizationForm = ({ handleOpen }: any) => {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter state..."
+                    placeholder=""
                     className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
@@ -140,7 +140,7 @@ const OrganizationForm = ({ handleOpen }: any) => {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter state..."
+                    placeholder=""
                     className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
@@ -159,7 +159,7 @@ const OrganizationForm = ({ handleOpen }: any) => {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter phone..."
+                    placeholder=""
                     className="col-span-3"
                     disabled={mutation.isPending}
                     {...field}
@@ -179,7 +179,7 @@ const OrganizationForm = ({ handleOpen }: any) => {
                   <Input
                     type="text"
                     className="col-span-3"
-                    placeholder="Enter email..."
+                    placeholder=""
                     disabled={mutation.isPending}
                     {...field}
                   />

@@ -27,7 +27,6 @@ import { useOrganization } from "@/hooks/useRole";
 
 const TopupForm = ({ form, onSubmit, mutation, key }: any) => {
   const { data, isPending, isError } = useOrganization();
-  console.log(data);
   const orgData = data?.responseData;
   return (
     <Form {...form} key={key}>

@@ -1,46 +1,50 @@
-'use client'
-import { schemaToDate } from '@/lib/utils'
-import { IPrice } from '@/types/admin'
-import { ColumnDef } from '@tanstack/react-table'
-import { ShipperCellAction } from './cell-action'
+"use client";
+import { schemaToDate } from "@/lib/utils";
+import { IPrice } from "@/types/admin";
+import { ColumnDef } from "@tanstack/react-table";
+import { ShipperCellAction } from "./cell-action";
+import { formatNaira } from "@/utils/helpers";
 
 export const columns: ColumnDef<IPrice>[] = [
   {
-    accessorKey: 'route',
-    header: 'Origin',
+    accessorKey: "route",
+    header: "Origin",
     cell: ({ row }) => {
-      const origin = row.original.route.origin
-      return <span>{origin}</span>
-    }
+      const origin = row.original.route.origin;
+      return <span>{origin}</span>;
+    },
   },
   {
-    accessorKey: 'destination',
-    header: 'Destination',
+    accessorKey: "destination",
+    header: "Destination",
     cell: ({ row }) => {
-      const destination = row.original.route.destination
-      return <span>{destination}</span>
-    }
+      const destination = row.original.route.destination;
+      return <span>{destination}</span>;
+    },
   },
   {
-    accessorKey: 'price',
-    header: 'Price'
-  },
-  {
-    accessorKey: 'createdAt',
-    header: 'Date Created',
+    accessorKey: "price",
+    header: "Price",
     cell: ({ row }) => {
-      return <span>{schemaToDate(row.original.createdAt)}</span>
-    }
+      return <span>{formatNaira(Number(row.getValue("price")))}</span>;
+    },
   },
   {
-    accessorKey: 'modifiedAt',
-    header: 'Date Modified',
+    accessorKey: "createdAt",
+    header: "Date Created",
     cell: ({ row }) => {
-      return <span>{schemaToDate(row.original.modifiedAt)}</span>
-    }
+      return <span>{schemaToDate(row.original.createdAt)}</span>;
+    },
   },
   {
-    id: 'actions',
-    cell: ShipperCellAction
-  }
-]
+    accessorKey: "modifiedAt",
+    header: "Date Modified",
+    cell: ({ row }) => {
+      return <span>{schemaToDate(row.original.modifiedAt)}</span>;
+    },
+  },
+  {
+    id: "actions",
+    cell: ShipperCellAction,
+  },
+];

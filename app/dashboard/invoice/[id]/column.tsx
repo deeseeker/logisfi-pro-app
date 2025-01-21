@@ -2,6 +2,7 @@
 
 import { schemaToDate } from "@/lib/utils";
 import { InvoiceStatusEnums, ShipmentStatusEnums } from "@/types/admin";
+import { formatNaira } from "@/utils/helpers";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<any>[] = [
@@ -28,10 +29,16 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "shipperPrice",
     header: "Shipper Price",
+    cell: ({ row }) => {
+      return <span>{formatNaira(Number(row.getValue("shipperPrice")))}</span>;
+    },
   },
   {
     accessorKey: "vendorPrice",
     header: "Vendor Price",
+    cell: ({ row }) => {
+      return <span>{formatNaira(Number(row.getValue("vendorPrice")))}</span>;
+    },
   },
   {
     accessorKey: "shipmentStatus",

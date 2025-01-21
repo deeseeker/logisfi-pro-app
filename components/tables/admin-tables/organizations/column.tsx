@@ -155,6 +155,25 @@ export const columns: ColumnDef<Iorganization>[] = [
   {
     accessorKey: "agreedInterestRate",
     header: "Agreed Interest Rate",
+    cell: ({ row }) => {
+      const formatPercentage = (value: any) => {
+        if (!value && value !== 0) return "0%";
+
+        // Convert to number if it's a string
+        const numValue = Number(value);
+
+        // Handle invalid numbers
+        if (isNaN(numValue)) return "0%";
+
+        // Round to 1 decimal place and add % symbol
+        return `${numValue.toFixed(1)}%`;
+      };
+      return (
+        <span>
+          {formatPercentage(Number(row.getValue("agreedInterestRate")))}
+        </span>
+      );
+    },
   },
 
   {

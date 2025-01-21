@@ -345,7 +345,7 @@ export const vendorSchema = z.object({
   email: z.string().email(),
   accountNumber: z.string(),
   accountName: z.string(),
-  bankName: z.string(),
+  bankCode: z.string(),
 });
 export const initialAdminSchema = z.object({
   firstName: z.string(),

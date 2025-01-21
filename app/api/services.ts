@@ -37,6 +37,15 @@ export const getAllRoutes = async () => {
     throw error.response.data;
   }
 };
+
+export const getAllBanks = async () => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.banks);
+    return response.data.responseData;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
 export const getAllOrders = async () => {
   try {
     const response = await axiosInstance.get(API_ENDPOINTS.orders);

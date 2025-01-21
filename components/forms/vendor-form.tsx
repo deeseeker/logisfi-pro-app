@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormField,
@@ -10,21 +10,70 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
-import { UseFormReturn } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
+import {
+  SelectItem,
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { addNewVendor, getAllBanks } from "@/app/api/services";
+import { VendorFormValue } from "@/app/dashboard/(clients)/vendor/page";
+import { showErrorAlert, showSuccessAlert } from "../alert";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { vendorSchema } from "@/types/admin";
 
-interface VendorFormProps {
-  form: UseFormReturn<any>;
-  onSubmit: (data: any) => void;
-  mutation: { isPending: boolean };
-  key?: number;
-}
+const VendorForm = ({ handleOpen }: any) => {
+  const { data, isPending, isLoading, isError } = useQuery({
+    queryKey: ["banks"],
+    queryFn: getAllBanks,
+  });
+  const form = useForm<VendorFormValue>({
+    resolver: zodResolver(vendorSchema),
+  });
 
-const VendorForm: React.FC<VendorFormProps> = ({
-  form,
-  onSubmit,
-  mutation,
-  key,
-}) => {
+  const queryClient = useQueryClient();
+  const [key, setKey] = useState(0);
+  const mutation = useMutation({
+    mutationFn: (data: any) => {
+      return addNewVendor(data);
+    },
+    onSuccess: async (res: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ["vendors"],
+      });
+      handleOpen(false);
+      showSuccessAlert(res.responseMessage);
+
+      form.reset(); // Reset the form
+      setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
+    },
+    onError: async (error: any) => {
+      console.log(error);
+      handleOpen(false);
+      showErrorAlert(error.responseMessage);
+    },
+  });
+
+  const onSubmit = async (data: VendorFormValue) => {
+    const formData = {
+      name: data.name,
+      address: data.address,
+      city: data.city,
+      state: data.state,
+      country: data.country,
+      phone: data.phone,
+      email: data.email,
+      vendorBankDetail: {
+        accountNumber: data.accountNumber,
+        accountName: data.accountName,
+        bankCode: data.bankCode,
+      },
+    };
+    mutation.mutate(formData);
+  };
   return (
     <Form {...form} key={key}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -202,6 +251,40 @@ const VendorForm: React.FC<VendorFormProps> = ({
           />
           <FormField
             control={form.control}
+            name="bankCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Banks</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a bank" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {isLoading ? (
+                        <SelectItem value="loading" disabled>
+                          Loading...
+                        </SelectItem>
+                      ) : isError ? (
+                        <SelectItem value="error" disabled>
+                          Error fetching routes
+                        </SelectItem>
+                      ) : (
+                        data?.map((bank: any) => (
+                          <SelectItem key={bank.code} value={bank.code}>
+                            {bank.name}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* <FormField
+            control={form.control}
             name="bankName"
             render={({ field }) => (
               <FormItem>
@@ -218,7 +301,7 @@ const VendorForm: React.FC<VendorFormProps> = ({
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
         </div>
 
         <div className="text-end">

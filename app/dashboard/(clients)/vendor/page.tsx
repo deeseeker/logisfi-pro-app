@@ -1,19 +1,12 @@
 "use client";
 import { Heading } from "@/components/ui/heading";
 import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 import { vendorSchema, vendorUpdateSchema } from "@/types/admin";
 import VendorForm from "@/components/forms/vendor-form";
 import VendorsTable from "@/components/tables/admin-tables/vendors";
-import { addNewVendor, getAllBanks } from "@/app/api/services";
 import { Separator } from "@/components/ui/separator";
-import CustomDialog from "@/components/dialog/custom-dialog";
-import Link from "next/link";
-import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import {
   Dialog,
   DialogContent,

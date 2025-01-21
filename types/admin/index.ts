@@ -294,6 +294,11 @@ export interface Iorganization {
   wallet: Wallet;
   members: Member[];
   referredOrganizations: string[];
+  organizationBankDetail: {
+    accountName: string;
+    accountNumber: string;
+    bankCode: string;
+  };
 }
 
 export interface Wallet {
@@ -384,6 +389,13 @@ export const organizationSchema = z.object({
     message: "Phone Number must be in the +234 format and contain 10 digits",
   }),
   email: z.string().email({ message: "Email must be a valid email address" }),
+  accountName: z.string().min(1, { message: "Account Name is required" }),
+  accountNumber: z
+    .string()
+    .regex(/^\d+$/, { message: "Account Number must contain only digits" }),
+  bankCode: z
+    .string()
+    .regex(/^\d+$/, { message: "Bank Code must contain only digits" }),
 });
 export const memberSchema = z.object({
   firstName: z.string(),

@@ -14,18 +14,40 @@ import CustomDialog from "@/components/dialog/custom-dialog";
 import Link from "next/link";
 import OrganizationForm from "@/components/forms/organization/organization-form";
 import OrganizationTable from "@/components/tables/admin-tables/organizations";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export default function Organization() {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="space-y-2">
       <div className="flex justify-between">
         <Heading title="Investors" description="Manage all your investors" />
-        <CustomDialog
-          triggerText="Add Investor"
-          title="Add Investor"
-          description="Fill in the details to add a new investor and click submit when you are done."
-          FormComponent={OrganizationForm}
-        />
+        <Dialog modal={false} open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button className="text-xs md:text-sm bg-customblue">
+              <Plus className="mr-2 h-4 w-4" /> Add Investor
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Add Investor</DialogTitle>
+              <DialogDescription>
+                Fill in the details to add a new investor and click submit when
+                you are done.
+              </DialogDescription>
+            </DialogHeader>
+            <OrganizationForm handleOpen={setIsOpen} />
+          </DialogContent>
+        </Dialog>
       </div>
       <Separator />
 

@@ -184,6 +184,22 @@ export const columns: ColumnDef<Iorganization>[] = [
     },
   },
   {
+    accessorKey: "organizationBankDetail",
+    header: "Account Name",
+    cell: ({ row }) => {
+      return <span>{row?.original?.organizationBankDetail?.accountName}</span>;
+    },
+  },
+  {
+    accessorKey: "organizationBankDetail",
+    header: "Account Number",
+    cell: ({ row }) => {
+      return (
+        <span>{row?.original?.organizationBankDetail?.accountNumber}</span>
+      );
+    },
+  },
+  {
     accessorKey: "modifiedAt",
     header: "Date Modified",
     cell: ({ row }) => {

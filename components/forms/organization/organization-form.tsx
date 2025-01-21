@@ -15,13 +15,25 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { organizationSchema, organizationUpdateSchema } from "@/types/admin";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addNewOrganization } from "@/app/api/services";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { addNewOrganization, getAllBanks } from "@/app/api/services";
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useOrganization } from "@/hooks/useRole";
 export type EditOrganizationValue = z.infer<typeof organizationUpdateSchema>;
 export type OrganizationFormValue = z.infer<typeof organizationSchema>;
 
 const OrganizationForm = ({ handleOpen }: any) => {
+  const { data, isPending, isLoading, isError } = useQuery({
+    queryKey: ["banks"],
+    queryFn: getAllBanks,
+  });
   const form = useForm<OrganizationFormValue>({
     resolver: zodResolver(organizationSchema),
   });
@@ -61,6 +73,11 @@ const OrganizationForm = ({ handleOpen }: any) => {
         lastName: data?.lastName,
         email: data?.email,
         phoneNumber: data?.phoneNumber,
+      },
+      organizationBankDetail: {
+        accountNumber: data.accountNumber,
+        accountName: data.accountName,
+        bankCode: data.bankCode,
       },
       organizationType: "Investor",
     };
@@ -183,6 +200,78 @@ const OrganizationForm = ({ handleOpen }: any) => {
                     disabled={mutation.isPending}
                     {...field}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="accountName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Account Name</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    className="col-span-3"
+                    placeholder=""
+                    disabled={mutation.isPending}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="accountNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Account Number</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    className="col-span-3"
+                    placeholder=""
+                    disabled={mutation.isPending}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="bankCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Banks</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a bank" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {isLoading ? (
+                        <SelectItem value="loading" disabled>
+                          Loading...
+                        </SelectItem>
+                      ) : isError ? (
+                        <SelectItem value="error" disabled>
+                          Error fetching routes
+                        </SelectItem>
+                      ) : (
+                        data?.map((bank: any) => (
+                          <SelectItem key={bank.code} value={bank.code}>
+                            {bank.name}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -33,6 +33,7 @@ function NavItems() {
             icon: "invoice",
             label: "invoice",
           },
+
           {
             title: "Clients",
             icon: "client",
@@ -59,6 +60,12 @@ function NavItems() {
                 label: "vendors",
               },
             ],
+          },
+          {
+            title: "Beneficiary",
+            href: "/dashboard/beneficiary",
+            icon: "beneficiary",
+            label: "beneficiary",
           },
           {
             title: "Price",

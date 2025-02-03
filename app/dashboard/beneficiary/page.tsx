@@ -1,51 +1,50 @@
-'use client'
-
-import BeneficiaryTable from '@/components/tables/investor-tables/beneficiary'
-import { Breadcrumbs } from '@/components/ui/breadcrumbs'
-import { Button } from '@/components/ui/button'
-import { Heading } from '@/components/ui/heading'
+"use client";
+import { Heading } from "@/components/ui/heading";
+import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { Plus } from 'lucide-react'
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import BeneficiaryForm from "@/components/forms/beneficiary";
+import BeneficiaryTable from "@/components/tables/admin-tables/beneficiary";
 
-const breadcrumbItems = [
-  { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Beneficiary', link: '/dashboard/beneficiary' }
-]
 export default function Beneficiary() {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className='space-y-2'>
-      <Breadcrumbs items={breadcrumbItems} />
-      <div className='flex justify-between'>
+    <div className="space-y-2">
+      <div className="flex justify-between">
         <Heading
-          title='Beneficiary'
-          description='Manage all your beneficiaries'
+          title="Beneficiary"
+          description="Manage all your beneficiaries"
         />
-        <div className='flex gap-2'>
-          <Select>
-            <SelectTrigger className='w-[150px]'>
-              <SelectValue placeholder='ROI Allocation' />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value='amount'>Amount</SelectItem>
-              <SelectItem value='perentage'>Perentage</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Button className='text-xs md:text-sm bg-customblue'>
-            <Plus className='mr-2 h-4 w-4' /> Add New
-          </Button>
-        </div>
+        <Dialog modal={false} open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button className="text-xs md:text-sm bg-customblue">
+              <Plus className="mr-2 h-4 w-4" /> Add Beneficiary
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Add Beneficiary</DialogTitle>
+              <DialogDescription>
+                Fill in the details to add a new beneficiary and click submit
+                when you are done.
+              </DialogDescription>
+            </DialogHeader>
+            <BeneficiaryForm handleOpen={setIsOpen} />
+          </DialogContent>
+        </Dialog>
       </div>
       <Separator />
 
       <BeneficiaryTable />
     </div>
-  )
+  );
 }

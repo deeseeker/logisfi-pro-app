@@ -2,7 +2,7 @@ import { refreshAccessToken } from "@/app/api/services";
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://logisfi-pro-api.somee.com/api/v1/",
+  baseURL: "https://logisfi-pro-api-production.somee.com",
   headers: {
     "Content-Type": "application/json",
   },

@@ -9,7 +9,7 @@ export default function PriceList() {
     queryKey: ["shipper-price-list"],
     queryFn: getAllPrice,
   });
-  const dataSource = data?.responseData;
+  const dataSource = data?.responseData ?? [];
 
   return (
     <div className="py-10">

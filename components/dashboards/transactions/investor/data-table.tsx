@@ -14,7 +14,7 @@ export default function InvestorTransactions() {
     queryFn: () => getAllTransactions(`${profile?.organizationId}`),
     enabled: !!profile?.organizationId,
   });
-  const dataSource = transactions?.responseData;
+  const dataSource = transactions?.responseData ?? [];
 
   return (
     <div className="space-y-2">

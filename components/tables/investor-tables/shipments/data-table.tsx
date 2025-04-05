@@ -9,8 +9,8 @@ export default function InvestorShipments() {
     queryKey: ["shipments"],
     queryFn: getAllShipments,
   });
-  console.log(data);
-  const dataSource = data?.responseData;
+
+  const dataSource = data?.responseData ?? [];
   console.log("hei", columns);
   return (
     <div className="py-10">

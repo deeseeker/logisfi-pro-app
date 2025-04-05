@@ -62,7 +62,7 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({
   });
   const { data: Vendors, isPending: loading, isError } = useVendors();
   const queryClient = useQueryClient();
-  const dataSource = data?.responseData;
+  const dataSource = data?.responseData ?? [];
   const [key, setKey] = useState(0);
   const mutation = useMutation({
     mutationFn: (data: any) => {

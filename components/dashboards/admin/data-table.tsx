@@ -10,7 +10,7 @@ export default function AdminShipments() {
     queryFn: getAllShipments,
   });
 
-  const dataSource = data?.responseData;
+  const dataSource = data?.responseData ?? [];
   return (
     <div className="py-10">
       {isPending ? (

@@ -47,7 +47,6 @@ export default function UserAuthForm() {
       const userType = response.responseData.userType;
       const roles = response.responseData.roles;
       setUser(response.responseData.userType);
-      console.log(response.responseData.roles);
       localStorage.setItem("user", JSON.stringify(UserTypeEnum[userType]));
       localStorage.setItem("roles", JSON.stringify(roles));
       localStorage.setItem("token", response.responseData.accessToken);

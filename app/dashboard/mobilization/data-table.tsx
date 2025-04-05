@@ -12,7 +12,7 @@ export default function MobilizationTable() {
     queryFn: () => getAllMobilizations(),
   });
   console.log(data);
-  const dataSource = data?.responseData;
+  const dataSource = data?.responseData ?? [];
 
   return (
     <div className="py-10">

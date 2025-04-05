@@ -9,7 +9,7 @@ export default function InvestmentsTable() {
     queryKey: ["investments"],
     queryFn: () => getAllInvestment(),
   });
-  const dataSource = data?.responseData;
+  const dataSource = data?.responseData ?? [];
 
   return (
     <div className="py-10">

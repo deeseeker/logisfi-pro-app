@@ -9,7 +9,7 @@ export default function Shipments() {
     queryKey: ["shipments"],
     queryFn: getAllShipments,
   });
-  const dataSource = data?.responseData;
+  const dataSource = data?.responseData ?? [];
   return (
     <div className="py-10">
       {isPending ? (

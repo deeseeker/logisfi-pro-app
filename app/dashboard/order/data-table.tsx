@@ -9,7 +9,7 @@ export default function OrdersTable() {
     queryKey: ["orders"],
     queryFn: getAllOrders,
   });
-  const dataSource = data?.responseData;
+  const dataSource = data?.responseData ?? [];
 
   return (
     <div className="py-10">

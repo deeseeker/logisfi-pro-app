@@ -27,7 +27,7 @@ import { useOrganization } from "@/hooks/useRole";
 
 const TopupForm = ({ form, onSubmit, mutation, key }: any) => {
   const { data, isPending, isError } = useOrganization();
-  const orgData = data?.responseData;
+  const orgData = data?.responseData ?? [];
   return (
     <Form {...form} key={key}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">

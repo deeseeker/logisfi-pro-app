@@ -50,7 +50,7 @@ const PriceForm = ({ handleOpen }: { handleOpen: any }) => {
   });
   const { data: Shippers, isPending: loading, isError } = useShippers();
   const queryClient = useQueryClient();
-  const dataSource = data?.responseData;
+  const dataSource = data?.responseData ?? [];
   const [key, setKey] = useState(0);
   const mutation = useMutation({
     mutationFn: (data: any) => {

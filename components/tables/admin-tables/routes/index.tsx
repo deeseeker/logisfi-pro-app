@@ -11,7 +11,7 @@ export default function RoutesTable() {
     queryKey: ["routes"],
     queryFn: getAllRoutes,
   });
-  const dataSource = data?.responseData;
+  const dataSource = data?.responseData ?? [];
 
   return (
     <div className="py-10">

@@ -56,7 +56,7 @@ const OrderForm = ({ handleOpen }: any) => {
   });
 
   const queryClient = useQueryClient();
-  const dataSource = data?.responseData;
+  const dataSource = data?.responseData ?? [];
 
   const [key, setKey] = useState(0);
   const mutation = useMutation({

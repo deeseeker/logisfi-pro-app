@@ -9,7 +9,7 @@ export default function OrganizationTable() {
     queryKey: ["organization"],
     queryFn: getAllOrganizations,
   });
-  const dataSource = data?.responseData;
+  const dataSource = data?.responseData ?? [];
 
   return (
     <div className="py-10">

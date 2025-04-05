@@ -9,7 +9,7 @@ export default function TransactionsTable() {
     queryKey: ["transactions"],
     queryFn: () => getAllTransactions(""),
   });
-  const dataSource = data?.responseData;
+  const dataSource = data?.responseData ?? [];
 
   return (
     <div className="py-10">

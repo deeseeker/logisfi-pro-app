@@ -3,6 +3,8 @@ import { forgotPassword, resetPassword } from "@/app/api/services";
 export const API_ENDPOINTS = {
   routes: "routes",
   banks: "shared/banks",
+  truckSize: "shared/truck-sizes",
+  productType: "shared/product-types",
   orders: "orders",
   shipment: "shipments",
   organization: "organizations",

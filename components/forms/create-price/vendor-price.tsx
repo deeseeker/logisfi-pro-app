@@ -27,7 +27,7 @@ import {
   createVendorPrice,
   getAllRoutes,
 } from "@/app/api/services";
-import { useVendors } from "@/hooks/useRole";
+import { useGetTruckSize, useVendors } from "@/hooks/useRole";
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 interface VendorPriceFormProps {
@@ -41,6 +41,9 @@ const FormSchema = z.object({
   }),
   vendorId: z.string({
     required_error: "Please select a vendor.",
+  }),
+  truckSizeId: z.string({
+    required_error: "Please select truck size.",
   }),
   price: z.string(),
 });
@@ -61,6 +64,11 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({
     queryFn: getAllRoutes,
   });
   const { data: Vendors, isPending: loading, isError } = useVendors();
+  const {
+    data: truckSizes,
+    isPending: truckIsLoading,
+    isError: truckIsError,
+  } = useGetTruckSize();
   const queryClient = useQueryClient();
   const dataSource = data?.responseData ?? [];
   const [key, setKey] = useState(0);
@@ -89,6 +97,7 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({
     console.log(data);
     const formData = {
       vendorId: data.vendorId,
+      truckSizeId: data.truckSizeId,
       vendorPrices: [
         {
           routeId: data.routeId,
@@ -123,12 +132,50 @@ const VendorPriceForm: React.FC<VendorPriceFormProps> = ({
                       <SelectItem value="error" disabled>
                         Error fetching vendors
                       </SelectItem>
-                    ) : (
+                    ) : Vendors ? (
                       Vendors?.map((data: any) => (
                         <SelectItem key={data.id} value={data.id}>
                           {data.name}
                         </SelectItem>
                       ))
+                    ) : (
+                      <div>No Vendors available</div>
+                    )}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="truckSizeId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Truck Size</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a shipper" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {truckIsLoading ? (
+                      <SelectItem value="loading" disabled>
+                        Loading...
+                      </SelectItem>
+                    ) : truckIsError ? (
+                      <SelectItem value="error" disabled>
+                        Error fetching truck sizes
+                      </SelectItem>
+                    ) : truckSizes.length > 0 ? (
+                      truckSizes?.map((data: any) => (
+                        <SelectItem key={data.id} value={data.id}>
+                          {data.size}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div>No truck sizes available</div>
                     )}
                   </SelectContent>
                 </Select>

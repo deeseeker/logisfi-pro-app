@@ -23,7 +23,7 @@ import { z } from "zod";
 import { useToast } from "../../ui/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createPrice, getAllRoutes } from "@/app/api/services";
-import { useShippers } from "@/hooks/useRole";
+import { useGetTruckSize, useShippers } from "@/hooks/useRole";
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 const FormSchema = z.object({
@@ -32,6 +32,9 @@ const FormSchema = z.object({
   }),
   shipperId: z.string({
     required_error: "Please select a shipper.",
+  }),
+  truckSizeId: z.string({
+    required_error: "Please select truck size.",
   }),
   price: z.string(),
 });
@@ -49,6 +52,11 @@ const PriceForm = ({ handleOpen }: { handleOpen: any }) => {
     queryFn: getAllRoutes,
   });
   const { data: Shippers, isPending: loading, isError } = useShippers();
+  const {
+    data: truckSizes,
+    isPending: truckIsLoading,
+    isError: truckIsError,
+  } = useGetTruckSize();
   const queryClient = useQueryClient();
   const dataSource = data?.responseData ?? [];
   const [key, setKey] = useState(0);
@@ -75,7 +83,7 @@ const PriceForm = ({ handleOpen }: { handleOpen: any }) => {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     const formData = {
       shipperId: data.shipperId,
-
+      truckSizeId: data.truckSizeId,
       shipperPrices: [
         {
           routeId: data.routeId,
@@ -109,10 +117,46 @@ const PriceForm = ({ handleOpen }: { handleOpen: any }) => {
                       <SelectItem value="error" disabled>
                         Error fetching shippers
                       </SelectItem>
-                    ) : (
+                    ) : Shippers ? (
                       Shippers?.map((data: any) => (
                         <SelectItem key={data.id} value={data.id}>
                           {data.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div>No Vendors available</div>
+                    )}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="truckSizeId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Truck Size</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select truck size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {truckIsLoading ? (
+                      <SelectItem value="loading" disabled>
+                        Loading...
+                      </SelectItem>
+                    ) : truckIsError ? (
+                      <SelectItem value="error" disabled>
+                        Error fetching truck sizes
+                      </SelectItem>
+                    ) : (
+                      truckSizes?.map((data: any) => (
+                        <SelectItem key={data.id} value={data.id}>
+                          {data.size}
                         </SelectItem>
                       ))
                     )}
@@ -143,12 +187,14 @@ const PriceForm = ({ handleOpen }: { handleOpen: any }) => {
                       <SelectItem value="error" disabled>
                         Error fetching routes
                       </SelectItem>
-                    ) : (
+                    ) : dataSource.length > 0 ? (
                       dataSource?.map((data: any) => (
                         <SelectItem key={data.id} value={data.id}>
                           {data.origin} - {data.destination}
                         </SelectItem>
                       ))
+                    ) : (
+                      <div className="p-1">No routes available</div>
                     )}
                   </SelectContent>
                 </Select>

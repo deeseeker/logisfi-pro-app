@@ -4,6 +4,7 @@ import {
   getAllShippers,
   getAllVendors,
   getProfile,
+  getTruckSizes,
 } from "@/app/api/services";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -51,4 +52,10 @@ export const useVendors = () =>
   useQuery({
     queryKey: ["vendors"],
     queryFn: getAllVendors,
+  });
+
+export const useGetTruckSize = () =>
+  useQuery({
+    queryKey: ["truck-size"],
+    queryFn: getTruckSizes,
   });

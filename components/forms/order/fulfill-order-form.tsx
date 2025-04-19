@@ -22,13 +22,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "../../ui/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fulfillOrder, getAllVendors, updateOrder } from "@/app/api/services";
+import {
+  fulfillOrder,
+  getAllVendors,
+  getProductTypes,
+  updateOrder,
+} from "@/app/api/services";
 import { ErrorModal } from "@/components/custom-toast/error-toast";
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
-
+// "productTypeId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 const FormSchema = z.object({
   vendorId: z.string({
     required_error: "Please select a route.",
+  }),
+  productTypeId: z.string({
+    required_error: "Please select product type.",
   }),
   driverName: z.string(),
   driverPhone: z.string(),
@@ -42,7 +50,10 @@ const FulfillOrderForm = ({ data, handleOpen }: any) => {
     queryKey: ["vendors"],
     queryFn: getAllVendors,
   });
-
+  const { data: productTypeData, isPending: productTypeisLoading } = useQuery({
+    queryKey: ["product-types"],
+    queryFn: getProductTypes,
+  });
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [key, setKey] = useState(0);
@@ -78,6 +89,7 @@ const FulfillOrderForm = ({ data, handleOpen }: any) => {
       shipmentPayloads: [
         {
           vendorId: dataSource.vendorId,
+          productTypeId: dataSource.productTypeId,
           driverName: dataSource.driverName,
           driverPhone: dataSource.driverPhone,
           truckNumber: dataSource.truckNumber,
@@ -112,6 +124,40 @@ const FulfillOrderForm = ({ data, handleOpen }: any) => {
                       </SelectItem>
                     ) : (
                       vendors?.map((data: any) => (
+                        <SelectItem key={data.id} value={data.id}>
+                          <span>{data.name}</span>
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="productTypeId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Product Type</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select product type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {isPending ? (
+                      <SelectItem disabled value="loading">
+                        <p>Loading...</p>
+                      </SelectItem>
+                    ) : (
+                      productTypeData?.map((data: any) => (
                         <SelectItem key={data.id} value={data.id}>
                           <span>{data.name}</span>
                         </SelectItem>

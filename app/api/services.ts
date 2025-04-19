@@ -8,12 +8,6 @@ import {
   VendorFormValue,
   VendorUpdateValue,
 } from "../dashboard/(clients)/vendor/page";
-import {
-  showErrorAlert,
-  showInfoAlert,
-  showSuccessAlert,
-} from "@/components/alert";
-import { Aperture } from "lucide-react";
 
 export interface LoginResponse {
   isSuccess: boolean;
@@ -100,7 +94,22 @@ export const getAllVendors = async () => {
     throw error.response.data;
   }
 };
-
+export const getProductTypes = async () => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.productType);
+    return response.data?.responseData;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+export const getTruckSizes = async () => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.truckSize);
+    return response.data?.responseData;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
 export const getAllInvestment = async (params = "") => {
   try {
     const response = await axiosInstance.get(API_ENDPOINTS.investments);
@@ -239,7 +248,7 @@ export const forgotPassword = async (credentials: { email: string }) => {
     return response.data;
   } catch (error: any) {
     // console.error("Error fetching user data", error);
-    console.log(error.response.data.responseMessage);
+    // console.log(error.response.data.responseMessage);
     return error.response.data;
     // showErrorAlert(error.responseMessage);
   }

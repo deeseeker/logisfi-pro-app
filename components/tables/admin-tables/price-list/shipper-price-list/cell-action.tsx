@@ -39,7 +39,7 @@ export const ShipperCellAction = ({ row }: { row: any }) => {
 
   const mutation = useMutation({
     mutationFn: (priceId: string) => {
-      return deletePrice("priceId");
+      return deletePrice(priceId);
     },
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({

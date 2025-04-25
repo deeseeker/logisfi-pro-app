@@ -273,6 +273,11 @@ export interface IPrice {
   modifiedBy: string;
   price: number;
   route: IRoutes;
+  truckSize: {
+    id: string;
+    size: string; // Example property, replace with actual structure if known
+    measurementUnit: number; // Example property, replace with actual structure if known
+  };
 }
 
 export interface IResponse<T> {
@@ -347,7 +352,7 @@ export const vendorSchema = z.object({
   state: z.string(),
   country: z.string(),
   phone: z.string(),
-  email: z.string().email(),
+  email: z.string(),
   accountNumber: z.string(),
   accountName: z.string(),
   bankCode: z.string(),

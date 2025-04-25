@@ -34,6 +34,14 @@ export const columns: ColumnDef<IPrice>[] = [
     },
   },
   {
+    accessorKey: "truckSize",
+    header: "Truck Size",
+    cell: ({ row }) => {
+      const destination = row.original.truckSize.size;
+      return <span>{destination}</span>;
+    },
+  },
+  {
     accessorKey: "createdAt",
     header: "Date Created",
     cell: ({ row }) => {

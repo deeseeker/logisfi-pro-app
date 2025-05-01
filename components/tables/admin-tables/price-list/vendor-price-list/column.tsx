@@ -11,6 +11,14 @@ export type UpdatePriceValue = z.infer<typeof priceUpdateSchema>;
 
 export const columns: ColumnDef<IPrice>[] = [
   {
+    accessorKey: "vendor",
+    header: "Vendor",
+    cell: ({ row }) => {
+      const origin = row.original.vendor?.name || "";
+      return <span>{origin}</span>;
+    },
+  },
+  {
     accessorKey: "route",
     header: "Origin",
     cell: ({ row }) => {

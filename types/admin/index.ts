@@ -273,6 +273,8 @@ export interface IPrice {
   modifiedBy: string;
   price: number;
   route: IRoutes;
+  shipper?: Shipper;
+  vendor?: Vendor;
   truckSize: {
     id: string;
     size: string; // Example property, replace with actual structure if known

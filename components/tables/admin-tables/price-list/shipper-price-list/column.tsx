@@ -7,6 +7,14 @@ import { formatNaira } from "@/utils/helpers";
 
 export const columns: ColumnDef<IPrice>[] = [
   {
+    accessorKey: "shipper",
+    header: "Shipper",
+    cell: ({ row }) => {
+      const origin = row.original.shipper?.name || "Unknown Shipper";
+      return <span>{origin}</span>;
+    },
+  },
+  {
     accessorKey: "route",
     header: "Origin",
     cell: ({ row }) => {

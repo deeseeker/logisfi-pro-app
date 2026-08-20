@@ -27,6 +27,7 @@ import {
 import { useOrganization } from "@/hooks/useRole";
 import Beneficiary from "@/app/dashboard/beneficiaries/page";
 export type EditOrganizationValue = z.infer<typeof organizationUpdateSchema>;
+export type OrganizationFormInput = z.input<typeof organizationSchema>;
 export type OrganizationFormValue = z.infer<typeof organizationSchema>;
 
 const BeneficiaryForm = ({ handleOpen }: any) => {
@@ -34,7 +35,7 @@ const BeneficiaryForm = ({ handleOpen }: any) => {
     queryKey: ["banks"],
     queryFn: getAllBanks,
   });
-  const form = useForm<OrganizationFormValue>({
+  const form = useForm<OrganizationFormInput, any, OrganizationFormValue>({
     resolver: zodResolver(organizationSchema),
   });
   const queryClient = useQueryClient();

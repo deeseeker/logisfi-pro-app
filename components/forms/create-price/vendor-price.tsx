@@ -37,13 +37,13 @@ interface VendorPriceFormProps {
 
 const FormSchema = z.object({
   routeId: z.string({
-    required_error: "Please select a route.",
+    error: "Please select a route.",
   }),
   vendorId: z.string({
-    required_error: "Please select a vendor.",
+    error: "Please select a vendor.",
   }),
   truckSizeId: z.string({
-    required_error: "Please select truck size.",
+    error: "Please select truck size.",
   }),
   price: z.string(),
 });

@@ -1,4 +1,3 @@
-import { refreshAccessToken } from "@/app/api/services";
 import axios from "axios";
 
 const axiosInstance = axios.create({
@@ -19,46 +18,6 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Response interceptor to handle errors
-axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config;
-    console.log(originalRequest);
-    console.log(
-      error.response.data.responseMessage !== "Incorrect email or password"
-    );
-    // Check if the error status is 401 and the request has not been retried
-    if (
-      error.response?.status === 401 &&
-      error.response.data.responseMessage !== "Incorrect email or password" &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
-
-      try {
-        // Refresh the token
-        const newAccessToken = await refreshAccessToken();
-
-        // Update the authorization header and retry the request
-        axiosInstance.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${newAccessToken}`;
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-        return axiosInstance(originalRequest);
-      } catch (refreshError) {
-        console.error("Token refresh failed", refreshError);
-        window.location.href = "/";
-        return Promise.reject(refreshError);
-      }
-    }
-
     return Promise.reject(error);
   }
 );

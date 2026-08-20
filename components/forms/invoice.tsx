@@ -29,7 +29,7 @@ import {
 
 const FormSchema = z.object({
   shipperId: z.string({
-    required_error: "Please select a shipper.",
+    error: "Please select a shipper.",
   }),
 });
 

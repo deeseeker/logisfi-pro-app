@@ -33,10 +33,10 @@ import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 // "productTypeId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 const FormSchema = z.object({
   vendorId: z.string({
-    required_error: "Please select a route.",
+    error: "Please select a route.",
   }),
   productTypeId: z.string({
-    required_error: "Please select product type.",
+    error: "Please select product type.",
   }),
   driverName: z.string(),
   driverPhone: z.string(),

@@ -1,7 +1,7 @@
 "use client";
 
 import { Members, OrganizationId } from "@/types/admin";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@/components/ui/table/table-features";
 
 export const columns: ColumnDef<Members>[] = [
   {

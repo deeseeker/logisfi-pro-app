@@ -1,7 +1,9 @@
 "use client";
 
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { Table } from "@tanstack/react-table";
+import { RowData } from "@tanstack/react-table";
+
+import { ReactTable } from "./table-features";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,20 +22,20 @@ import {
 
 import { splitCamelCase } from "@/utils/helpers";
 
-interface DataTableToolbarProps<TData> {
-  table: Table<TData>;
+interface DataTableToolbarProps<TData extends RowData> {
+  table: ReactTable<TData>;
   searchKey: string;
   filter1?: string;
   filter2?: string;
 }
 
-export function DataTableToolbar<TData>({
+export function DataTableToolbar<TData extends RowData>({
   table,
   searchKey,
   filter1,
   filter2,
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const isFiltered = table.state.columnFilters.length > 0;
   const getData = () => {
     switch (filter1) {
       case "orderStatus":

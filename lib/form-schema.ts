@@ -16,7 +16,8 @@ export const profileSchema = z.object({
   email: z
     .string()
     .email({ message: 'Product Name must be at least 3 characters' }),
-  contactno: z.coerce.number()
+  contactno: z.coerce.number<string>()
 })
 
+export type ProfileFormInput = z.input<typeof profileSchema>
 export type ProfileFormValues = z.infer<typeof profileSchema>

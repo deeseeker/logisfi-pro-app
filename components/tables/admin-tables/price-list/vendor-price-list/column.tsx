@@ -1,7 +1,7 @@
 "use client";
 import { schemaToDate } from "@/lib/utils";
 import { IPrice, priceSchema, priceUpdateSchema } from "@/types/admin";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@/components/ui/table/table-features";
 import * as z from "zod";
 import { VendorCellAction } from "./cell-action";
 import { formatNaira } from "@/utils/helpers";

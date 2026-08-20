@@ -9,7 +9,7 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { ProfileFormValues, profileSchema } from '@/lib/form-schema'
+import { ProfileFormInput, ProfileFormValues, profileSchema } from '@/lib/form-schema'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
@@ -19,7 +19,7 @@ export const EditBeneficiary = () => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState({})
 
-  const form = useForm<ProfileFormValues>({
+  const form = useForm<ProfileFormInput, any, ProfileFormValues>({
     resolver: zodResolver(profileSchema)
   })
 

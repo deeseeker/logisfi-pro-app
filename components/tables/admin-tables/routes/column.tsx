@@ -36,7 +36,7 @@ import { schemaToDate } from "@/lib/utils";
 import { formSchema, IRoutes } from "@/types/admin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@/components/ui/table/table-features";
 import {
   EllipsisVertical,
   SquarePen,
@@ -65,7 +65,7 @@ const ActionCell = ({ row }: { row: any }) => {
       showErrorAlert(error.responseMessage);
     },
   });
-  const form = useForm<UpdateFormValue>({
+  const form = useForm<RouteFormValue>({
     resolver: zodResolver(formSchema),
   });
 

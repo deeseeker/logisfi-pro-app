@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
 import { schemaToDate } from "@/lib/utils";
 import { formSchema, OrderStatusEnums } from "@/types/admin";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@/components/ui/table/table-features";
 import {
   ArrowUpDown,
   EllipsisVertical,
@@ -13,7 +13,7 @@ import {
   Signature,
   SquarePen,
 } from "lucide-react";
-import { UpdateFormValue } from "../routes/page";
+import { RouteFormValue, UpdateFormValue } from "../routes/page";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -106,7 +106,7 @@ const ActionCell = ({ row }: { row: any }) => {
       });
     },
   });
-  const form = useForm<UpdateFormValue>({
+  const form = useForm<RouteFormValue>({
     resolver: zodResolver(formSchema),
   });
 

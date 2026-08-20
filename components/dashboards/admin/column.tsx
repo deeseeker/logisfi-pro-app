@@ -20,7 +20,7 @@ import {
   MobilizationStatusEnums,
   ShipmentStatusEnums,
 } from "@/types/admin";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@/components/ui/table/table-features";
 import { EllipsisVertical, Eye, SquarePen } from "lucide-react";
 import { useState } from "react";
 import MobilizeShipmentForm from "@/components/forms/mobilize-load-form";

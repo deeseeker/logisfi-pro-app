@@ -11,7 +11,7 @@ import {
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
 import { schemaToDate } from "@/lib/utils";
 import { InvoiceStatusEnums } from "@/types/admin";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@/components/ui/table/table-features";
 import { EllipsisVertical, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 

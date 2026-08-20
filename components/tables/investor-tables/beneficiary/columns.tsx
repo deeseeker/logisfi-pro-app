@@ -16,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
-import { ColumnDef } from '@tanstack/react-table'
+import { ColumnDef } from '@/components/ui/table/table-features'
 import { Pencil, Trash2 } from 'lucide-react'
 
 // This type is used to define the shape of our data.

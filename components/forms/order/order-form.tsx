@@ -32,10 +32,10 @@ import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 const FormSchema = z.object({
   routeId: z.string({
-    required_error: "Please select a route.",
+    error: "Please select a route.",
   }),
   shipperId: z.string({
-    required_error: "Please select a route.",
+    error: "Please select a route.",
   }),
 });
 const OrderForm = ({ handleOpen }: any) => {

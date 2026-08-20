@@ -2,7 +2,7 @@
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
 import { schemaToDate } from "@/lib/utils";
 import { formatNaira } from "@/utils/helpers";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@/components/ui/table/table-features";
 
 export const columns: ColumnDef<any>[] = [
   {

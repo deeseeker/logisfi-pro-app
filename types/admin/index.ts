@@ -444,3 +444,187 @@ export const priceUpdateSchema = z.object({
 export const UpdatePriceSchema = z.object({
   newPrice: z.string(),
 });
+
+/* =========================================================================
+   ADMIN BACK OFFICE — types for the /admin section.
+   Prefixed `Admin*` because `Shipper` and `Shipment` already exist above.
+   ========================================================================= */
+
+export type Tone = "success" | "warning" | "error" | "info" | "neutral" | "violet";
+
+export type AdminShipper = {
+  id: string;
+  name: string;
+  type: string;
+  contact: string;
+  email: string;
+  phone: string;
+  city: string;
+  state: string;
+  status: string;
+  tier: string;
+  onboarded: string;
+  shipments: number;
+  volume: number;
+  rating: number;
+}
+
+export type AdminCarrier = {
+  id: string;
+  name: string;
+  fleet: number;
+  activeTrucks: number;
+  contact: string;
+  phone: string;
+  city: string;
+  status: string;
+  rating: number;
+  onTime: number;
+  insurance: string;
+  insuranceExpiry: string;
+}
+
+export type AdminProduct = {
+  id: string;
+  name: string;
+  category: string;
+  unit: string;
+  avgWeight: string;
+  hazmat: boolean;
+  status: string;
+}
+
+export type AdminTruckSize = {
+  id: string;
+  name: string;
+  capacity: string;
+  maxWeight: string;
+  axles: number;
+  baseRatePerKm: number;
+  status: string;
+}
+
+export type AdminRoute = {
+  id: string;
+  origin: string;
+  destination: string;
+  distanceKm: number;
+  avgTransitHrs: number;
+  tollPoints: number;
+  status: string;
+}
+
+export type AdminInvestor = {
+  id: string;
+  name: string;
+  type: string;
+  wallet: number;
+  exposureLimit: number;
+  exposureUsed: number;
+  interestRate: number;
+  activeFinancings: number;
+  status: string;
+  tier: string;
+  since: string;
+}
+
+export type AdminShipment = {
+  id: string;
+  waybill: string;
+  shipper: string;
+  shipperId: string;
+  carrier: string;
+  route: string;
+  product: string;
+  truck: string;
+  driver: string;
+  plate: string;
+  value: number;
+  status: string;
+  created: Date;
+  eta: Date;
+  distance: number;
+}
+
+export type AdminPaymentRequest = {
+  id: string;
+  shipmentId: string;
+  waybill: string;
+  shipper: string;
+  investor: string;
+  investorId: string;
+  requested: number;
+  approved: number;
+  status: string;
+  requestedOn: Date;
+  dueDate: Date;
+  interestRate: number;
+  flagged: boolean;
+}
+
+export type AdminInvoice = {
+  id: string;
+  shipmentId: string;
+  waybill: string;
+  shipper: string;
+  amount: number;
+  paidAmount: number;
+  status: string;
+  issued: Date;
+  dueDate: Date;
+}
+
+export type AdminPriceRule = {
+  id: string;
+  shipper: string;
+  truck: string;
+  route: string;
+  rate: number;
+  effective: string;
+  status: string;
+}
+
+export type AdminSettlement = {
+  id: string;
+  requestId: string;
+  shipper: string;
+  investor: string;
+  principal: number;
+  interest: number;
+  thhFee: number;
+  status: string;
+  date: Date;
+}
+
+export type AdminDocument = {
+  id: string;
+  name: string;
+  type: string;
+  shipper: string;
+  size: string;
+  uploaded: string;
+  tag: string;
+}
+
+export type AdminAuditEvent = {
+  id: string;
+  actor: string;
+  role: string;
+  action: string;
+  entity: string;
+  time: string;
+  severity: "info" | "warning" | "critical";
+}
+
+export type AdminActivityItem = {
+  icon: "check" | "money" | "alert" | "invoice" | "truck";
+  text: string;
+  time: string;
+  tone: Tone;
+}
+
+export type AdminTickerItem = {
+  label: string;
+  value: string;
+  tone: Tone;
+}

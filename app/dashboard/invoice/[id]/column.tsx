@@ -3,7 +3,7 @@
 import { schemaToDate } from "@/lib/utils";
 import { InvoiceStatusEnums, ShipmentStatusEnums } from "@/types/admin";
 import { formatNaira } from "@/utils/helpers";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@/components/ui/table/table-features";
 
 export const columns: ColumnDef<any>[] = [
   {

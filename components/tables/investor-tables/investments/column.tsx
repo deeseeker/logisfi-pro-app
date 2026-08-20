@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { schemaToDate } from "@/lib/utils";
 import { IInvestments, InvestmentStatusEnums } from "@/types/admin";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@/components/ui/table/table-features";
 import { EllipsisVertical, Eye, SquarePen, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 

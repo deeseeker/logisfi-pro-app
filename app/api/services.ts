@@ -201,7 +201,10 @@ export const getAllPrices = async (type: "shippers" | "vendors") => {
     const response = await axiosInstance.get(endpoint);
     return response.data;
   } catch (error) {
-    console.error("Error fetching price list", error);
+    console.error(
+      "Error fetching price list",
+      error instanceof Error ? error.message : error
+    );
   }
 };
 export const generateInvoiceId = async (id: string) => {
@@ -219,7 +222,10 @@ export const getWallet = async (organizationId: string) => {
     const response = await axiosInstance.get(endpoint);
     return response.data.responseData;
   } catch (error) {
-    console.error("Error fetching wallet details", error);
+    console.error(
+      "Error fetching wallet details",
+      error instanceof Error ? error.message : error
+    );
   }
 };
 
@@ -277,7 +283,6 @@ export const activateAccount = async (credentials: any) => {
     );
     return response.data;
   } catch (error: any) {
-    console.error("Error fetching user data", error);
     return error.response.data;
   }
 };
@@ -307,7 +312,6 @@ export const refreshAccessToken = async () => {
 
     return newAccessToken;
   } catch (error) {
-    console.error("Failed to refresh token", error);
     throw error;
   }
 };
@@ -468,7 +472,6 @@ export const deleteRoute = async (routeId: string) => {
     );
     return response.data;
   } catch (error: any) {
-    console.error("Error fetching user data", error);
     throw error.response.data;
   }
 };
@@ -483,7 +486,6 @@ export const deleteShipper = async (shipperId: string) => {
 
     return response.data;
   } catch (error: any) {
-    console.error("Error fetching user data", error);
     throw error.response.data;
   }
 };
@@ -499,7 +501,6 @@ export const deleteOrganization = async (organizationId: string) => {
 
     return response.data;
   } catch (error: any) {
-    console.error("Error fetching user data", error);
     throw error.response.data;
   }
 };
@@ -514,7 +515,6 @@ export const deletePrice = async (shipperPriceId: string) => {
 
     return response.data;
   } catch (error: any) {
-    console.error("Error fetching user data", error);
     throw error.response.data;
   }
 };
@@ -543,7 +543,6 @@ export const deleteVendor = async (vendorId: string) => {
     );
     return response.data;
   } catch (error: any) {
-    console.error("Error fetching user data", error);
     throw error.response.data;
   }
 };

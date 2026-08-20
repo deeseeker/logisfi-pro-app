@@ -41,7 +41,6 @@ export default function UserAuthForm() {
     setLoading(true);
     const response = await signIn(data);
 
-    console.log("err", response);
     if (response.isSuccess) {
       // OrderStatusEnums[Number(row.original.orderStatus)])
       const userType = response.responseData.userType;

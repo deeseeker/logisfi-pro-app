@@ -36,7 +36,7 @@ export const formatEnumKey = (key: string) => {
 };
 const FormSchema = z.object({
   orderStatus: z.string({
-    required_error: "Please select a route.",
+    error: "Please select a route.",
   }),
 });
 const UpdateOrderForm = ({ data }: { data: any }) => {

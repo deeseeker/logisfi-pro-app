@@ -1,7 +1,7 @@
 "use client";
 
 import { fulfillOrder, updateRoute } from "@/app/api/services";
-import { UpdateFormValue } from "@/app/dashboard/routes/page";
+import { RouteFormValue, UpdateFormValue } from "@/app/dashboard/routes/page";
 import FulfillOrderForm from "@/components/forms/order/fulfill-order-form";
 import UpdateOrderForm, {
   formatEnumKey,
@@ -26,7 +26,7 @@ import { schemaToDate } from "@/lib/utils";
 import { formSchema, IOrders, OrderStatusEnums } from "@/types/admin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@/components/ui/table/table-features";
 import { EllipsisVertical, Eye, Signature, SquarePen } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -51,7 +51,7 @@ const ActionCell = ({ row }: { row: any }) => {
       });
     },
   });
-  const form = useForm<UpdateFormValue>({
+  const form = useForm<RouteFormValue>({
     resolver: zodResolver(formSchema),
   });
 

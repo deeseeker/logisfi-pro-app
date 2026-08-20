@@ -34,7 +34,7 @@ import { schemaToDate } from "@/lib/utils";
 import { IVendors, vendorSchema } from "@/types/admin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@/components/ui/table/table-features";
 import { EllipsisVertical, Eye, SquarePen, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

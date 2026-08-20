@@ -43,13 +43,20 @@ export default function UserAuthForm() {
 
     if (response.isSuccess) {
       // OrderStatusEnums[Number(row.original.orderStatus)])
-      const userType = response.responseData.userType;
-      const roles = response.responseData.roles;
-      setUser(response.responseData.userType);
-      localStorage.setItem("user", JSON.stringify(UserTypeEnum[userType]));
+      const userType = response.responseData?.userType;
+      const roles = response.responseData?.roles;
+      const userLabel =
+        typeof userType === "number"
+          ? UserTypeEnum[userType as unknown as number]
+          : userType;
+      setUser(userType);
+      localStorage.setItem("user", JSON.stringify(userLabel));
       localStorage.setItem("roles", JSON.stringify(roles));
-      localStorage.setItem("token", response.responseData.accessToken);
-      localStorage.setItem("refreshToken", response.responseData.refreshToken);
+      localStorage.setItem("token", response.responseData?.accessToken ?? "");
+      localStorage.setItem(
+        "refreshToken",
+        response.responseData?.refreshToken ?? ""
+      );
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
       setLoading(false);
       showSuccessAlert(response.responseMessage);

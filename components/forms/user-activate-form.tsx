@@ -35,7 +35,7 @@ export default function ActivateUserForm({
 }) {
   const [loading, setLoading] = useState(false);
   const route = useRouter();
-  const [activationStatus, setActivationStatus] = useState();
+  const [activationStatus, setActivationStatus] = useState<string>();
   const { toast } = useToast();
   const form = useForm<ActivateFormValue>({
     resolver: zodResolver(formSchema),
@@ -65,7 +65,9 @@ export default function ActivateUserForm({
       route.push("/");
     } else {
       setLoading(false);
-      setActivationStatus(res.responseMessage || "Account activated failed!");
+      setActivationStatus(
+        res.responseMessage || "Account activated failed!"
+      );
       console.log("heyyyy");
       showErrorAlert(res.responseMessage);
     }

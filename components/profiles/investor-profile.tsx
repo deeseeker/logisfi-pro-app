@@ -10,13 +10,12 @@ import {
 import { Button } from "../ui/button";
 import { SquarePenIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useQuery } from "@tanstack/react-query";
-import { getProfile } from "@/app/api/services";
+import { useProfile } from "@/hooks/useRole";
 
 type Props = {};
 
 function InvestorProfile() {
-  const { data } = useQuery({ queryKey: ["profile"], queryFn: getProfile });
+  useProfile();
   return (
     <div className="space-y-8">
       <Card className="flex items-center">

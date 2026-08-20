@@ -56,13 +56,13 @@ function InvestorDashboard() {
 
   const { data: mobilization, isPending: Loading } = useQuery({
     queryKey: ["mobilizations"],
-    queryFn: () => getAllMobilizations(`${profile.organizationId}`),
+    queryFn: () => getAllMobilizations(`${profile?.organizationId}`),
     enabled: !!profile?.organizationId,
   });
   console.log(res);
   const dataSource = mobilization ? mobilization.responseData : [];
   console.log(dataSource, "hellos");
-  const roi = res?.responseData[0]?.roi;
+  const roi = res?.responseData?.[0]?.roi;
   return (
     <div>
       <Tabs defaultValue="overview" className="space-y-4 ">

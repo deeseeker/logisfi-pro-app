@@ -104,10 +104,11 @@ export default function InvoiceId() {
             </p>
             <p>
               <strong>Date generated: </strong>
-              {schemaToDate(data.invoiceDate)}
+              {schemaToDate(data?.invoiceDate)}
             </p>
             <p>
-              <strong>Number of shipment: </strong> {data.invoiceItems.length}
+              <strong>Number of shipment: </strong>{" "}
+              {data?.invoiceItems?.length ?? 0}
             </p>
           </CardContent>
         </Card>

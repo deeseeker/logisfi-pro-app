@@ -30,23 +30,24 @@ import {
 } from "./dropdown-menu";
 import { ChevronDown } from "lucide-react";
 
-interface DataTableProps<TData extends RowData> {
-  columns: ColumnDef<TData>[];
+interface DataTableProps<TData extends RowData, TColumn extends RowData = TData> {
+  columns: ColumnDef<TColumn>[];
   data: TData[];
   searchKey: string;
 }
 
-export function DataTable<TData extends RowData>({
+export function DataTable<TData extends RowData, TColumn extends RowData = TData>({
   columns,
   data,
   searchKey,
-}: DataTableProps<TData>) {
+}: DataTableProps<TData, TColumn>) {
+  const tableColumns = columns as ColumnDef<TData>[];
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useTable({
     features: tableFeatureSet,
     data,
-    columns,
+    columns: tableColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     state: {

@@ -24,21 +24,22 @@ import {
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 
-interface DataTableProps<TData extends RowData> {
-  columns: ColumnDef<TData>[];
+interface DataTableProps<TData extends RowData, TColumn extends RowData = TData> {
+  columns: ColumnDef<TColumn>[];
   data: TData[];
   searchKey: string;
   filter1?: string;
   filter2?: string;
 }
 
-export function DataTable<TData extends RowData>({
+export function DataTable<TData extends RowData, TColumn extends RowData = TData>({
   columns,
   data,
   searchKey,
   filter1,
   filter2,
-}: DataTableProps<TData>) {
+}: DataTableProps<TData, TColumn>) {
+  const tableColumns = columns as ColumnDef<TData>[];
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<ColumnVisibilityState>({});
@@ -50,7 +51,7 @@ export function DataTable<TData extends RowData>({
   const table = useTable({
     features: tableFeatureSet,
     data,
-    columns,
+    columns: tableColumns,
     state: {
       sorting,
       columnVisibility,

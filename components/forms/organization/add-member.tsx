@@ -59,8 +59,8 @@ const MemberForm = ({ handleOpen }: { handleOpen: any }) => {
   const onSubmit = (data: any) => {
     const formData = {
       ...data,
-      userType: profile.userType,
-      organizationId: profile.organizationId,
+      userType: profile?.userType,
+      organizationId: profile?.organizationId,
     };
     console.log(formData);
     mutation.mutate(formData);

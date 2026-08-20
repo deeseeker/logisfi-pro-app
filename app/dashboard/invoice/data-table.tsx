@@ -18,7 +18,7 @@ export default function InvoiceTable() {
         <DataTable
           searchKey="shipper_name"
           columns={columns}
-          data={data}
+          data={data ?? []}
           filter1="invoiceStatus"
         />
       )}

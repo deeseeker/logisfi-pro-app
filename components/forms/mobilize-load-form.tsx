@@ -146,12 +146,12 @@ const MobilizeShipmentForm = ({ data, handleOpen }: any) => {
                         Error fetching wallets
                       </SelectItem>
                     ) : (
-                      wallets?.map((wallet: LoanData) => (
+                      wallets?.map((wallet) => (
                         <SelectItem
-                          key={wallet.organization.id}
-                          value={wallet.organization.id}
+                          key={wallet.organization?.id}
+                          value={wallet.organization?.id ?? ""}
                         >
-                          {wallet.organization.organizationName}
+                          {wallet.organization?.organizationName}
                         </SelectItem>
                       ))
                     )}

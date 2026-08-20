@@ -30,9 +30,9 @@ export const ResetPasswordForm = () => {
 
   const onSubmit = async (data: any) => {
     const payload = {
-      email: email,
+      email: email ?? null,
       newPassword: data.newPassword,
-      token: token,
+      token: token ?? null,
     };
 
     setLoading(true);

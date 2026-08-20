@@ -1,12 +1,11 @@
-import {
-  getAllOrganizations,
-  getAllRoutes,
-  getAllShippers,
-  getAllVendors,
-  getProfile,
-  getTruckSizes,
-} from "@/app/api/services";
-import { useQuery } from "@tanstack/react-query";
+"use client";
+
+import { useOrganizations } from "@/lib/api/hooks/organizations";
+import { useRoutes } from "@/lib/api/hooks/routes";
+import { useTruckSizes } from "@/lib/api/hooks/shared";
+import { useShippers as useShippersQuery } from "@/lib/api/hooks/shippers";
+import { useUser } from "@/lib/api/hooks/users";
+import { useVendors as useVendorsQuery } from "@/lib/api/hooks/vendors";
 import { useEffect, useState } from "react";
 
 function useRole() {
@@ -24,38 +23,29 @@ function useRole() {
 
 export default useRole;
 
-export const useProfile = () =>
-  useQuery({
-    queryKey: ["profile"],
-    queryFn: getProfile,
-  });
+export function useProfile() {
+  const query = useUser();
+  return { ...query, data: query.data?.responseData };
+}
 
-export const useOrganization = () =>
-  useQuery({
-    queryKey: ["organization"],
-    queryFn: getAllOrganizations,
-  });
+/** Organization list. Distinct from `useOrganization(id)` in `@/lib/api/hooks/organizations`. */
+export function useOrganization() {
+  return useOrganizations();
+}
 
-export const useRoutes = () =>
-  useQuery({
-    queryKey: ["routes"],
-    queryFn: getAllRoutes,
-  });
+export { useRoutes };
 
-export const useShippers = () =>
-  useQuery({
-    queryKey: ["shippers"],
-    queryFn: getAllShippers,
-  });
+export function useShippers() {
+  const query = useShippersQuery();
+  return { ...query, data: query.data?.responseData ?? [] };
+}
 
-export const useVendors = () =>
-  useQuery({
-    queryKey: ["vendors"],
-    queryFn: getAllVendors,
-  });
+export function useVendors() {
+  const query = useVendorsQuery();
+  return { ...query, data: query.data?.responseData ?? [] };
+}
 
-export const useGetTruckSize = () =>
-  useQuery({
-    queryKey: ["truck-size"],
-    queryFn: getTruckSizes,
-  });
+export function useGetTruckSize() {
+  const query = useTruckSizes();
+  return { ...query, data: query.data?.responseData ?? [] };
+}

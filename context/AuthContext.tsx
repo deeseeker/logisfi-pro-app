@@ -1,6 +1,4 @@
 "use client";
-import { getProfile, refreshAccessToken } from "@/app/api/services";
-import { useQuery } from "@tanstack/react-query";
 import {
   createContext,
   Dispatch,

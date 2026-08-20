@@ -40,7 +40,8 @@ export default function Account() {
   const { data: profile } = useProfile();
   const { data: organization, isPending } = useQuery({
     queryKey: ["organization"],
-    queryFn: () => getOrganizationId(`${profile.organizationId}`),
+    queryFn: () => getOrganizationId(`${profile?.organizationId}`),
+    enabled: Boolean(profile?.organizationId),
   });
 
   return (

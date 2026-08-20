@@ -9,7 +9,8 @@ export default function AccountTable() {
   const { data: profile } = useProfile();
   const { data: organization, isPending } = useQuery({
     queryKey: ["organization"],
-    queryFn: () => getOrganizationId(`${profile.organizationId}`),
+    queryFn: () => getOrganizationId(`${profile?.organizationId}`),
+    enabled: Boolean(profile?.organizationId),
   });
 
   return (
@@ -20,7 +21,7 @@ export default function AccountTable() {
         <DataTable
           searchKey="position"
           columns={columns}
-          data={organization?.members}
+          data={organization?.members ?? []}
         />
       )}
     </div>

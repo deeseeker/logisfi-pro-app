@@ -10,12 +10,8 @@ import {
 import { Button } from "../ui/button";
 import { SquarePenIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useProfile } from "@/hooks/useRole";
-
-type Props = {};
 
 function InvestorProfile() {
-  useProfile();
   return (
     <div className="space-y-8">
       <Card className="flex items-center">

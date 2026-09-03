@@ -41,7 +41,6 @@ import {
 import {
   getBanks,
   getProductTypes as fetchProductTypes,
-  getTruckSizes as fetchTruckSizes,
 } from "@/lib/api/services/shared.service";
 import {
   getShipments,
@@ -137,7 +136,6 @@ export const getAllVPrice = () => getVendorPriceList();
 export const getAllBanks = async () => unwrapList(await getBanks());
 export const getAllVendors = async () => unwrapList(await getVendors());
 export const getProductTypes = async () => unwrapList(await fetchProductTypes());
-export const getTruckSizes = async () => unwrapList(await fetchTruckSizes());
 export const getAllShippers = async () => unwrapList(await getShippers());
 export const getInvoices = async () => unwrapList(await fetchInvoices());
 export const getAllWithdrawals = async () => unwrapList(await getFundWithdrawals());

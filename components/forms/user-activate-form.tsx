@@ -13,12 +13,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { activateAccount, signIn } from "@/app/api/services";
+import { activateAccount } from "@/app/api/services";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useToast } from "../ui/use-toast";
-import { successModal } from "../custom-toast/success-toast";
-import { ErrorModal } from "../custom-toast/error-toast";
 import { showErrorAlert, showSuccessAlert } from "../alert";
 
 const formSchema = z.object({
@@ -35,8 +31,6 @@ export default function ActivateUserForm({
 }) {
   const [loading, setLoading] = useState(false);
   const route = useRouter();
-  const [activationStatus, setActivationStatus] = useState<string>();
-  const { toast } = useToast();
   const form = useForm<ActivateFormValue>({
     resolver: zodResolver(formSchema),
   });
@@ -58,17 +52,10 @@ export default function ActivateUserForm({
 
     if (res.isSuccess) {
       setLoading(false);
-      setActivationStatus(
-        res.responseMessage || "Account activated successfully!"
-      );
       showSuccessAlert("Successful");
       route.push("/");
     } else {
       setLoading(false);
-      setActivationStatus(
-        res.responseMessage || "Account activated failed!"
-      );
-      console.log("heyyyy");
       showErrorAlert(res.responseMessage);
     }
   };

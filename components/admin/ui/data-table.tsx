@@ -91,7 +91,11 @@ function compare(a: unknown, b: unknown): number {
   return String(a).localeCompare(String(b));
 }
 
-export function DataTable<T extends Record<string, unknown>>({
+function cellValue(row: object, key: string): unknown {
+  return (row as Record<string, unknown>)[key];
+}
+
+export function DataTable<T extends object>({
   columns,
   data,
   searchKeys = [],
@@ -122,18 +126,20 @@ export function DataTable<T extends Record<string, unknown>>({
       const q = query.toLowerCase();
       rows = rows.filter((r) =>
         searchKeys.some((k) =>
-          String(r[k] ?? "")
+          String(cellValue(r, k) ?? "")
             .toLowerCase()
             .includes(q)
         )
       );
     }
     Object.entries(activeFilters).forEach(([k, v]) => {
-      if (v && v !== "All") rows = rows.filter((r) => String(r[k]) === v);
+      if (v && v !== "All") {
+        rows = rows.filter((r) => String(cellValue(r, k)) === v);
+      }
     });
     if (sortKey) {
       rows = [...rows].sort((a, b) => {
-        const result = compare(a[sortKey], b[sortKey]);
+        const result = compare(cellValue(a, sortKey), cellValue(b, sortKey));
         return sortDir === "asc" ? result : -result;
       });
     }
@@ -157,7 +163,9 @@ export function DataTable<T extends Record<string, unknown>>({
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
   const toggleAll = () =>
     setSelected((s) =>
-      s.length === paged.length ? [] : paged.map((r) => String(r[rowKey]))
+      s.length === paged.length
+        ? []
+        : paged.map((r) => String(cellValue(r, rowKey)))
     );
 
   return (
@@ -366,7 +374,7 @@ export function DataTable<T extends Record<string, unknown>>({
             </TableRow>
           )}
           {paged.map((row) => {
-            const id = String(row[rowKey]);
+            const id = String(cellValue(row, rowKey));
             return (
               <TableRow
                 key={id}
@@ -393,7 +401,7 @@ export function DataTable<T extends Record<string, unknown>>({
                     key={c.key}
                     className={cn("px-3 text-slate-700 whitespace-nowrap", rowH)}
                   >
-                    {c.render ? c.render(row) : String(row[c.key] ?? "")}
+                    {c.render ? c.render(row) : String(cellValue(row, c.key) ?? "")}
                   </TableCell>
                 ))}
                 {rowActions && (

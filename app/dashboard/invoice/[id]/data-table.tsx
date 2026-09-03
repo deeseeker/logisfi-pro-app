@@ -9,9 +9,7 @@ export default function InvoiceIdTable({
   data: any;
   loading: any;
 }) {
-  const shipment = data
-    ? data?.invoiceItems.map((data: any) => data.shipment)
-    : [];
+  const shipment = data?.invoiceItems?.map((item: { shipment?: unknown }) => item.shipment) ?? [];
 
   return (
     <div className="py-10">

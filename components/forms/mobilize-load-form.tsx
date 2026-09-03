@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormField,
@@ -15,7 +15,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { availableLoanWallet, mobilizeShipment } from "@/app/api/services";
-import { useToast } from "../ui/use-toast";
 import {
   Select,
   SelectContent,
@@ -30,22 +29,6 @@ const FormSchema = z.object({
   organizationId: z.string(),
 });
 
-interface Organization {
-  id: string;
-  organizationName: string;
-}
-
-interface LoanData {
-  id: string;
-  createdAt: string;
-  createdBy: string;
-  modifiedAt: string;
-  modifiedBy: string;
-  availableLoanAmount: number;
-  loanAmountInUse: number;
-  interestEarned: number;
-  organization: Organization;
-}
 const MobilizeShipmentForm = ({ data, handleOpen }: any) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -81,7 +64,6 @@ const MobilizeShipmentForm = ({ data, handleOpen }: any) => {
     data: wallets,
     isLoading: loadingWallets,
     error: walletError,
-    refetch: refetchAvailableLoan,
   } = useQuery({
     queryKey: ["available-loan-wallet", inputtedAmount],
     queryFn: () => {
@@ -92,12 +74,6 @@ const MobilizeShipmentForm = ({ data, handleOpen }: any) => {
     },
     enabled: !!inputtedAmount,
   });
-  console.log(wallets);
-  useEffect(() => {
-    if (inputtedAmount) {
-      refetchAvailableLoan();
-    }
-  }, [inputtedAmount, refetchAvailableLoan]);
   function onSubmit(dataSource: {
     neededAmount: string;
     organizationId: string;

@@ -12,7 +12,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Admin Back Office · LogisfiPro",
+  title: "Admin Back Office",
   description: "The Haulage Hub back office — operations and freight financing console",
 };
 

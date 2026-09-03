@@ -1,78 +1,60 @@
 "use client";
 
-import { Clock, MapPin, Pencil, Plus, Route as RouteIcon, Ban, Trash2 } from "lucide-react";
+import { MapPin, Plus, Route as RouteIcon, Trash2 } from "lucide-react";
 
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { AdminButton } from "@/components/admin/ui/admin-button";
 import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-table";
 import { PageHeader } from "@/components/admin/ui/page-header";
 import { StatCard } from "@/components/admin/ui/stat-card";
-import { StatusBadge } from "@/components/admin/ui/status-badge";
-import { ROUTES } from "@/constants/admin/mock-data";
-import type { AdminRoute } from "@/types/admin";
+import { getApiErrorMessage } from "@/lib/api/errors";
+import { useDeleteRoute, useRoutes } from "@/lib/api/hooks/routes";
+import type { RouteMiniModel } from "@/lib/api/types/models";
+import { formatDateShort } from "@/utils/helpers";
 
-const COLUMNS: DataTableColumn<AdminRoute>[] = [
+const COLUMNS: DataTableColumn<RouteMiniModel>[] = [
   {
     key: "id",
     header: "Route ID",
     sortable: true,
-    render: (r) => (
-      <span className="text-xs font-semibold text-slate-800 font-figure">{r.id}</span>
+    render: (row) => (
+      <span className="text-xs font-semibold text-slate-800 font-figure">
+        {row.id}
+      </span>
     ),
   },
   {
     key: "origin",
     header: "Corridor",
     sortable: true,
-    render: (r) => (
+    render: (row) => (
       <span className="flex items-center gap-2 text-xs font-medium text-slate-700">
         <MapPin className="w-3.5 h-3.5 text-blue-800 shrink-0" />
-        {r.origin}
+        {row.origin ?? "—"}
         <span className="text-slate-300">→</span>
-        {r.destination}
+        {row.destination ?? "—"}
       </span>
     ),
   },
   {
-    key: "distanceKm",
-    header: "Distance",
+    key: "createdAt",
+    header: "Created",
     sortable: true,
-    render: (r) => (
-      <span className="tabular-nums font-figure font-semibold text-slate-800">
-        {r.distanceKm.toLocaleString()} km
+    render: (row) => (
+      <span className="text-xs text-slate-500 font-figure">
+        {row.createdAt ? formatDateShort(row.createdAt) : "—"}
       </span>
     ),
-  },
-  {
-    key: "avgTransitHrs",
-    header: "Avg. Transit",
-    sortable: true,
-    render: (r) => (
-      <span className="inline-flex items-center gap-1 text-xs text-slate-600">
-        <Clock className="w-3 h-3 text-slate-400" />
-        <span className="tabular-nums font-figure">{r.avgTransitHrs} hrs</span>
-      </span>
-    ),
-  },
-  {
-    key: "tollPoints",
-    header: "Toll Points",
-    sortable: true,
-    render: (r) => <span className="tabular-nums font-figure">{r.tollPoints}</span>,
-  },
-  {
-    key: "status",
-    header: "Status",
-    sortable: true,
-    render: (r) => <StatusBadge status={r.status} />,
   },
 ];
 
 export function RoutesPage() {
-  const totalKm = ROUTES.reduce((sum, r) => sum + r.distanceKm, 0);
-  const avgTransit = Math.round(
-    ROUTES.reduce((sum, r) => sum + r.avgTransitHrs, 0) / ROUTES.length
-  );
-  const longest = ROUTES.reduce((a, b) => (a.distanceKm > b.distanceKm ? a : b));
+  const { data, isPending } = useRoutes({ PageSize: 100 });
+  const rows = data?.responseData ?? [];
+  const remove = useDeleteRoute({
+    onSuccess: (response) => showSuccessAlert(response.responseMessage),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
 
   return (
     <div className="space-y-6">
@@ -80,7 +62,7 @@ export function RoutesPage() {
         breadcrumb={["Master Data", "Routes"]}
         eyebrow="Master Data"
         title="Routes"
-        subtitle="Freight corridors served by the network, with distance, transit benchmarks and toll exposure."
+        subtitle="Origin–destination corridors used for pricing and shipment planning."
         action={
           <AdminButton variant="primary" icon={Plus} size="sm">
             Add route
@@ -89,36 +71,43 @@ export function RoutesPage() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard label="Active Routes" value={ROUTES.length} icon={RouteIcon} />
+        <StatCard label="Routes" value={rows.length} icon={RouteIcon} />
         <StatCard
-          label="Network Distance"
-          value={`${totalKm.toLocaleString()} km`}
+          label="Origins"
+          value={new Set(rows.map((row) => row.origin).filter(Boolean)).size}
           icon={MapPin}
           tone="info"
         />
-        <StatCard label="Avg. Transit" value={`${avgTransit} hrs`} icon={Clock} />
         <StatCard
-          label="Longest Corridor"
-          value={`${longest.distanceKm.toLocaleString()} km`}
+          label="Destinations"
+          value={new Set(rows.map((row) => row.destination).filter(Boolean)).size}
+          icon={MapPin}
+        />
+        <StatCard
+          label="Loaded"
+          value={isPending ? "…" : rows.length}
           icon={RouteIcon}
-          tone="warning"
         />
       </div>
 
       <DataTable
-        title="Route Register"
-        subtitle={`${ROUTES.length} corridors`}
+        title="Route catalogue"
+        subtitle={isPending ? "Loading…" : `${rows.length} records`}
         columns={COLUMNS}
-        data={ROUTES}
+        data={rows}
         rowKey="id"
         searchKeys={["id", "origin", "destination"]}
-        filterOptions={[
-          { key: "status", label: "Status", options: ["Active", "Suspended"] },
-        ]}
         rowActions={[
-          { label: "Edit route", icon: Pencil, onClick: () => {} },
-          { label: "Deactivate", icon: Ban, onClick: () => {} },
-          { label: "Delete", icon: Trash2, danger: true, onClick: () => {} },
+          {
+            label: "Delete",
+            icon: Trash2,
+            danger: true,
+            onClick: (row) => {
+              if (row.id) {
+                remove.mutate({ routeId: row.id });
+              }
+            },
+          },
         ]}
       />
     </div>

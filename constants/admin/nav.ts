@@ -19,8 +19,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-import { PAYMENT_REQUESTS, SHIPMENTS } from "./mock-data";
-
 export interface AdminNavItem {
   href: string;
   label: string;
@@ -32,10 +30,6 @@ export interface AdminNavSection {
   section: string;
   items: AdminNavItem[];
 }
-
-const PENDING_REQUESTS = PAYMENT_REQUESTS.filter(
-  (p) => p.status === "Pending Review"
-).length;
 
 export const ADMIN_NAV: AdminNavSection[] = [
   {
@@ -60,13 +54,11 @@ export const ADMIN_NAV: AdminNavSection[] = [
         href: "/admin/shipments",
         label: "Shipment Management",
         icon: Package,
-        badge: SHIPMENTS.length,
       },
       {
         href: "/admin/payment-requests",
         label: "Payment Requests",
         icon: Send,
-        badge: PENDING_REQUESTS,
       },
       { href: "/admin/investors", label: "Investor Management", icon: Landmark },
       { href: "/admin/invoices", label: "Invoice Management", icon: Receipt },

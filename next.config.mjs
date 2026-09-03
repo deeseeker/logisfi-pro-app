@@ -1,6 +1,20 @@
+const API_HOST = (
+  process.env.API_BASE_URL ??
+  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  "https://logisfi-pro-api-production.somee.com"
+).replace(/\/+$/, "");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // output: "export",
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${API_HOST}/api/v1/:path*`,
+      },
+    ];
+  },
   turbopack: {
     rules: {
       "*.svg": {

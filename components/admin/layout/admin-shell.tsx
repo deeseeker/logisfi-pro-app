@@ -24,8 +24,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <Topbar role={role} onRoleChange={setRole} onQuickAction={setGlobalWizard} />
         <main className="flex-1 p-6 max-w-[1600px] w-full mx-auto">{children}</main>
         <footer className="px-6 py-4 text-center text-[11px] text-slate-400 border-t border-slate-100">
-          LogisfiPro Admin Back Office — The Haulage Hub · High-fidelity interactive
-          prototype · All data shown is illustrative
+          LogisfiPro Admin Back Office — The Haulage Hub
         </footer>
       </div>
 

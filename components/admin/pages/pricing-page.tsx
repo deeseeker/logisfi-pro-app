@@ -1,108 +1,122 @@
 "use client";
 
 import * as React from "react";
-import {
-  CheckCircle2,
-  Eye,
-  Pencil,
-  Percent,
-  Plus,
-  ThumbsUp,
-  TrendingUp,
-  Upload,
-  XCircle,
-} from "lucide-react";
+import { Percent } from "lucide-react";
 
-import { AdminButton } from "@/components/admin/ui/admin-button";
 import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-table";
 import { PageHeader } from "@/components/admin/ui/page-header";
 import { SectionTabs } from "@/components/admin/ui/section-tabs";
 import { StatCard } from "@/components/admin/ui/stat-card";
-import { StatusBadge } from "@/components/admin/ui/status-badge";
-import { PRICING_ROWS, SHIPPERS, TRUCK_SIZES } from "@/constants/admin/mock-data";
-import type { AdminPriceRule } from "@/types/admin";
+import { useShipperPriceList } from "@/lib/api/hooks/shippers";
+import { useVendorPriceList } from "@/lib/api/hooks/vendors";
+import type { ShipperPriceModel, VendorPriceModel } from "@/lib/api/types/models";
 import { formatDateShort, formatNaira } from "@/utils/helpers";
 
-const TABS = [
-  { key: "all", label: "All Rate Cards", count: PRICING_ROWS.length },
-  {
-    key: "active",
-    label: "Active",
-    count: PRICING_ROWS.filter((p) => p.status === "Active").length,
-  },
-  {
-    key: "pending",
-    label: "Pending Approval",
-    count: PRICING_ROWS.filter((p) => p.status === "Pending Approval").length,
-  },
-];
-
-const COLUMNS: DataTableColumn<AdminPriceRule>[] = [
+const SHIPPER_COLUMNS: DataTableColumn<ShipperPriceModel>[] = [
   {
     key: "shipper",
     header: "Shipper",
     sortable: true,
-    render: (r) => (
-      <span className="text-xs font-semibold text-slate-800">{r.shipper}</span>
+    render: (row) => (
+      <span className="text-xs font-semibold text-slate-800">
+        {row.shipper?.name ?? "—"}
+      </span>
     ),
   },
   {
     key: "truck",
-    header: "Truck Class",
-    sortable: true,
-    render: (r) => (
-      <span className="text-xs font-medium text-slate-700 font-figure">{r.truck}</span>
+    header: "Truck class",
+    render: (row) => (
+      <span className="text-xs font-medium text-slate-700 font-figure">
+        {row.truckSize?.size ?? "—"} {row.truckSize?.measurementUnit ?? ""}
+      </span>
     ),
   },
   {
     key: "route",
     header: "Route",
-    sortable: true,
-    render: (r) => <span className="text-xs text-slate-600">{r.route}</span>,
+    render: (row) => (
+      <span className="text-xs text-slate-600">
+        {row.route
+          ? `${row.route.origin ?? "—"} → ${row.route.destination ?? "—"}`
+          : "—"}
+      </span>
+    ),
   },
   {
-    key: "rate",
-    header: "Rate / km",
+    key: "price",
+    header: "Rate",
     sortable: true,
-    render: (r) => (
+    render: (row) => (
       <span className="tabular-nums font-figure font-semibold text-slate-800">
-        {formatNaira(r.rate)}
+        {formatNaira(row.price ?? 0)}
       </span>
     ),
   },
   {
-    key: "effective",
-    header: "Effective From",
-    sortable: true,
-    render: (r) => (
+    key: "modifiedAt",
+    header: "Updated",
+    render: (row) => (
       <span className="text-xs text-slate-500 font-figure">
-        {formatDateShort(r.effective)}
+        {row.modifiedAt
+          ? formatDateShort(row.modifiedAt)
+          : row.createdAt
+            ? formatDateShort(row.createdAt)
+            : "—"}
+      </span>
+    ),
+  },
+];
+
+const VENDOR_COLUMNS: DataTableColumn<VendorPriceModel>[] = [
+  {
+    key: "vendor",
+    header: "Carrier",
+    sortable: true,
+    render: (row) => (
+      <span className="text-xs font-semibold text-slate-800">
+        {row.vendor?.name ?? "—"}
       </span>
     ),
   },
   {
-    key: "status",
-    header: "Status",
+    key: "truck",
+    header: "Truck class",
+    render: (row) => (
+      <span className="text-xs font-medium text-slate-700 font-figure">
+        {row.truckSize?.size ?? "—"} {row.truckSize?.measurementUnit ?? ""}
+      </span>
+    ),
+  },
+  {
+    key: "route",
+    header: "Route",
+    render: (row) => (
+      <span className="text-xs text-slate-600">
+        {row.route
+          ? `${row.route.origin ?? "—"} → ${row.route.destination ?? "—"}`
+          : "—"}
+      </span>
+    ),
+  },
+  {
+    key: "price",
+    header: "Rate",
     sortable: true,
-    render: (r) => <StatusBadge status={r.status} />,
+    render: (row) => (
+      <span className="tabular-nums font-figure font-semibold text-slate-800">
+        {formatNaira(row.price ?? 0)}
+      </span>
+    ),
   },
 ];
 
 export function PricingPage() {
-  const [tab, setTab] = React.useState("all");
-
-  const data = React.useMemo(() => {
-    if (tab === "active") return PRICING_ROWS.filter((p) => p.status === "Active");
-    if (tab === "pending")
-      return PRICING_ROWS.filter((p) => p.status === "Pending Approval");
-    return PRICING_ROWS;
-  }, [tab]);
-
-  const pending = PRICING_ROWS.filter((p) => p.status === "Pending Approval").length;
-  const avgRate = Math.round(
-    PRICING_ROWS.reduce((sum, p) => sum + p.rate, 0) / PRICING_ROWS.length
-  );
-  const highest = PRICING_ROWS.reduce((a, b) => (a.rate > b.rate ? a : b));
+  const [tab, setTab] = React.useState("shipper");
+  const shipperPrices = useShipperPriceList({ PageSize: 100 });
+  const vendorPrices = useVendorPriceList({ PageSize: 100 });
+  const shipperRows = shipperPrices.data?.responseData ?? [];
+  const vendorRows = vendorPrices.data?.responseData ?? [];
 
   return (
     <div className="space-y-6">
@@ -110,75 +124,51 @@ export function PricingPage() {
         breadcrumb={["Commercial", "Price Management"]}
         eyebrow="Commercial"
         title="Price Management"
-        subtitle="Negotiated per-kilometre rate cards by shipper, truck class and corridor, with approval workflow."
-        action={
-          <div className="flex items-center gap-2">
-            <AdminButton variant="secondary" icon={Upload} size="sm">
-              Import rates
-            </AdminButton>
-            <AdminButton variant="primary" icon={Plus} size="sm">
-              New rate card
-            </AdminButton>
-          </div>
-        }
+        subtitle="Shipper and carrier rate cards by route and truck class."
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard label="Rate Cards" value={PRICING_ROWS.length} icon={Percent} />
+        <StatCard label="Shipper rates" value={shipperRows.length} icon={Percent} />
         <StatCard
-          label="Avg. Rate / km"
-          value={formatNaira(avgRate)}
-          icon={TrendingUp}
+          label="Carrier rates"
+          value={vendorRows.length}
+          icon={Percent}
           tone="info"
-        />
-        <StatCard
-          label="Highest Rate / km"
-          value={formatNaira(highest.rate)}
-          icon={TrendingUp}
-          tone="warning"
-        />
-        <StatCard
-          label="Pending Approval"
-          value={pending}
-          icon={CheckCircle2}
-          tone={pending > 0 ? "warning" : "success"}
         />
       </div>
 
-      <SectionTabs tabs={TABS} active={tab} onChange={setTab} />
-
-      <DataTable
-        key={tab}
-        columns={COLUMNS}
-        data={data}
-        rowKey="id"
-        pageSize={10}
-        searchKeys={["id", "shipper", "truck", "route"]}
-        filterOptions={[
-          {
-            key: "status",
-            label: "Status",
-            options: ["Active", "Pending Approval"],
-          },
-          {
-            key: "shipper",
-            label: "Shipper",
-            options: SHIPPERS.slice(0, 6).map((s) => s.name),
-          },
-          {
-            key: "truck",
-            label: "Truck",
-            options: TRUCK_SIZES.map((t) => t.capacity),
-          },
+      <SectionTabs
+        tabs={[
+          { key: "shipper", label: "Shipper rates", count: shipperRows.length },
+          { key: "vendor", label: "Carrier rates", count: vendorRows.length },
         ]}
-        rowActions={[
-          { label: "View rate card", icon: Eye, onClick: () => {} },
-          { label: "Edit rate", icon: Pencil, onClick: () => {} },
-          { label: "Approve", icon: ThumbsUp, onClick: () => {} },
-          { label: "Revoke", icon: XCircle, danger: true, onClick: () => {} },
-        ]}
-        bulkActions={[{ label: "Approve selected", icon: ThumbsUp, onClick: () => {} }]}
+        active={tab}
+        onChange={setTab}
       />
+
+      {tab === "shipper" ? (
+        <DataTable
+          title="Shipper price list"
+          subtitle={
+            shipperPrices.isPending ? "Loading…" : `${shipperRows.length} rates`
+          }
+          columns={SHIPPER_COLUMNS}
+          data={shipperRows}
+          rowKey="id"
+          searchKeys={["id"]}
+        />
+      ) : (
+        <DataTable
+          title="Carrier price list"
+          subtitle={
+            vendorPrices.isPending ? "Loading…" : `${vendorRows.length} rates`
+          }
+          columns={VENDOR_COLUMNS}
+          data={vendorRows}
+          rowKey="id"
+          searchKeys={["id"]}
+        />
+      )}
     </div>
   );
 }

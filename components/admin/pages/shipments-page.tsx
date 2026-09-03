@@ -1,155 +1,142 @@
 "use client";
 
 import * as React from "react";
-import {
-  CheckCircle2,
-  Eye,
-  FileText,
-  Package,
-  Plus,
-  Send,
-  Truck,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle2, FileText, Package, Receipt, Send, Truck } from "lucide-react";
 
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { AdminButton } from "@/components/admin/ui/admin-button";
 import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-table";
+import { Drawer } from "@/components/admin/ui/drawer";
+import { AdminInput, AdminSelect, Field } from "@/components/admin/ui/form-field";
 import { PageHeader } from "@/components/admin/ui/page-header";
 import { SectionTabs } from "@/components/admin/ui/section-tabs";
 import { StatCard } from "@/components/admin/ui/stat-card";
 import { StatusBadge } from "@/components/admin/ui/status-badge";
-import { ShipmentWizard } from "@/components/admin/pages/shipment-wizard";
-import { SHIPMENTS } from "@/constants/admin/mock-data";
-import type { AdminShipment } from "@/types/admin";
+import { getApiErrorMessage } from "@/lib/api/errors";
+import {
+  useConfirmDelivery,
+  useConfirmOffloading,
+  useDelivery,
+  useRequestFinalPayment,
+} from "@/lib/api/hooks/deliveries";
+import { useGenerateInvoiceFromSelection } from "@/lib/api/hooks/finances";
+import { useShipment, useShipments, useUpdateShipment } from "@/lib/api/hooks/shipments";
+import { useCreateWaybillConfirmation } from "@/lib/api/hooks/waybills";
+import { ShipmentStatus } from "@/lib/api/types/enums";
+import type { ShipmentModel } from "@/lib/api/types/models";
 import { formatDateShort, formatNairaCompact } from "@/utils/helpers";
 
-const IN_TRANSIT = ["Confirmed", "In Transit"];
-const FINANCING = ["Financing Requested", "Funded"];
-const CLOSED = ["Invoiced", "Collected", "Reconciled"];
-
-const TABS = [
-  { key: "all", label: "All Shipments", count: SHIPMENTS.length },
+const COLUMNS: DataTableColumn<ShipmentModel>[] = [
   {
-    key: "transit",
-    label: "In Transit",
-    count: SHIPMENTS.filter((s) => IN_TRANSIT.includes(s.status)).length,
-  },
-  {
-    key: "financing",
-    label: "Financing",
-    count: SHIPMENTS.filter((s) => FINANCING.includes(s.status)).length,
-  },
-  {
-    key: "closed",
-    label: "Closed",
-    count: SHIPMENTS.filter((s) => CLOSED.includes(s.status)).length,
-  },
-];
-
-const COLUMNS: DataTableColumn<AdminShipment>[] = [
-  {
-    key: "waybill",
-    header: "Waybill / Shipment",
+    key: "shipmentNumber",
+    header: "Shipment",
     sortable: true,
-    render: (r) => (
+    render: (row) => (
       <div className="min-w-0">
-        <p className="text-xs font-semibold text-slate-800 font-figure">{r.waybill}</p>
-        <p className="text-[11px] text-slate-400 font-figure">{r.id}</p>
+        <p className="text-xs font-semibold text-slate-800 font-figure">
+          {row.shipmentNumber ?? "—"}
+        </p>
+        <p className="text-[11px] text-slate-400 font-figure">{row.id}</p>
       </div>
+    ),
+  },
+  {
+    key: "origin",
+    header: "Corridor",
+    render: (row) => (
+      <span className="text-xs text-slate-600">
+        {row.origin ?? "—"} → {row.destination ?? "—"}
+      </span>
     ),
   },
   {
     key: "shipper",
     header: "Shipper",
-    sortable: true,
-    render: (r) => (
-      <span className="text-xs font-medium text-slate-700">{r.shipper}</span>
+    render: (row) => (
+      <span className="text-xs font-medium text-slate-700">
+        {row.shipper?.name ?? "—"}
+      </span>
     ),
   },
   {
-    key: "route",
-    header: "Route",
-    sortable: true,
-    render: (r) => (
-      <div className="min-w-0">
-        <p className="text-xs text-slate-700">{r.route}</p>
-        <p className="text-[11px] text-slate-400 font-figure">
-          {r.distance.toLocaleString()} km
-        </p>
-      </div>
-    ),
-  },
-  {
-    key: "carrier",
+    key: "vendor",
     header: "Carrier",
-    sortable: true,
-    render: (r) => <span className="text-xs text-slate-600">{r.carrier}</span>,
-  },
-  {
-    key: "truck",
-    header: "Truck",
-    sortable: true,
-    render: (r) => (
-      <div className="min-w-0">
-        <p className="text-xs font-medium text-slate-700 font-figure">{r.truck}</p>
-        <p className="text-[11px] text-slate-400 font-figure">{r.plate}</p>
-      </div>
+    render: (row) => (
+      <span className="text-xs text-slate-600">{row.vendor?.name ?? "—"}</span>
     ),
   },
   {
-    key: "value",
-    header: "Freight Value",
-    sortable: true,
-    render: (r) => (
+    key: "shipperPrice",
+    header: "Shipper value",
+    render: (row) => (
       <span className="tabular-nums font-figure font-semibold text-slate-800">
-        {formatNairaCompact(r.value)}
+        {formatNairaCompact(row.shipperPrice ?? 0)}
       </span>
     ),
   },
   {
-    key: "created",
-    header: "Created",
-    sortable: true,
-    render: (r) => (
-      <span className="text-xs text-slate-500 font-figure">
-        {formatDateShort(r.created)}
-      </span>
-    ),
-  },
-  {
-    key: "eta",
-    header: "ETA",
-    sortable: true,
-    render: (r) => (
-      <span className="text-xs text-slate-500 font-figure">
-        {formatDateShort(r.eta)}
-      </span>
-    ),
-  },
-  {
-    key: "status",
+    key: "shipmentStatus",
     header: "Status",
     sortable: true,
-    render: (r) => <StatusBadge status={r.status} />,
+    render: (row) => <StatusBadge status={row.shipmentStatus ?? "—"} />,
+  },
+  {
+    key: "mobilizationStatus",
+    header: "Mobilization",
+    render: (row) => <StatusBadge status={row.mobilizationStatus ?? "—"} />,
+  },
+  {
+    key: "shipmentDate",
+    header: "Date",
+    render: (row) => (
+      <span className="text-xs text-slate-500 font-figure">
+        {row.shipmentDate ? formatDateShort(row.shipmentDate) : "—"}
+      </span>
+    ),
   },
 ];
 
 export function ShipmentsPage() {
   const [tab, setTab] = React.useState("all");
-  const [wizardOpen, setWizardOpen] = React.useState(false);
+  const [selectedId, setSelectedId] = React.useState<string | null>(null);
+  const { data, isPending } = useShipments({ PageSize: 100 });
+  const rows = data?.responseData ?? [];
+  const confirmDelivery = useConfirmDelivery({
+    onSuccess: (response) => showSuccessAlert(response.responseMessage),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
+  const confirmOffload = useConfirmOffloading({
+    onSuccess: (response) => showSuccessAlert(response.responseMessage),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
+  const waybill = useCreateWaybillConfirmation({
+    onSuccess: (response) =>
+      showSuccessAlert(
+        [response.responseMessage, response.responseData?.id]
+          .filter(Boolean)
+          .join(" · ")
+      ),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
+  const finalPayment = useRequestFinalPayment({
+    onSuccess: (response) => showSuccessAlert(response.responseMessage),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
+  const invoiceFromSelection = useGenerateInvoiceFromSelection({
+    onSuccess: (response) =>
+      showSuccessAlert(response.responseMessage ?? "Invoice generated"),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
 
-  const data = React.useMemo(() => {
-    if (tab === "transit") return SHIPMENTS.filter((s) => IN_TRANSIT.includes(s.status));
-    if (tab === "financing") return SHIPMENTS.filter((s) => FINANCING.includes(s.status));
-    if (tab === "closed") return SHIPMENTS.filter((s) => CLOSED.includes(s.status));
-    return SHIPMENTS;
-  }, [tab]);
-
-  const inTransit = SHIPMENTS.filter((s) => IN_TRANSIT.includes(s.status)).length;
-  const delivered = SHIPMENTS.filter((s) =>
-    ["Delivered", "Waybill Confirmed"].includes(s.status)
-  ).length;
-  const totalValue = SHIPMENTS.reduce((sum, s) => sum + s.value, 0);
+  const filtered = React.useMemo(() => {
+    if (tab === "transit") {
+      return rows.filter((row) => row.shipmentStatus === "InTransit");
+    }
+    if (tab === "delivered") {
+      return rows.filter((row) => row.shipmentStatus === "Delivered");
+    }
+    return rows;
+  }, [rows, tab]);
 
   return (
     <div className="space-y-6">
@@ -157,86 +144,267 @@ export function ShipmentsPage() {
         breadcrumb={["Commercial", "Shipment Management"]}
         eyebrow="Commercial"
         title="Shipment Management"
-        subtitle="Every consignment moving through the network, from draft booking to reconciled settlement."
-        action={
-          <div className="flex items-center gap-2">
-            <AdminButton variant="secondary" icon={FileText} size="sm">
-              Status flow
-            </AdminButton>
-            <AdminButton
-              variant="primary"
-              icon={Plus}
-              size="sm"
-              onClick={() => setWizardOpen(true)}
-            >
-              New shipment
-            </AdminButton>
-          </div>
-        }
+        subtitle="Live consignments with delivery confirmation, waybills and final payment."
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard label="Total Shipments" value={SHIPMENTS.length} icon={Package} />
-        <StatCard label="In Transit" value={inTransit} icon={Truck} tone="info" />
+        <StatCard label="Shipments" value={rows.length} icon={Package} />
         <StatCard
-          label="Awaiting Financing"
-          value={delivered}
-          icon={Send}
-          tone="warning"
+          label="In transit"
+          value={
+            rows.filter((row) => row.shipmentStatus === "InTransit").length
+          }
+          icon={Truck}
+          tone="info"
         />
         <StatCard
-          label="Total Freight Value"
-          value={formatNairaCompact(totalValue)}
+          label="Delivered"
+          value={
+            rows.filter((row) => row.shipmentStatus === "Delivered").length
+          }
           icon={CheckCircle2}
           tone="success"
         />
+        <StatCard label="Loaded" value={isPending ? "…" : rows.length} icon={Package} />
       </div>
 
-      <SectionTabs tabs={TABS} active={tab} onChange={setTab} />
+      <SectionTabs
+        tabs={[
+          { key: "all", label: "All", count: rows.length },
+          {
+            key: "transit",
+            label: "In transit",
+            count: rows.filter((row) => row.shipmentStatus === "InTransit")
+              .length,
+          },
+          {
+            key: "delivered",
+            label: "Delivered",
+            count: rows.filter((row) => row.shipmentStatus === "Delivered")
+              .length,
+          },
+        ]}
+        active={tab}
+        onChange={setTab}
+      />
 
       <DataTable
         key={tab}
+        title="Shipments"
+        subtitle={isPending ? "Loading…" : `${filtered.length} records`}
         columns={COLUMNS}
-        data={data}
+        data={filtered}
         rowKey="id"
-        pageSize={10}
-        searchKeys={["id", "waybill", "shipper", "carrier", "route", "driver", "plate"]}
+        searchKeys={["shipmentNumber", "origin", "destination", "truckNumber"]}
         filterOptions={[
           {
-            key: "status",
+            key: "shipmentStatus",
             label: "Status",
-            options: [
-              "Draft",
-              "Submitted",
-              "Confirmed",
-              "In Transit",
-              "Delivered",
-              "Waybill Confirmed",
-              "Financing Requested",
-              "Funded",
-              "Invoiced",
-              "Collected",
-            ],
+            options: Object.values(ShipmentStatus),
           },
+        ]}
+        onRowClick={(row) => row.id && setSelectedId(row.id)}
+        bulkActions={[
           {
-            key: "truck",
-            label: "Truck",
-            options: ["10T", "20T", "30T", "40T", "45T"],
+            label: "Invoice selected (max 5)",
+            icon: Receipt,
+            onClick: (ids) => {
+              const selected = rows.filter(
+                (row) => row.id && ids.includes(row.id)
+              );
+              const shipperId = selected[0]?.shipper?.id;
+              if (!shipperId) {
+                showErrorAlert("Selected shipments need a shipper");
+                return;
+              }
+              if (ids.length > 5) {
+                showErrorAlert("Select at most 5 shipments");
+                return;
+              }
+              invoiceFromSelection.mutate({
+                body: { shipperId, shipmentIds: ids },
+              });
+            },
           },
         ]}
         rowActions={[
-          { label: "View shipment", icon: Eye, onClick: () => {} },
-          { label: "Confirm waybill", icon: CheckCircle2, onClick: () => {} },
-          { label: "Request financing", icon: Send, onClick: () => {} },
-          { label: "Cancel", icon: XCircle, danger: true, onClick: () => {} },
-        ]}
-        bulkActions={[
-          { label: "Confirm waybills", icon: CheckCircle2, onClick: () => {} },
-          { label: "Export selection", icon: FileText, onClick: () => {} },
+          {
+            label: "Confirm delivery",
+            icon: CheckCircle2,
+            onClick: (row) => {
+              if (row.id) {
+                confirmDelivery.mutate({ body: { shipmentId: row.id } });
+              }
+            },
+          },
+          {
+            label: "Confirm offload",
+            icon: Truck,
+            onClick: (row) => {
+              if (row.id) {
+                confirmOffload.mutate({ body: { shipmentId: row.id } });
+              }
+            },
+          },
+          {
+            label: "Send waybill",
+            icon: FileText,
+            onClick: (row) => {
+              if (row.id) {
+                waybill.mutate({
+                  body: {
+                    shipmentId: row.id,
+                    waybillNumber: row.shipmentNumber ?? row.id,
+                  },
+                });
+              }
+            },
+          },
+          {
+            label: "Request final payment",
+            icon: Send,
+            onClick: (row) => {
+              if (row.id) {
+                finalPayment.mutate({ body: { shipmentId: row.id } });
+              }
+            },
+          },
         ]}
       />
 
-      <ShipmentWizard open={wizardOpen} onClose={() => setWizardOpen(false)} />
+      <ShipmentDetailDrawer
+        shipmentId={selectedId}
+        onClose={() => setSelectedId(null)}
+      />
     </div>
+  );
+}
+
+function ShipmentDetailDrawer({
+  shipmentId,
+  onClose,
+}: {
+  shipmentId: string | null;
+  onClose: () => void;
+}) {
+  const shipment = useShipment(shipmentId ?? "", {
+    enabled: Boolean(shipmentId),
+  });
+  const delivery = useDelivery(shipmentId ?? "", {
+    enabled: Boolean(shipmentId),
+  });
+  const detail = shipment.data?.responseData;
+  const confirmation = delivery.data?.responseData;
+  const [driverName, setDriverName] = React.useState("");
+  const [driverPhone, setDriverPhone] = React.useState("");
+  const [truckNumber, setTruckNumber] = React.useState("");
+  const [status, setStatus] = React.useState<ShipmentStatus>("Pending");
+
+  React.useEffect(() => {
+    setDriverName(detail?.driverName ?? "");
+    setDriverPhone(detail?.driverPhone ?? "");
+    setTruckNumber(detail?.truckNumber ?? "");
+    setStatus(detail?.shipmentStatus ?? "Pending");
+  }, [detail]);
+
+  const update = useUpdateShipment({
+    onSuccess: (response) =>
+      showSuccessAlert(response.responseMessage ?? "Shipment updated"),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
+
+  return (
+    <Drawer
+      open={Boolean(shipmentId)}
+      onClose={onClose}
+      title={detail?.shipmentNumber ?? "Shipment"}
+      subtitle={detail?.id}
+      footer={
+        <AdminButton
+          variant="primary"
+          disabled={!shipmentId || update.isPending}
+          onClick={() => {
+            if (!shipmentId) {
+              return;
+            }
+            update.mutate({
+              shipmentId,
+              body: {
+                id: shipmentId,
+                shipmentStatus: status,
+                driverName,
+                driverPhone,
+                truckNumber,
+              },
+            });
+          }}
+        >
+          {update.isPending ? "Saving…" : "Save changes"}
+        </AdminButton>
+      }
+    >
+      {shipment.isPending ? (
+        <p className="text-sm text-slate-500">Loading…</p>
+      ) : (
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <p className="text-[11px] text-slate-400 uppercase">Shipper</p>
+              <p className="font-medium">{detail?.shipper?.name ?? "—"}</p>
+            </div>
+            <div>
+              <p className="text-[11px] text-slate-400 uppercase">Carrier</p>
+              <p className="font-medium">{detail?.vendor?.name ?? "—"}</p>
+            </div>
+            <div>
+              <p className="text-[11px] text-slate-400 uppercase">Delivery</p>
+              <p className="font-medium">
+                {confirmation?.deliveryStatus ?? "Not confirmed"}
+              </p>
+            </div>
+            <div>
+              <p className="text-[11px] text-slate-400 uppercase">Offloaded</p>
+              <p className="font-medium">
+                {confirmation?.offloadedAt
+                  ? formatDateShort(confirmation.offloadedAt)
+                  : "—"}
+              </p>
+            </div>
+          </div>
+          <Field label="Status">
+            <AdminSelect
+              value={status}
+              onChange={(event) =>
+                setStatus(event.target.value as ShipmentStatus)
+              }
+            >
+              {Object.values(ShipmentStatus).map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </AdminSelect>
+          </Field>
+          <Field label="Driver name">
+            <AdminInput
+              value={driverName}
+              onChange={(event) => setDriverName(event.target.value)}
+            />
+          </Field>
+          <Field label="Driver phone">
+            <AdminInput
+              value={driverPhone}
+              onChange={(event) => setDriverPhone(event.target.value)}
+            />
+          </Field>
+          <Field label="Truck number">
+            <AdminInput
+              value={truckNumber}
+              onChange={(event) => setTruckNumber(event.target.value)}
+            />
+          </Field>
+        </div>
+      )}
+    </Drawer>
   );
 }

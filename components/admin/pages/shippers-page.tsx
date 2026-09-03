@@ -6,51 +6,47 @@ import {
   Eye,
   Pencil,
   Plus,
-  Ban,
-  Star,
+  Trash2,
   TrendingUp,
-  Upload,
 } from "lucide-react";
 
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { AdminButton } from "@/components/admin/ui/admin-button";
 import { AvatarInitials } from "@/components/admin/ui/avatar-initials";
 import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-table";
 import { PageHeader } from "@/components/admin/ui/page-header";
 import { StatCard } from "@/components/admin/ui/stat-card";
-import { StatusBadge, ToneBadge } from "@/components/admin/ui/status-badge";
-import { SHIPPERS } from "@/constants/admin/mock-data";
-import type { AdminShipper, Tone } from "@/types/admin";
-import { formatNairaCompact } from "@/utils/helpers";
+import { getApiErrorMessage } from "@/lib/api/errors";
+import { useDeleteShipper, useShippers } from "@/lib/api/hooks/shippers";
+import type { ShipperMiniModel } from "@/lib/api/types/models";
+import { formatDateShort } from "@/utils/helpers";
 
-const TIER_TONE: Record<string, Tone> = {
-  Platinum: "violet",
-  Gold: "warning",
-  Silver: "neutral",
-};
-
-const COLUMNS: DataTableColumn<AdminShipper>[] = [
+const COLUMNS: DataTableColumn<ShipperMiniModel>[] = [
   {
     key: "name",
     header: "Shipper",
     sortable: true,
-    render: (r) => (
+    render: (row) => (
       <div className="flex items-center gap-2.5">
-        <AvatarInitials name={r.name} size="sm" />
+        <AvatarInitials name={row.name ?? "Shipper"} size="sm" />
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-slate-800 truncate">{r.name}</p>
-          <p className="text-[11px] text-slate-400">{r.id}</p>
+          <p className="text-xs font-semibold text-slate-800 truncate">
+            {row.name ?? "—"}
+          </p>
+          <p className="text-[11px] text-slate-400 font-figure">{row.id}</p>
         </div>
       </div>
     ),
   },
-  { key: "type", header: "Category", sortable: true },
   {
-    key: "contact",
-    header: "Primary Contact",
-    render: (r) => (
+    key: "email",
+    header: "Contact",
+    render: (row) => (
       <div className="min-w-0">
-        <p className="text-xs font-medium text-slate-700">{r.contact}</p>
-        <p className="text-[11px] text-slate-400 truncate">{r.email}</p>
+        <p className="text-xs font-medium text-slate-700 truncate">
+          {row.email ?? "—"}
+        </p>
+        <p className="text-[11px] text-slate-400">{row.phone ?? "—"}</p>
       </div>
     ),
   },
@@ -58,63 +54,40 @@ const COLUMNS: DataTableColumn<AdminShipper>[] = [
     key: "city",
     header: "Location",
     sortable: true,
-    render: (r) => (
+    render: (row) => (
       <span className="text-xs text-slate-600">
-        {r.city}, {r.state}
+        {[row.city, row.state, row.country].filter(Boolean).join(", ") || "—"}
       </span>
     ),
   },
   {
-    key: "tier",
-    header: "Tier",
-    sortable: true,
-    render: (r) => (
-      <ToneBadge tone={TIER_TONE[r.tier] ?? "neutral"} dot={false}>
-        {r.tier}
-      </ToneBadge>
-    ),
-  },
-  {
-    key: "shipments",
-    header: "Shipments",
-    sortable: true,
-    render: (r) => (
-      <span className="tabular-nums font-figure font-medium">{r.shipments}</span>
-    ),
-  },
-  {
-    key: "volume",
-    header: "Lifetime Volume",
-    sortable: true,
-    render: (r) => (
-      <span className="tabular-nums font-figure font-semibold text-slate-800">
-        {formatNairaCompact(r.volume)}
+    key: "address",
+    header: "Address",
+    render: (row) => (
+      <span className="text-xs text-slate-600 truncate max-w-[220px] block">
+        {row.address ?? "—"}
       </span>
     ),
   },
   {
-    key: "rating",
-    header: "Rating",
+    key: "createdAt",
+    header: "Onboarded",
     sortable: true,
-    render: (r) => (
-      <span className="inline-flex items-center gap-1 tabular-nums font-figure">
-        <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
-        {r.rating.toFixed(1)}
+    render: (row) => (
+      <span className="text-xs text-slate-500 font-figure">
+        {row.createdAt ? formatDateShort(row.createdAt) : "—"}
       </span>
     ),
-  },
-  {
-    key: "status",
-    header: "Status",
-    sortable: true,
-    render: (r) => <StatusBadge status={r.status} />,
   },
 ];
 
 export function ShippersPage() {
-  const active = SHIPPERS.filter((s) => s.status === "Active").length;
-  const totalVolume = SHIPPERS.reduce((sum, s) => sum + s.volume, 0);
-  const avgRating = SHIPPERS.reduce((sum, s) => sum + s.rating, 0) / SHIPPERS.length;
+  const { data, isPending } = useShippers({ PageSize: 100 });
+  const rows = data?.responseData ?? [];
+  const remove = useDeleteShipper({
+    onSuccess: (response) => showSuccessAlert(response.responseMessage),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
 
   return (
     <div className="space-y-6">
@@ -122,54 +95,55 @@ export function ShippersPage() {
         breadcrumb={["Master Data", "Shippers"]}
         eyebrow="Master Data"
         title="Shippers"
-        subtitle="Corporate consignors onboarded to The Haulage Hub, their commercial tier and lifetime freight volume."
+        subtitle="Cargo owners whose freight is financed and hauled on the platform."
         action={
-          <div className="flex items-center gap-2">
-            <AdminButton variant="secondary" icon={Upload} size="sm">
-              Bulk import
-            </AdminButton>
-            <AdminButton variant="primary" icon={Plus} size="sm">
-              Add shipper
-            </AdminButton>
-          </div>
+          <AdminButton variant="primary" icon={Plus} size="sm">
+            Add shipper
+          </AdminButton>
         }
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard label="Total Shippers" value={SHIPPERS.length} icon={Building2} />
+        <StatCard label="Shippers" value={rows.length} icon={Building2} />
         <StatCard
-          label="Active"
-          value={active}
+          label="With email"
+          value={rows.filter((row) => row.email).length}
           icon={CheckCircle2}
           tone="success"
-          deltaLabel="of total"
-          delta={Math.round((active / SHIPPERS.length) * 100)}
         />
         <StatCard
-          label="Lifetime Volume"
-          value={formatNairaCompact(totalVolume)}
+          label="States"
+          value={new Set(rows.map((row) => row.state).filter(Boolean)).size}
           icon={TrendingUp}
-          tone="success"
+          tone="info"
         />
-        <StatCard label="Avg. Rating" value={avgRating.toFixed(2)} icon={Star} />
+        <StatCard
+          label="Loaded"
+          value={isPending ? "…" : rows.length}
+          icon={Building2}
+        />
       </div>
 
       <DataTable
-        title="Shipper Register"
-        subtitle={`${SHIPPERS.length} organisations`}
+        title="Shipper register"
+        subtitle={isPending ? "Loading…" : `${rows.length} records`}
         columns={COLUMNS}
-        data={SHIPPERS}
+        data={rows}
         rowKey="id"
-        searchKeys={["name", "id", "contact", "email", "city", "state", "type"]}
-        filterOptions={[
-          { key: "status", label: "Status", options: ["Active", "Under Review", "Suspended"] },
-          { key: "tier", label: "Tier", options: ["Platinum", "Gold", "Silver"] },
-          { key: "state", label: "State", options: ["Lagos", "Rivers", "Oyo", "Kano", "Ogun"] },
-        ]}
+        searchKeys={["name", "id", "email", "phone", "city", "state"]}
         rowActions={[
-          { label: "View profile", icon: Eye, onClick: () => {} },
-          { label: "Edit details", icon: Pencil, onClick: () => {} },
-          { label: "Suspend", icon: Ban, danger: true, onClick: () => {} },
+          { label: "View", icon: Eye, onClick: () => undefined },
+          { label: "Edit", icon: Pencil, onClick: () => undefined },
+          {
+            label: "Delete",
+            icon: Trash2,
+            danger: true,
+            onClick: (row) => {
+              if (row.id) {
+                remove.mutate({ shipperId: row.id });
+              }
+            },
+          },
         ]}
       />
     </div>

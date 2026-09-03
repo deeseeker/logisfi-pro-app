@@ -6,137 +6,182 @@ import {
   CheckCircle2,
   Clock,
   Download,
-  Eye,
   Landmark,
   Percent,
+  RefreshCw,
   Wallet,
 } from "lucide-react";
 
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { AdminButton } from "@/components/admin/ui/admin-button";
 import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-table";
 import { PageHeader } from "@/components/admin/ui/page-header";
 import { SectionTabs } from "@/components/admin/ui/section-tabs";
 import { StatCard } from "@/components/admin/ui/stat-card";
 import { StatusBadge } from "@/components/admin/ui/status-badge";
-import { RECON_ROWS } from "@/constants/admin/mock-data";
-import type { AdminSettlement } from "@/types/admin";
+import { downloadBlob } from "@/lib/download";
+import { getApiErrorMessage } from "@/lib/api/errors";
+import {
+  useConfirmSettlement,
+  useDisputeSettlement,
+  useDownloadReconciliationStatement,
+  useRecomputeReconciliation,
+  useReconciliationDashboard,
+  useReconciliations,
+  useSettlements,
+} from "@/lib/api/hooks/reconciliation";
+import type { ReconciliationModel, SettlementModel } from "@/lib/api/types/models";
 import { formatDateShort, formatNairaCompact } from "@/utils/helpers";
 
-const TABS = [
-  { key: "all", label: "All Settlements", count: RECON_ROWS.length },
+const RECON_COLUMNS: DataTableColumn<ReconciliationModel>[] = [
   {
-    key: "pending",
-    label: "Pending Settlement",
-    count: RECON_ROWS.filter((r) => r.status === "Pending Settlement").length,
-  },
-  {
-    key: "completed",
-    label: "Completed",
-    count: RECON_ROWS.filter((r) => r.status === "Completed").length,
-  },
-];
-
-const COLUMNS: DataTableColumn<AdminSettlement>[] = [
-  {
-    key: "id",
-    header: "Settlement",
+    key: "shipmentNumber",
+    header: "Shipment",
     sortable: true,
-    render: (r) => (
+    render: (row) => (
       <div className="min-w-0">
-        <p className="text-xs font-semibold text-slate-800 font-figure">{r.id}</p>
-        <p className="text-[11px] text-slate-400 font-figure">{r.requestId}</p>
+        <p className="text-xs font-semibold text-slate-800 font-figure">
+          {row.shipmentNumber ?? "—"}
+        </p>
+        <p className="text-[11px] text-slate-400 font-figure">
+          {row.invoiceNumber ?? row.id}
+        </p>
       </div>
     ),
   },
   {
-    key: "shipper",
-    header: "Shipper",
-    sortable: true,
-    render: (r) => (
-      <span className="text-xs font-medium text-slate-700">{r.shipper}</span>
-    ),
-  },
-  {
-    key: "investor",
+    key: "investorOrganizationName",
     header: "Investor",
-    sortable: true,
-    render: (r) => <span className="text-xs text-slate-600">{r.investor}</span>,
+    render: (row) => (
+      <span className="text-xs text-slate-600">
+        {row.investorOrganizationName ?? "—"}
+      </span>
+    ),
   },
   {
-    key: "principal",
-    header: "Principal",
-    sortable: true,
-    render: (r) => (
+    key: "amountFinanced",
+    header: "Financed",
+    render: (row) => (
       <span className="tabular-nums font-figure font-semibold text-slate-800">
-        {formatNairaCompact(r.principal)}
+        {formatNairaCompact(row.amountFinanced ?? 0)}
       </span>
     ),
   },
   {
-    key: "interest",
-    header: "Investor Interest",
-    sortable: true,
-    render: (r) => (
-      <span className="tabular-nums font-figure text-emerald-700 font-medium">
-        {formatNairaCompact(r.interest)}
+    key: "amountRecovered",
+    header: "Recovered",
+    render: (row) => (
+      <span className="tabular-nums font-figure text-slate-700">
+        {formatNairaCompact(row.amountRecovered ?? 0)}
       </span>
     ),
   },
   {
-    key: "thhFee",
-    header: "THH Fee",
-    sortable: true,
-    render: (r) => (
-      <span className="tabular-nums font-figure text-blue-800 font-medium">
-        {formatNairaCompact(r.thhFee)}
+    key: "investorReturn",
+    header: "Investor return",
+    render: (row) => (
+      <span className="tabular-nums font-figure text-emerald-700">
+        {formatNairaCompact(row.investorReturn ?? 0)}
       </span>
     ),
   },
   {
-    key: "total",
-    header: "Total Settled",
-    render: (r) => (
-      <span className="tabular-nums font-figure font-semibold text-slate-900">
-        {formatNairaCompact(r.principal + r.interest + r.thhFee)}
+    key: "thhRevenue",
+    header: "THH fee",
+    render: (row) => (
+      <span className="tabular-nums font-figure text-blue-800">
+        {formatNairaCompact(row.thhRevenue ?? 0)}
       </span>
     ),
   },
   {
-    key: "date",
-    header: "Value Date",
-    sortable: true,
-    render: (r) => (
-      <span className="text-xs text-slate-500 font-figure">
-        {formatDateShort(r.date)}
-      </span>
-    ),
-  },
-  {
-    key: "status",
+    key: "reconciliationStatus",
     header: "Status",
-    sortable: true,
-    render: (r) => <StatusBadge status={r.status} />,
+    render: (row) => <StatusBadge status={row.reconciliationStatus ?? "—"} />,
+  },
+];
+
+const SETTLEMENT_COLUMNS: DataTableColumn<SettlementModel>[] = [
+  {
+    key: "investorOrganizationName",
+    header: "Investor",
+    render: (row) => (
+      <div className="min-w-0">
+        <p className="text-xs font-semibold text-slate-800">
+          {row.investorOrganizationName ?? "—"}
+        </p>
+        <p className="text-[11px] text-slate-400 font-figure">{row.id}</p>
+      </div>
+    ),
+  },
+  {
+    key: "totalPrincipal",
+    header: "Principal",
+    render: (row) => (
+      <span className="tabular-nums font-figure font-semibold text-slate-800">
+        {formatNairaCompact(row.totalPrincipal ?? 0)}
+      </span>
+    ),
+  },
+  {
+    key: "totalInvestorReturn",
+    header: "Return",
+    render: (row) => (
+      <span className="tabular-nums font-figure text-emerald-700">
+        {formatNairaCompact(row.totalInvestorReturn ?? 0)}
+      </span>
+    ),
+  },
+  {
+    key: "netSettlementAmount",
+    header: "Net",
+    render: (row) => (
+      <span className="tabular-nums font-figure font-semibold text-slate-900">
+        {formatNairaCompact(row.netSettlementAmount ?? 0)}
+      </span>
+    ),
+  },
+  {
+    key: "settlementStatus",
+    header: "Status",
+    render: (row) => <StatusBadge status={row.settlementStatus ?? "—"} />,
+  },
+  {
+    key: "periodEnd",
+    header: "Period end",
+    render: (row) => (
+      <span className="text-xs text-slate-500 font-figure">
+        {row.periodEnd ? formatDateShort(row.periodEnd) : "—"}
+      </span>
+    ),
   },
 ];
 
 export function ReconciliationPage() {
-  const [tab, setTab] = React.useState("all");
+  const [tab, setTab] = React.useState("recon");
+  const dashboard = useReconciliationDashboard();
+  const recon = useReconciliations({ PageSize: 100 });
+  const settlements = useSettlements({ PageSize: 100 });
+  const summary = dashboard.data?.responseData;
+  const reconRows = recon.data?.responseData ?? [];
+  const settlementRows = settlements.data?.responseData ?? [];
 
-  const data = React.useMemo(() => {
-    if (tab === "pending")
-      return RECON_ROWS.filter((r) => r.status === "Pending Settlement");
-    if (tab === "completed") return RECON_ROWS.filter((r) => r.status === "Completed");
-    return RECON_ROWS;
-  }, [tab]);
-
-  const principal = RECON_ROWS.reduce((sum, r) => sum + r.principal, 0);
-  const interest = RECON_ROWS.reduce((sum, r) => sum + r.interest, 0);
-  const thhFee = RECON_ROWS.reduce((sum, r) => sum + r.thhFee, 0);
-  const pending = RECON_ROWS.filter((r) => r.status === "Pending Settlement");
-  const pendingValue = pending.reduce(
-    (sum, r) => sum + r.principal + r.interest + r.thhFee,
-    0
-  );
+  const recompute = useRecomputeReconciliation({
+    onSuccess: (response) => showSuccessAlert(response.responseMessage),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
+  const confirm = useConfirmSettlement({
+    onSuccess: (response) => showSuccessAlert(response.responseMessage),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
+  const dispute = useDisputeSettlement({
+    onSuccess: (response) => showSuccessAlert(response.responseMessage),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
+  const statement = useDownloadReconciliationStatement({
+    onSuccess: (blob) => downloadBlob(blob, "reconciliation-statement.pdf"),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
 
   return (
     <div className="space-y-6">
@@ -144,72 +189,107 @@ export function ReconciliationPage() {
         breadcrumb={["Commercial", "Reconciliation"]}
         eyebrow="Commercial"
         title="Reconciliation"
-        subtitle="Settlement of funded shipments — principal returned to investors, interest earned and platform fee recognised."
+        subtitle="Financed shipment recovery, investor settlement and platform fee recognition."
         action={
-          <div className="flex items-center gap-2">
-            <AdminButton variant="secondary" icon={Download} size="sm">
-              Settlement report
-            </AdminButton>
-            <AdminButton variant="primary" icon={ArrowLeftRight} size="sm">
-              Run settlement batch
-            </AdminButton>
-          </div>
+          <AdminButton
+            variant="secondary"
+            icon={Download}
+            size="sm"
+            onClick={() => statement.mutate({})}
+            disabled={statement.isPending}
+          >
+            Settlement report
+          </AdminButton>
         }
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <StatCard
-          label="Principal Settled"
-          value={formatNairaCompact(principal)}
+          label="Financed"
+          value={formatNairaCompact(summary?.totalFinanced ?? 0)}
           icon={Landmark}
         />
         <StatCard
-          label="Investor Interest"
-          value={formatNairaCompact(interest)}
+          label="Investor revenue"
+          value={formatNairaCompact(summary?.investorRevenue ?? 0)}
           icon={Percent}
           tone="success"
         />
         <StatCard
-          label="THH Revenue"
-          value={formatNairaCompact(thhFee)}
+          label="THH revenue"
+          value={formatNairaCompact(summary?.thhRevenue ?? 0)}
           icon={Wallet}
           tone="success"
         />
         <StatCard
-          label="Awaiting Settlement"
-          value={formatNairaCompact(pendingValue)}
+          label="Pending settlements"
+          value={summary?.pendingSettlements ?? 0}
           icon={Clock}
-          tone={pending.length > 0 ? "warning" : "success"}
-          deltaLabel={`${pending.length} batches`}
+          tone={(summary?.pendingSettlements ?? 0) > 0 ? "warning" : "success"}
         />
       </div>
 
-      <SectionTabs tabs={TABS} active={tab} onChange={setTab} />
-
-      <DataTable
-        key={tab}
-        columns={COLUMNS}
-        data={data}
-        rowKey="id"
-        pageSize={10}
-        searchKeys={["id", "requestId", "shipper", "investor"]}
-        filterOptions={[
-          {
-            key: "status",
-            label: "Status",
-            options: ["Completed", "Pending Settlement"],
-          },
+      <SectionTabs
+        tabs={[
+          { key: "recon", label: "Reconciliations", count: reconRows.length },
+          { key: "settlements", label: "Settlements", count: settlementRows.length },
         ]}
-        rowActions={[
-          { label: "View settlement", icon: Eye, onClick: () => {} },
-          { label: "Mark settled", icon: CheckCircle2, onClick: () => {} },
-          { label: "Download advice", icon: Download, onClick: () => {} },
-        ]}
-        bulkActions={[
-          { label: "Settle selected", icon: CheckCircle2, onClick: () => {} },
-          { label: "Export selection", icon: Download, onClick: () => {} },
-        ]}
+        active={tab}
+        onChange={setTab}
       />
+
+      {tab === "recon" ? (
+        <DataTable
+          title="Reconciliations"
+          subtitle={recon.isPending ? "Loading…" : `${reconRows.length} records`}
+          columns={RECON_COLUMNS}
+          data={reconRows}
+          rowKey="id"
+          searchKeys={["shipmentNumber", "invoiceNumber", "id"]}
+          rowActions={[
+            {
+              label: "Recompute",
+              icon: RefreshCw,
+              onClick: (row) =>
+                row.shipmentId &&
+                recompute.mutate({ shipmentId: row.shipmentId }),
+            },
+          ]}
+        />
+      ) : (
+        <DataTable
+          title="Settlements"
+          subtitle={
+            settlements.isPending ? "Loading…" : `${settlementRows.length} records`
+          }
+          columns={SETTLEMENT_COLUMNS}
+          data={settlementRows}
+          rowKey="id"
+          searchKeys={["investorOrganizationName", "id"]}
+          rowActions={[
+            {
+              label: "Confirm",
+              icon: CheckCircle2,
+              onClick: (row) =>
+                row.id && confirm.mutate({ settlementId: row.id }),
+            },
+            {
+              label: "Dispute",
+              icon: ArrowLeftRight,
+              danger: true,
+              onClick: (row) =>
+                row.id &&
+                dispute.mutate({
+                  settlementId: row.id,
+                  body: {
+                    settlementId: row.id,
+                    reason: "Disputed from admin console",
+                  },
+                }),
+            },
+          ]}
+        />
+      )}
     </div>
   );
 }

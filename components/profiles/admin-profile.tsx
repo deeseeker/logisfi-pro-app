@@ -22,6 +22,7 @@ import {
 } from "../ui/dialog";
 import VectorSvg from "@/public/vector.svg";
 import ProfileForm from "../forms/edit-profile";
+import { ChangePasswordForm } from "../forms/change-password";
 import Image from "next/image";
 import { ProfileShimmer } from "../skeleton/profile";
 import { useProfile } from "@/hooks/useRole";
@@ -125,6 +126,14 @@ function AdminProfile() {
                 </DialogContent>
               </Dialog>
             </CardFooter>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Change password</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChangePasswordForm />
+            </CardContent>
           </Card>
         </div>
       ) : (

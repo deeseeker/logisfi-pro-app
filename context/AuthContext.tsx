@@ -41,8 +41,6 @@ const AuthProvider = ({ children }: any) => {
     return storedToken ? storedToken : null;
   });
 
-  const [profile, setProfile] = useState();
-
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {

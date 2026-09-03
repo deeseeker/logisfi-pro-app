@@ -1,87 +1,104 @@
 "use client";
 
-import {
-  Download,
-  Eye,
-  File,
-  FileCheck2,
-  FileText,
-  FolderOpen,
-  Image as ImageIcon,
-  ShieldCheck,
-  Trash2,
-  Upload,
-} from "lucide-react";
+import { useRef } from "react";
+import { Download, File, FileText, FolderOpen, Upload } from "lucide-react";
 
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { AdminButton } from "@/components/admin/ui/admin-button";
 import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-table";
 import { PageHeader } from "@/components/admin/ui/page-header";
 import { StatCard } from "@/components/admin/ui/stat-card";
 import { StatusBadge } from "@/components/admin/ui/status-badge";
-import { DOCS } from "@/constants/admin/mock-data";
-import type { AdminDocument } from "@/types/admin";
+import { downloadBlob, formatFileSize } from "@/lib/download";
+import { getApiErrorMessage } from "@/lib/api/errors";
+import {
+  useBulkDownloadDocuments,
+  useDocuments,
+  useDownloadDocument,
+  useUploadDocument,
+} from "@/lib/api/hooks/documents";
+import { DocumentType } from "@/lib/api/types/enums";
+import type { DocumentModel } from "@/lib/api/types/models";
 import { formatDateShort } from "@/utils/helpers";
 
-const isImage = (name: string) => /\.(jpe?g|png|gif|webp)$/i.test(name);
-
-const COLUMNS: DataTableColumn<AdminDocument>[] = [
+const COLUMNS: DataTableColumn<DocumentModel>[] = [
   {
-    key: "name",
+    key: "fileName",
     header: "Document",
     sortable: true,
-    render: (r) => (
+    render: (row) => (
       <div className="flex items-center gap-2.5">
         <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-800 flex items-center justify-center shrink-0">
-          {isImage(r.name) ? (
-            <ImageIcon className="w-4 h-4" />
-          ) : (
-            <FileText className="w-4 h-4" />
-          )}
+          <FileText className="w-4 h-4" />
         </div>
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-slate-800 truncate">{r.name}</p>
-          <p className="text-[11px] text-slate-400 font-figure">{r.id}</p>
+          <p className="text-xs font-semibold text-slate-800 truncate">
+            {row.fileName ?? "—"}
+          </p>
+          <p className="text-[11px] text-slate-400 font-figure">{row.id}</p>
         </div>
       </div>
     ),
   },
-  { key: "type", header: "Type", sortable: true },
   {
-    key: "shipper",
-    header: "Linked Party",
+    key: "documentType",
+    header: "Type",
     sortable: true,
-    render: (r) => <span className="text-xs text-slate-600">{r.shipper}</span>,
+    render: (row) => <StatusBadge status={row.documentType ?? "Other"} />,
   },
   {
-    key: "size",
-    header: "Size",
-    sortable: true,
-    render: (r) => (
-      <span className="tabular-nums font-figure text-slate-500">{r.size}</span>
-    ),
-  },
-  {
-    key: "uploaded",
-    header: "Uploaded",
-    sortable: true,
-    render: (r) => (
-      <span className="text-xs text-slate-500 font-figure">
-        {formatDateShort(r.uploaded)}
+    key: "sourceEntityType",
+    header: "Linked to",
+    render: (row) => (
+      <span className="text-xs text-slate-600">
+        {row.sourceEntityType ?? "—"}
       </span>
     ),
   },
   {
-    key: "tag",
-    header: "Verification",
-    sortable: true,
-    render: (r) => <StatusBadge status={r.tag} />,
+    key: "fileSizeBytes",
+    header: "Size",
+    render: (row) => (
+      <span className="tabular-nums font-figure text-slate-500">
+        {formatFileSize(row.fileSizeBytes)}
+      </span>
+    ),
+  },
+  {
+    key: "uploadedAt",
+    header: "Uploaded",
+    render: (row) => (
+      <span className="text-xs text-slate-500 font-figure">
+        {row.uploadedAt ? formatDateShort(row.uploadedAt) : "—"}
+      </span>
+    ),
+  },
+  {
+    key: "version",
+    header: "Version",
+    render: (row) => (
+      <span className="tabular-nums font-figure">{row.version ?? 1}</span>
+    ),
   },
 ];
 
 export function DocumentsPage() {
-  const verified = DOCS.filter((d) => d.tag === "Verified").length;
-  const pending = DOCS.filter((d) => d.tag === "Pending Review").length;
-  const types = new Set(DOCS.map((d) => d.type)).size;
+  const inputRef = useRef<HTMLInputElement>(null);
+  const docs = useDocuments({ PageSize: 100 });
+  const rows = docs.data?.responseData ?? [];
+  const download = useDownloadDocument({
+    onSuccess: (blob, variables) =>
+      downloadBlob(blob, `document-${variables.documentId}`),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
+  const bulk = useBulkDownloadDocuments({
+    onSuccess: (blob) => downloadBlob(blob, "documents.zip"),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
+  const upload = useUploadDocument({
+    onSuccess: (response) => showSuccessAlert(response.responseMessage),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
 
   return (
     <div className="space-y-6">
@@ -89,13 +106,32 @@ export function DocumentsPage() {
         breadcrumb={["Intelligence", "Documents"]}
         eyebrow="Intelligence"
         title="Documents"
-        subtitle="Central evidence vault — waybills, invoices, proofs of delivery, KYC and insurance certificates."
+        subtitle="Evidence vault — waybills, invoices, proofs of delivery and statements."
         action={
           <div className="flex items-center gap-2">
-            <AdminButton variant="secondary" icon={Download} size="sm">
-              Download all
-            </AdminButton>
-            <AdminButton variant="primary" icon={Upload} size="sm">
+            <input
+              ref={inputRef}
+              type="file"
+              className="hidden"
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (!file) {
+                  return;
+                }
+                upload.mutate({
+                  body: { file, documentType: DocumentType.Other },
+                });
+                event.target.value = "";
+              }}
+            />
+            <AdminButton
+              variant="primary"
+              icon={Upload}
+              size="sm"
+              onClick={() => inputRef.current?.click()}
+              disabled={upload.isPending}
+            >
               Upload document
             </AdminButton>
           </div>
@@ -103,59 +139,44 @@ export function DocumentsPage() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard label="Documents" value={DOCS.length} icon={FolderOpen} />
-        <StatCard label="Document Types" value={types} icon={File} tone="info" />
+        <StatCard label="Documents" value={rows.length} icon={FolderOpen} />
         <StatCard
-          label="Verified"
-          value={verified}
-          icon={ShieldCheck}
-          tone="success"
-          delta={Math.round((verified / DOCS.length) * 100)}
-          deltaLabel="of total"
-        />
-        <StatCard
-          label="Pending Review"
-          value={pending}
-          icon={FileCheck2}
-          tone={pending > 0 ? "warning" : "success"}
+          label="Types"
+          value={new Set(rows.map((row) => row.documentType).filter(Boolean)).size}
+          icon={File}
+          tone="info"
         />
       </div>
 
       <DataTable
-        title="Document Vault"
-        subtitle={`${DOCS.length} files across ${types} categories`}
+        title="Document vault"
+        subtitle={docs.isPending ? "Loading…" : `${rows.length} files`}
         columns={COLUMNS}
-        data={DOCS}
+        data={rows}
         rowKey="id"
-        searchKeys={["id", "name", "type", "shipper", "tag"]}
+        searchKeys={["fileName", "id", "documentType"]}
         filterOptions={[
           {
-            key: "type",
+            key: "documentType",
             label: "Type",
-            options: [
-              "Waybill",
-              "Invoice",
-              "Settlement",
-              "Proof of Delivery",
-              "KYC",
-              "Insurance",
-            ],
-          },
-          {
-            key: "tag",
-            label: "Verification",
-            options: ["Verified", "Sent", "Final", "Pending Review", "Valid"],
+            options: Object.values(DocumentType),
           },
         ]}
         rowActions={[
-          { label: "Preview", icon: Eye, onClick: () => {} },
-          { label: "Download", icon: Download, onClick: () => {} },
-          { label: "Mark verified", icon: ShieldCheck, onClick: () => {} },
-          { label: "Delete", icon: Trash2, danger: true, onClick: () => {} },
+          {
+            label: "Download",
+            icon: Download,
+            onClick: (row) =>
+              row.id && download.mutate({ documentId: row.id }),
+          },
         ]}
         bulkActions={[
-          { label: "Download selected", icon: Download, onClick: () => {} },
-          { label: "Delete selected", icon: Trash2, onClick: () => {} },
+          {
+            label: "Download selected",
+            icon: Download,
+            onClick: (ids) =>
+              bulk.mutate({ body: { documentIds: ids } }),
+          },
         ]}
       />
     </div>

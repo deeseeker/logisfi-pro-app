@@ -16,6 +16,7 @@ import { useState } from "react";
 import { signIn } from "@/app/api/services";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { getPostLoginPath } from "@/lib/auth/roles";
 import { UserTypeEnum } from "@/types/admin";
 import { useAuth } from "@/context/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
@@ -29,7 +30,7 @@ const formSchema = z.object({
 export type UserFormValue = z.infer<typeof formSchema>;
 export default function UserAuthForm() {
   // setUser here
-  const { setUser } = useAuth();
+  const { setUser, setRoles } = useAuth();
   const [loading, setLoading] = useState(false);
   const route = useRouter();
   const queryClient = useQueryClient();
@@ -50,6 +51,7 @@ export default function UserAuthForm() {
           ? UserTypeEnum[userType as unknown as number]
           : userType;
       setUser(userType);
+      setRoles(roles ?? null);
       localStorage.setItem("user", JSON.stringify(userLabel));
       localStorage.setItem("roles", JSON.stringify(roles));
       localStorage.setItem("token", response.responseData?.accessToken ?? "");
@@ -60,7 +62,7 @@ export default function UserAuthForm() {
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
       setLoading(false);
       showSuccessAlert(response.responseMessage);
-      route.push("/dashboard");
+      route.push(getPostLoginPath(roles));
     } else {
       showErrorAlert(response.responseMessage);
       setLoading(false);

@@ -7,10 +7,9 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   Select,
   SelectContent,
@@ -21,15 +20,10 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "../../ui/use-toast";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  createOrder,
-  getAllOrders,
-  getAllRoutes,
-  getAllShippers,
   updateOrder,
 } from "@/app/api/services";
-import { OrderStatusEnums } from "@/types/admin";
 
 export const formatEnumKey = (key: string) => {
   return key?.replace(/([a-z])([A-Z])/g, "$1 $2"); // Add space before uppercase letters
@@ -63,10 +57,6 @@ const UpdateOrderForm = ({ data }: { data: any }) => {
       setKey((prevKey) => prevKey + 1); // Force a rerender by updating the key
     },
   });
-
-  const enumEntries = Object.entries(OrderStatusEnums).filter(
-    ([key, value]) => typeof value === "number"
-  );
 
   function onSubmit(dataSource: z.infer<typeof FormSchema>) {
     const formData = {

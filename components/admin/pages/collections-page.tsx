@@ -1,139 +1,122 @@
 "use client";
 
-import {
-  AlertTriangle,
-  CalendarClock,
-  Download,
-  Eye,
-  Send,
-  TrendingUp,
-  Wallet,
-} from "lucide-react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip as RTooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { AlertTriangle, CalendarClock, Download, Send, Wallet } from "lucide-react";
 
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { AdminButton } from "@/components/admin/ui/admin-button";
 import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-table";
 import { PageHeader } from "@/components/admin/ui/page-header";
-import { Panel, PanelHeader } from "@/components/admin/ui/panel";
 import { ProgressBar } from "@/components/admin/ui/progress-bar";
 import { StatCard } from "@/components/admin/ui/stat-card";
 import { StatusBadge } from "@/components/admin/ui/status-badge";
-import { AGEING, COLLECTIONS_TREND, INVOICES } from "@/constants/admin/mock-data";
-import type { AdminInvoice } from "@/types/admin";
+import { getApiErrorMessage } from "@/lib/api/errors";
+import {
+  useCollections,
+  useCollectionsDashboard,
+  useRecordPayment,
+} from "@/lib/api/hooks/collections";
+import { useCollectionsReport } from "@/lib/api/hooks/reports";
+import { downloadBlob } from "@/lib/download";
+import type { CollectionListItemModel } from "@/lib/api/types/models";
 import { formatDateShort, formatNairaCompact } from "@/utils/helpers";
 
-const TOOLTIP_STYLE = {
-  borderRadius: 10,
-  border: "1px solid #e2e8f0",
-  fontSize: 12,
-} as const;
-
-/** Collections is the receivables-chasing view: anything not fully settled. */
-const OPEN_INVOICES = INVOICES.filter((i) => i.status !== "Paid");
-
-const COLUMNS: DataTableColumn<AdminInvoice>[] = [
+const COLUMNS: DataTableColumn<CollectionListItemModel>[] = [
   {
-    key: "id",
+    key: "invoiceNumber",
     header: "Invoice",
     sortable: true,
-    render: (r) => (
+    render: (row) => (
       <div className="min-w-0">
-        <p className="text-xs font-semibold text-slate-800 font-figure">{r.id}</p>
-        <p className="text-[11px] text-slate-400 font-figure">{r.waybill}</p>
+        <p className="text-xs font-semibold text-slate-800 font-figure">
+          {row.invoiceNumber ?? "—"}
+        </p>
+        <p className="text-[11px] text-slate-400 font-figure">{row.id}</p>
       </div>
     ),
   },
   {
-    key: "shipper",
+    key: "shipperName",
     header: "Debtor",
     sortable: true,
-    render: (r) => (
-      <span className="text-xs font-medium text-slate-700">{r.shipper}</span>
-    ),
-  },
-  {
-    key: "amount",
-    header: "Invoiced",
-    sortable: true,
-    render: (r) => (
-      <span className="tabular-nums font-figure text-slate-700">
-        {formatNairaCompact(r.amount)}
+    render: (row) => (
+      <span className="text-xs font-medium text-slate-700">
+        {row.shipperName ?? "—"}
       </span>
     ),
   },
   {
-    key: "paidAmount",
+    key: "invoiceValue",
+    header: "Invoiced",
+    render: (row) => (
+      <span className="tabular-nums font-figure text-slate-700">
+        {formatNairaCompact(row.invoiceValue ?? 0)}
+      </span>
+    ),
+  },
+  {
+    key: "amountPaid",
     header: "Recovered",
-    sortable: true,
-    render: (r) => {
-      const pct = Math.round((r.paidAmount / r.amount) * 100);
+    render: (row) => {
+      const invoiced = row.invoiceValue ?? 0;
+      const paid = row.amountPaid ?? 0;
+      const pct = invoiced ? Math.round((paid / invoiced) * 100) : 0;
       return (
         <div className="w-32">
           <div className="flex items-center justify-between text-[11px] mb-1">
             <span className="tabular-nums font-figure font-medium text-slate-700">
-              {formatNairaCompact(r.paidAmount)}
+              {formatNairaCompact(paid)}
             </span>
             <span className="text-slate-400">{pct}%</span>
           </div>
-          <ProgressBar
-            value={r.paidAmount}
-            max={r.amount}
-            tone={pct > 0 ? "amber" : "blue"}
-          />
+          <ProgressBar value={paid} max={invoiced || 1} tone={pct > 0 ? "amber" : "blue"} />
         </div>
       );
     },
   },
   {
-    key: "outstanding",
-    header: "Balance Due",
-    render: (r) => (
+    key: "outstandingBalance",
+    header: "Balance due",
+    render: (row) => (
       <span className="tabular-nums font-figure font-semibold text-red-600">
-        {formatNairaCompact(r.amount - r.paidAmount)}
+        {formatNairaCompact(row.outstandingBalance ?? 0)}
       </span>
     ),
   },
   {
     key: "dueDate",
     header: "Due",
-    sortable: true,
-    render: (r) => (
+    render: (row) => (
       <span
         className={
-          r.status === "Overdue"
+          row.isOverdue
             ? "text-xs font-semibold text-red-600 font-figure"
             : "text-xs text-slate-500 font-figure"
         }
       >
-        {formatDateShort(r.dueDate)}
+        {row.dueDate ? formatDateShort(row.dueDate) : "—"}
       </span>
     ),
   },
   {
-    key: "status",
+    key: "invoiceStatus",
     header: "Status",
-    sortable: true,
-    render: (r) => <StatusBadge status={r.status} />,
+    render: (row) => <StatusBadge status={row.invoiceStatus ?? "—"} />,
   },
 ];
 
 export function CollectionsPage() {
-  const billed = INVOICES.reduce((sum, i) => sum + i.amount, 0);
-  const collected = INVOICES.reduce((sum, i) => sum + i.paidAmount, 0);
-  const outstanding = billed - collected;
-  const overdue = OPEN_INVOICES.filter((i) => i.status === "Overdue");
-  const overdueValue = overdue.reduce((sum, i) => sum + (i.amount - i.paidAmount), 0);
-  const recoveryRate = Math.round((collected / billed) * 100);
+  const dashboard = useCollectionsDashboard();
+  const collections = useCollections({ PageSize: 100 });
+  const summary = dashboard.data?.responseData;
+  const rows = collections.data?.responseData ?? [];
+  const record = useRecordPayment({
+    onSuccess: (response) => showSuccessAlert(response.responseMessage),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
+  const exportLedger = useCollectionsReport({
+    onSuccess: (blob) => downloadBlob(blob, "collections-report.pdf"),
+    onError: (error) => showErrorAlert(getApiErrorMessage(error)),
+  });
 
   return (
     <div className="space-y-6">
@@ -141,150 +124,81 @@ export function CollectionsPage() {
         breadcrumb={["Commercial", "Collections"]}
         eyebrow="Commercial"
         title="Collections"
-        subtitle="Receivables recovery desk — outstanding balances, ageing buckets and collection performance over time."
+        subtitle="Receivables recovery desk — outstanding balances and collection performance."
         action={
-          <div className="flex items-center gap-2">
-            <AdminButton variant="secondary" icon={Download} size="sm">
-              Export ledger
-            </AdminButton>
-            <AdminButton variant="primary" icon={Send} size="sm">
-              Run reminder batch
-            </AdminButton>
-          </div>
+          <AdminButton
+            variant="secondary"
+            icon={Download}
+            size="sm"
+            onClick={() => exportLedger.mutate({})}
+            disabled={exportLedger.isPending}
+          >
+            Export ledger
+          </AdminButton>
         }
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <StatCard
-          label="Collected To Date"
-          value={formatNairaCompact(collected)}
+          label="Collected"
+          value={formatNairaCompact(summary?.totalCollected ?? 0)}
           icon={Wallet}
           tone="success"
-          delta={recoveryRate}
-          deltaLabel="recovery rate"
+          delta={Math.round(summary?.collectionRate ?? 0)}
+          deltaLabel="collection rate"
         />
         <StatCard
           label="Outstanding"
-          value={formatNairaCompact(outstanding)}
+          value={formatNairaCompact(summary?.outstandingBalance ?? 0)}
           icon={CalendarClock}
           tone="warning"
         />
         <StatCard
           label="Overdue"
-          value={formatNairaCompact(overdueValue)}
+          value={formatNairaCompact(summary?.overdueBalance ?? 0)}
           icon={AlertTriangle}
-          tone={overdue.length > 0 ? "error" : "success"}
-          deltaLabel={`${overdue.length} invoices`}
+          tone={(summary?.overdueBalance ?? 0) > 0 ? "error" : "success"}
         />
         <StatCard
-          label="Open Accounts"
-          value={OPEN_INVOICES.length}
-          icon={TrendingUp}
+          label="Open accounts"
+          value={rows.length}
+          icon={Send}
           tone="info"
         />
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        <Panel className="xl:col-span-2">
-          <PanelHeader
-            icon={TrendingUp}
-            title="Collections Trend"
-            subtitle="Collected vs. outstanding, last 6 months (₦M)"
-          />
-          <ResponsiveContainer width="100%" height={260}>
-            <LineChart data={COLLECTIONS_TREND} margin={{ left: -18, top: 6 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-              <XAxis
-                dataKey="m"
-                tick={{ fontSize: 11, fill: "#94a3b8" }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis
-                tick={{ fontSize: 11, fill: "#94a3b8" }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <RTooltip contentStyle={TOOLTIP_STYLE} />
-              <Line
-                type="monotone"
-                dataKey="collected"
-                name="Collected (₦M)"
-                stroke="#059669"
-                strokeWidth={2.5}
-                dot={{ r: 3 }}
-              />
-              <Line
-                type="monotone"
-                dataKey="outstanding"
-                name="Outstanding (₦M)"
-                stroke="#d97706"
-                strokeWidth={2.5}
-                dot={{ r: 3 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </Panel>
-
-        <Panel>
-          <PanelHeader
-            icon={CalendarClock}
-            title="Ageing Buckets"
-            subtitle="Outstanding by age (₦M)"
-          />
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={AGEING} layout="vertical" margin={{ left: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-              <XAxis
-                type="number"
-                tick={{ fontSize: 10, fill: "#94a3b8" }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis
-                type="category"
-                dataKey="bucket"
-                tick={{ fontSize: 10, fill: "#475569" }}
-                axisLine={false}
-                tickLine={false}
-                width={72}
-              />
-              <RTooltip contentStyle={TOOLTIP_STYLE} />
-              <Bar
-                dataKey="amount"
-                name="Outstanding (₦M)"
-                fill="#1e3a8a"
-                radius={[0, 4, 4, 0]}
-                barSize={16}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </Panel>
-      </div>
-
       <DataTable
-        title="Collection Ledger"
-        subtitle={`${OPEN_INVOICES.length} accounts with an open balance`}
+        title="Collection ledger"
+        subtitle={
+          collections.isPending ? "Loading…" : `${rows.length} receivables`
+        }
         columns={COLUMNS}
-        data={OPEN_INVOICES}
+        data={rows}
         rowKey="id"
-        pageSize={10}
-        searchKeys={["id", "waybill", "shipper"]}
-        filterOptions={[
-          {
-            key: "status",
-            label: "Status",
-            options: ["Outstanding", "Partially Paid", "Overdue"],
-          },
-        ]}
+        searchKeys={["invoiceNumber", "shipperName", "id"]}
         rowActions={[
-          { label: "View invoice", icon: Eye, onClick: () => {} },
-          { label: "Send reminder", icon: Send, onClick: () => {} },
-          { label: "Log payment", icon: Wallet, onClick: () => {} },
-        ]}
-        bulkActions={[
-          { label: "Send reminders", icon: Send, onClick: () => {} },
-          { label: "Export selection", icon: Download, onClick: () => {} },
+          {
+            label: "Log payment",
+            icon: Wallet,
+            onClick: (row) => {
+              if (!row.id) {
+                return;
+              }
+              const amount = window.prompt("Payment amount");
+              if (!amount) {
+                return;
+              }
+              record.mutate({
+                body: {
+                  invoiceId: row.id,
+                  amount: Number(amount),
+                  paymentDate: new Date().toISOString(),
+                  paymentReference: `ADMIN-${Date.now()}`,
+                  paymentMethod: "BankTransfer",
+                },
+              });
+            },
+          },
         ]}
       />
     </div>

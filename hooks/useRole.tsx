@@ -1,7 +1,6 @@
 "use client";
 
 import { useOrganizations } from "@/lib/api/hooks/organizations";
-import { useRoutes } from "@/lib/api/hooks/routes";
 import { useTruckSizes } from "@/lib/api/hooks/shared";
 import { useShippers as useShippersQuery } from "@/lib/api/hooks/shippers";
 import { useUser } from "@/lib/api/hooks/users";
@@ -32,8 +31,6 @@ export function useProfile() {
 export function useOrganization() {
   return useOrganizations();
 }
-
-export { useRoutes };
 
 export function useShippers() {
   const query = useShippersQuery();

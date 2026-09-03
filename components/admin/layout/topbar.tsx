@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Bell,
   Check,
@@ -31,6 +31,13 @@ import { AdminButton, IconButton } from "@/components/admin/ui/admin-button";
 import { AvatarInitials } from "@/components/admin/ui/avatar-initials";
 import { ACTIVITY_FEED } from "@/constants/admin/mock-data";
 import { ADMIN_NAV_ITEMS, ADMIN_ROLES } from "@/constants/admin/nav";
+import { useAuth } from "@/context/AuthContext";
+import { clearSession } from "@/lib/api/auth";
+import { useUser } from "@/lib/api/hooks/users";
+import {
+  formatUserDisplayName,
+  getPrimaryRoleLabel,
+} from "@/lib/auth/profile";
 import { cn } from "@/lib/utils";
 
 const USER_MENU = [
@@ -48,11 +55,28 @@ export interface TopbarProps {
 
 export function Topbar({ role, onRoleChange, onQuickAction }: TopbarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { roles, setRoles, setToken, setUser, token } = useAuth();
+  const profileQuery = useUser({ enabled: Boolean(token) });
+  const profile = profileQuery.data?.responseData;
   const [searchFocus, setSearchFocus] = React.useState(false);
 
   const title =
     ADMIN_NAV_ITEMS.find((i) => i.href === pathname)?.label ?? "Dashboard";
   const roleLabel = ADMIN_ROLES.find((r) => r.key === role)?.label;
+  const displayName = formatUserDisplayName(profile);
+  const profileRoleLabel =
+    getPrimaryRoleLabel(roles) ?? profile?.position ?? roleLabel;
+
+  const handleSignOut = () => {
+    clearSession();
+    localStorage.removeItem("user");
+    localStorage.removeItem("roles");
+    setToken(null);
+    setUser(null);
+    setRoles(null);
+    router.push("/");
+  };
 
   return (
     <header className="h-16 bg-white/90 backdrop-blur border-b border-slate-200 flex items-center gap-4 px-6 sticky top-0 z-30 shrink-0">
@@ -165,17 +189,26 @@ export function Topbar({ role, onRoleChange, onQuickAction }: TopbarProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="flex items-center gap-2.5 pl-1 pr-2.5 py-1 rounded-lg hover:bg-slate-100">
-            <AvatarInitials name="Haggaih Ekele" size="md" />
+            <AvatarInitials name={displayName} size="md" />
             <div className="hidden md:block text-left">
               <p className="text-xs font-semibold text-slate-800 leading-tight">
-                Haggaih Ekele
+                {profileQuery.isLoading ? "Loading…" : displayName}
               </p>
-              <p className="text-[10px] text-slate-400 leading-tight">{roleLabel}</p>
+              <p className="text-[10px] text-slate-400 leading-tight">
+                {profileRoleLabel}
+              </p>
             </div>
             <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuLabel className="font-normal">
+            <p className="text-sm font-semibold text-slate-900">{displayName}</p>
+            {profile?.email ? (
+              <p className="text-xs text-slate-500 font-normal">{profile.email}</p>
+            ) : null}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
           {USER_MENU.map((x) => (
             <DropdownMenuItem key={x.label} className="gap-2.5 text-sm text-slate-600">
               <x.icon className="w-4 h-4 text-slate-400" />
@@ -183,7 +216,10 @@ export function Topbar({ role, onRoleChange, onQuickAction }: TopbarProps) {
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="gap-2.5 text-sm text-red-600 focus:text-red-600 focus:bg-red-50">
+          <DropdownMenuItem
+            className="gap-2.5 text-sm text-red-600 focus:text-red-600 focus:bg-red-50"
+            onSelect={handleSignOut}
+          >
             <LogOut className="w-4 h-4" />
             Sign Out
           </DropdownMenuItem>

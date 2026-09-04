@@ -516,7 +516,9 @@ export function AnalyticsPage() {
                 />
                 <RTooltip
                   contentStyle={TOOLTIP_STYLE}
-                  formatter={(value: number) => formatNairaCompact(value)}
+                  formatter={(value) =>
+                    formatNairaCompact(typeof value === "number" ? value : Number(value) || 0)
+                  }
                 />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Area

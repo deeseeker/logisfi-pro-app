@@ -26,10 +26,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ActivityIcon } from "@/components/admin/ui/activity-icon";
 import { AdminButton, IconButton } from "@/components/admin/ui/admin-button";
 import { AvatarInitials } from "@/components/admin/ui/avatar-initials";
-import { ACTIVITY_FEED } from "@/constants/admin/mock-data";
 import { ADMIN_NAV_ITEMS, ADMIN_ROLES } from "@/constants/admin/nav";
 import { useAuth } from "@/context/AuthContext";
 import { clearSession } from "@/lib/api/auth";
@@ -151,32 +149,18 @@ export function Topbar({ role, onRoleChange, onQuickAction }: TopbarProps) {
       </div>
 
       <DropdownMenu>
-        <div className="relative">
-          <DropdownMenuTrigger asChild>
-            <IconButton icon={Bell} label="Notifications" />
-          </DropdownMenuTrigger>
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white pointer-events-none" />
-        </div>
+        <DropdownMenuTrigger asChild>
+          <IconButton icon={Bell} label="Notifications" />
+        </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-96 p-0 overflow-hidden">
           <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
             <span className="text-sm font-semibold text-slate-900">Notifications</span>
-            <span className="text-xs text-blue-800 font-medium cursor-pointer">
-              Mark all read
-            </span>
           </div>
-          <div className="max-h-96 overflow-y-auto">
-            {ACTIVITY_FEED.slice(0, 6).map((a, i) => (
-              <div
-                key={i}
-                className="px-4 py-3 flex items-start gap-3 hover:bg-slate-50 border-b border-slate-50"
-              >
-                <ActivityIcon tone={a.tone} icon={a.icon} />
-                <div className="min-w-0">
-                  <p className="text-xs text-slate-700 leading-relaxed">{a.text}</p>
-                  <p className="text-[10px] text-slate-400 mt-1">{a.time}</p>
-                </div>
-              </div>
-            ))}
+          <div className="max-h-96 overflow-y-auto px-4 py-8 text-center">
+            <p className="text-xs text-slate-500">No notifications yet.</p>
+            <p className="text-[10px] text-slate-400 mt-1">
+              Live activity will appear here when the notifications API is available.
+            </p>
           </div>
         </DropdownMenuContent>
       </DropdownMenu>

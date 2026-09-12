@@ -35,6 +35,9 @@ export const STATUS_TONE: Record<string, Tone> = {
   Approved: "info",
   Completed: "success",
   Disbursed: "success",
+  Pending: "warning",
+  Failed: "error",
+  InTransit: "violet",
   Rejected: "error",
   Paid: "success",
   "Partially Paid": "warning",
@@ -45,6 +48,8 @@ export const STATUS_TONE: Record<string, Tone> = {
   Expiring: "warning",
   Valid: "success",
   Verified: "success",
+  Yes: "warning",
+  No: "success",
   Sent: "info",
   "Exposure Warning": "warning",
 };

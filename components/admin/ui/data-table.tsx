@@ -37,9 +37,20 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
+import { visiblePageNumbers } from "@/lib/api/pagination";
+
 import { AdminButton } from "./admin-button";
 import { EmptyState } from "./empty-state";
 import { Panel } from "./panel";
+
+export interface DataTableServerPagination {
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  onPageChange: (page: number) => void;
+  search?: string;
+  onSearchChange?: (value: string) => void;
+}
 
 export interface DataTableColumn<T> {
   key: string;
@@ -80,6 +91,7 @@ export interface DataTableProps<T> {
   subtitle?: string;
   headerAction?: React.ReactNode;
   pageSize?: number;
+  serverPagination?: DataTableServerPagination;
 }
 
 const checkboxCls =
@@ -108,6 +120,7 @@ export function DataTable<T extends object>({
   subtitle,
   headerAction,
   pageSize = 8,
+  serverPagination,
 }: DataTableProps<T>) {
   const [query, setQuery] = React.useState("");
   const [activeFilters, setActiveFilters] = React.useState<Record<string, string>>({});
@@ -122,7 +135,7 @@ export function DataTable<T extends object>({
 
   const filtered = React.useMemo(() => {
     let rows = data;
-    if (query.trim()) {
+    if (!serverPagination && query.trim()) {
       const q = query.toLowerCase();
       rows = rows.filter((r) =>
         searchKeys.some((k) =>
@@ -145,10 +158,17 @@ export function DataTable<T extends object>({
     }
     return rows;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, query, activeFilters, sortKey, sortDir]);
+  }, [data, query, activeFilters, sortKey, sortDir, serverPagination]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-  const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
+  const currentPage = serverPagination?.page ?? page;
+  const currentPageSize = serverPagination?.pageSize ?? pageSize;
+  const totalCount = serverPagination?.totalCount ?? filtered.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / currentPageSize));
+  const paged = serverPagination
+    ? filtered
+    : filtered.slice((currentPage - 1) * currentPageSize, currentPage * currentPageSize);
+  const searchValue = serverPagination?.search ?? query;
+  const setCurrentPage = serverPagination?.onPageChange ?? setPage;
   const rowH = density === "compact" ? "py-2" : "py-3.5";
   const visibleCols = columns.filter((c) => !hiddenCols.includes(c.key));
 
@@ -186,8 +206,12 @@ export function DataTable<T extends object>({
         <div className="relative flex-1 min-w-[220px] max-w-sm">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <Input
-            value={query}
+            value={searchValue}
             onChange={(e) => {
+              if (serverPagination?.onSearchChange) {
+                serverPagination.onSearchChange(e.target.value);
+                return;
+              }
               setQuery(e.target.value);
               setPage(1);
             }}
@@ -225,7 +249,7 @@ export function DataTable<T extends object>({
                     key={opt}
                     onSelect={() => {
                       setActiveFilters((a) => ({ ...a, [f.key]: opt }));
-                      setPage(1);
+                      setCurrentPage(1);
                     }}
                     className={cn(
                       "text-xs justify-between",
@@ -420,37 +444,40 @@ export function DataTable<T extends object>({
 
       <div className="flex items-center justify-between px-5 py-3.5 border-t border-slate-100">
         <span className="text-xs text-slate-400">
-          Showing {paged.length === 0 ? 0 : (page - 1) * pageSize + 1}–
-          {Math.min(page * pageSize, filtered.length)} of {filtered.length}
+          Showing {paged.length === 0 ? 0 : (currentPage - 1) * currentPageSize + 1}
+          –
+          {Math.min(
+            (currentPage - 1) * currentPageSize + paged.length,
+            totalCount
+          )}{" "}
+          of {totalCount}
         </span>
         <div className="flex items-center gap-1">
           <button
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
             aria-label="Previous page"
             className="w-8 h-8 rounded-lg border border-slate-200 disabled:opacity-30 flex items-center justify-center hover:bg-slate-50"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          {Array.from({ length: totalPages })
-            .slice(0, 5)
-            .map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setPage(i + 1)}
-                className={cn(
-                  "w-8 h-8 rounded-lg text-xs font-medium",
-                  page === i + 1
-                    ? "bg-blue-900 text-white"
-                    : "text-slate-500 hover:bg-slate-50"
-                )}
-              >
-                {i + 1}
-              </button>
-            ))}
+          {visiblePageNumbers(currentPage, totalPages).map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => setCurrentPage(pageNumber)}
+              className={cn(
+                "w-8 h-8 rounded-lg text-xs font-medium",
+                currentPage === pageNumber
+                  ? "bg-blue-900 text-white"
+                  : "text-slate-500 hover:bg-slate-50"
+              )}
+            >
+              {pageNumber}
+            </button>
+          ))}
           <button
-            disabled={page === totalPages}
-            onClick={() => setPage((p) => p + 1)}
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(currentPage + 1)}
             aria-label="Next page"
             className="w-8 h-8 rounded-lg border border-slate-200 disabled:opacity-30 flex items-center justify-center hover:bg-slate-50"
           >

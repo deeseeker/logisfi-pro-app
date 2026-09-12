@@ -41,6 +41,54 @@ export function formatNairaCompact(amount: number): string {
   return `${sign}₦${abs.toFixed(0)}`;
 }
 
+/**
+ * Parse API money that may already be compact (`₦1.5M+`, `1.5M`, `1500000`).
+ */
+export function parseCompactNaira(
+  value: string | number | null | undefined
+): number {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
+  if (value == null || value === "") {
+    return 0;
+  }
+  const trimmed = String(value).trim().replace(/,/g, "").replace(/\+$/, "");
+  const match = trimmed.match(/^₦?\s*(-?[\d.]+)\s*([KMB])?$/i);
+  if (!match) {
+    const fallback = Number(trimmed);
+    return Number.isFinite(fallback) ? fallback : 0;
+  }
+  const amount = Number(match[1]);
+  if (!Number.isFinite(amount)) {
+    return 0;
+  }
+  const suffix = match[2]?.toUpperCase();
+  if (suffix === "B") return amount * 1_000_000_000;
+  if (suffix === "M") return amount * 1_000_000;
+  if (suffix === "K") return amount * 1_000;
+  return amount;
+}
+
+/** Show the API's own compact string when present; otherwise format a number. */
+export function displayAdminMoney(
+  value: string | number | null | undefined
+): string {
+  if (value == null || value === "") {
+    return "—";
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return "—";
+    }
+    if (/₦|[KMB]/i.test(trimmed) && Number.isNaN(Number(trimmed))) {
+      return trimmed;
+    }
+  }
+  return formatNairaCompact(parseCompactNaira(value));
+}
+
 /** 04 Aug 2026 — pinned to UTC so server and client agree. */
 export function formatDateShort(date: Date | string | number): string {
   return new Date(date).toLocaleDateString("en-GB", {

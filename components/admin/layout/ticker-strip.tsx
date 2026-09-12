@@ -2,7 +2,7 @@
 
 import { useAdminSummary } from "@/lib/api/hooks/dashboard";
 import { cn } from "@/lib/utils";
-import { formatNairaCompact } from "@/utils/helpers";
+import { displayAdminMoney, formatNairaCompact } from "@/utils/helpers";
 
 export function TickerStrip() {
   const summary = useAdminSummary();
@@ -12,11 +12,11 @@ export function TickerStrip() {
     { label: "Active invoices", value: String(data?.activeInvoices ?? "—") },
     {
       label: "Loan in use",
-      value: formatNairaCompact(Number(data?.loanAmountInUse ?? 0)),
+      value: displayAdminMoney(data?.loanAmountInUse),
     },
     {
-      label: "Available book",
-      value: formatNairaCompact(Number(data?.loanAmountAvailable ?? 0)),
+      label: "Loan available",
+      value: displayAdminMoney(data?.loanAmountAvailable),
     },
     {
       label: "Collected",
